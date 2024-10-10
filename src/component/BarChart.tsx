@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { Component } from "react";
+import { Component } from "react";
 import Chart from "react-apexcharts";
 
 // Define the props interface for categories and data

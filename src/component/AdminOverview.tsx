@@ -1,6 +1,5 @@
 /** @format */
 
-import React from "react";
 import BasicLine from "./LineChart";
 import Basic from "./ApexChart";
 import BasicPie from "./PieChart";

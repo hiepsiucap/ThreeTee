@@ -18,7 +18,7 @@ interface Column {
   format?: (value: number) => string;
 }
 const data = [20, 30, 40, 50, 60];
-const categoriesss = ["Quý 1", "Quý 2", "Quý 3", "Quý 4", "Cả Năm"];
+// const categoriesss = ["Quý 1", "Quý 2", "Quý 3", "Quý 4", "Cả Năm"];
 const categoriess = [
   "Áo thun",
   "Áo Hoddies",

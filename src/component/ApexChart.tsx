@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { Component } from "react";
+import { Component } from "react";
 import Chart from "react-apexcharts";
 
 // Define the props interface for categories and data
@@ -26,6 +26,8 @@ interface ChartState {
       };
     };
     colors: string[];
+    legend: { show: boolean };
+
     dataLabels: {
       enabled: boolean; // To control the display of data labels inside the bars
     };
