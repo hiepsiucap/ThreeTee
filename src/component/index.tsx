@@ -6,6 +6,7 @@ import HomePost from "./HomePost";
 import AdminLayout from "./AdminLayout";
 import AdminOverview from "./AdminOverview";
 import AdminProfile from "./AdminProfile";
+import PostItems from "./PostItems";
 export {
   Hero,
   Product,
@@ -14,4 +15,5 @@ export {
   DefaultLayout,
   HomePost,
   AdminLayout,
+  PostItems,
 };

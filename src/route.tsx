@@ -13,6 +13,8 @@ import {
   PostsAdmin,
   ProductsAdmin,
   Product,
+  Post,
+  Description,
 } from "./page";
 import { Navigate } from "react-router-dom";
 const router = createBrowserRouter([
@@ -27,6 +29,14 @@ const router = createBrowserRouter([
       {
         path: "/product",
         element: <Product></Product>,
+      },
+      {
+        path: "/posts",
+        element: <Post></Post>,
+      },
+      {
+        path: "/description",
+        element: <Description></Description>,
       },
     ],
   },
