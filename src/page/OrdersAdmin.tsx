@@ -10,6 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import BasicLine from "../component/LineChart";
+import { motion } from "framer-motion";
 interface Column {
   id: "name" | "code" | "population" | "size" | "density";
   label: string;
@@ -106,9 +107,21 @@ export default function OrdersAdmin() {
 
   return (
     <div className=" pl-72">
-      <p className=" text-2xl py-6 ">Sản phẩm</p>
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className=" text-2xl py-6 "
+      >
+        Sản phẩm
+      </motion.div>
       <div className=" flex space-x-6 h-full ">
-        <div className=" overflow-hidden rounded-2xl  shadow-lg w-2/3">
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className=" overflow-hidden rounded-2xl  shadow-lg w-2/3"
+        >
           <Paper sx={{ width: "100%", overflow: "hidden" }}>
             <TableContainer sx={{ maxHeight: 700 }}>
               <Table
@@ -168,7 +181,7 @@ export default function OrdersAdmin() {
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Paper>
-        </div>
+        </motion.div>
         <div className=" flex flex-col space-y-6 w-1/3">
           <div className=" w-full bg-gray-50 p-6 rounded-3xl shadow-md">
             {" "}

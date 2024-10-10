@@ -5,4 +5,13 @@ import Product from "./Product";
 import HomePost from "./HomePost";
 import AdminLayout from "./AdminLayout";
 import AdminOverview from "./AdminOverview";
-export { Hero, Product, AdminOverview, DefaultLayout, HomePost, AdminLayout };
+import AdminProfile from "./AdminProfile";
+export {
+  Hero,
+  Product,
+  AdminProfile,
+  AdminOverview,
+  DefaultLayout,
+  HomePost,
+  AdminLayout,
+};

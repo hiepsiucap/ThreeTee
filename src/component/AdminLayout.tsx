@@ -17,25 +17,33 @@ import SideBar from "../assets/icon/Sidebar.svg";
 export default function AdminLayout() {
   const location = useLocation();
   console.log(location.pathname);
+
   return (
     <div className=" font-inter  bg-white  text-blackadmin flex text-admin w-full ">
-      <div className=" fixed bg-white px-7 pr-7 shadow-md flex flex-col space-y-5 h-screen py-4">
+      <div className=" fixed z-50 bg-white px-7 pr-7 shadow-md flex flex-col space-y-5 h-screen py-4">
         <div className=" flex flex-col">
-          <div className=" py-5 flex space-x-2 items-center">
+          <Link
+            to="/admin/profile"
+            className=" py-5 flex space-x-2 items-center"
+          >
             <img
               src="https://res.cloudinary.com/dhhuv7n0h/image/upload/v1721986324/default_ava.jpg"
               alt=""
               className=" w-8 h-8 rounded-full"
             />
             <div className=" font-light ">Hiệp nguyễn</div>
-          </div>
+          </Link>
           <div className=" flex space-x-3 py-2   text-sm font-light">
             <p className=" text-black opacity-60">Yêu thích</p>
             <p className=" text-slate-200">Gần đây</p>
           </div>
           <ul className="list-disc px-5">
-            <li className="  font-light py-1">Tổng quan</li>
-            <li className=" font-light py-1 ">Dự án</li>
+            <li className="  font-light py-1">
+              <Link to="overview">Tổng quan</Link>
+            </li>
+            <li className=" font-light py-1 ">
+              <Link to="orders">Đơn hàng</Link>
+            </li>
           </ul>
         </div>
         <div className=" flex flex-col">

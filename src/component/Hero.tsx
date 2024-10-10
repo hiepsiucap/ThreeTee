@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useTexture } from "@react-three/drei";
 import { useGLTF } from "@react-three/drei";
 import { useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import { useState, useEffect, useCallback } from "react";
 const colorGroups = [
@@ -166,85 +167,91 @@ export default function Hero() {
   };
   return (
     <div className="  font-roboto flex justify-center mt-16 items-start w-full ">
-      <div className="flex flex-col items-center mt-16 w-1/2">
-        <p className="text-4xl leading-loose font-semibold text-center mb-4">
-          Trải nghiệm vượt trội với <br />
-          <span className="text-6xl">ThreeTee</span>
-        </p>
-        <button className="font-bold border-2 border-gray-800 rounded-md py-2 px-6">
-          Trải nghiệm ngay
-        </button>
-        <div className=" pt-8 font-light">Chọn màu mà bạn muốn</div>
-        <div className="mb-4">
-          <ColorPicker
-            currentColor={currentColor}
-            onColorChange={setCurrentColor}
-          />
-        </div>
-        <div className=" flex space-x-6">
-          <div className=" flex flex-col items-center space-y-2">
-            <div className="  font-light">Mặt sau</div>
-            <input
-              type="file"
-              ref={inputRef}
-              onChange={HandleChange}
-              className=" hidden"
-            ></input>
-            {!selectimage ? (
-              <button
-                onClick={() => {
-                  if (inputRef.current) inputRef.current?.click();
-                }}
-                className=" p-12 border border-black rounded-xl border-dashed"
-              ></button>
-            ) : (
-              <button
-                onClick={() => {
-                  if (inputRef.current) inputRef.current?.click();
-                }}
-                className="  border  rounded-xl "
-              >
-                <img
-                  src={selectimage}
-                  alt=""
-                  className="w-24 h-24 rounded-lg"
-                />
-              </button>
-            )}
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="flex flex-col items-center mt-16 w-1/2"
+        >
+          <p className="text-4xl leading-loose font-semibold text-center mb-4">
+            Trải nghiệm vượt trội với <br />
+            <span className="text-6xl">ThreeTee</span>
+          </p>
+          <button className="font-bold border-2 border-gray-800 rounded-md py-2 px-6">
+            Trải nghiệm ngay
+          </button>
+          <div className=" pt-8 font-light">Chọn màu mà bạn muốn</div>
+          <div className="mb-4">
+            <ColorPicker
+              currentColor={currentColor}
+              onColorChange={setCurrentColor}
+            />
           </div>
-          <div className=" flex flex-col  items-center space-y-2">
-            <div className="  font-light">Chọn logo</div>
-            <input
-              type="file"
-              ref={logorRef}
-              onChange={HandleChangeLogo}
-              className=" hidden"
-            ></input>
-            {!selectlogo ? (
-              <button
-                onClick={() => {
-                  if (logorRef.current) logorRef.current?.click();
-                }}
-                className=" p-12 border border-black rounded-xl border-dashed"
-              ></button>
-            ) : (
-              <button
-                onClick={() => {
-                  if (logorRef.current) logorRef.current?.click();
-                }}
-                className="  border  rounded-xl "
-              >
-                <img
-                  src={selectlogo || ""}
-                  alt=""
-                  className="w-24 h-24 rounded-lg"
-                />
-              </button>
-            )}
+          <div className=" flex space-x-6">
+            <div className=" flex flex-col items-center space-y-2">
+              <div className="  font-light">Mặt sau</div>
+              <input
+                type="file"
+                ref={inputRef}
+                onChange={HandleChange}
+                className=" hidden"
+              ></input>
+              {!selectimage ? (
+                <button
+                  onClick={() => {
+                    if (inputRef.current) inputRef.current?.click();
+                  }}
+                  className=" p-12 border border-black rounded-xl border-dashed"
+                ></button>
+              ) : (
+                <button
+                  onClick={() => {
+                    if (inputRef.current) inputRef.current?.click();
+                  }}
+                  className="  border  rounded-xl "
+                >
+                  <img
+                    src={selectimage}
+                    alt=""
+                    className="w-24 h-24 rounded-lg"
+                  />
+                </button>
+              )}
+            </div>
+            <div className=" flex flex-col  items-center space-y-2">
+              <div className="  font-light">Chọn logo</div>
+              <input
+                type="file"
+                ref={logorRef}
+                onChange={HandleChangeLogo}
+                className=" hidden"
+              ></input>
+              {!selectlogo ? (
+                <button
+                  onClick={() => {
+                    if (logorRef.current) logorRef.current?.click();
+                  }}
+                  className=" p-12 border border-black rounded-xl border-dashed"
+                ></button>
+              ) : (
+                <button
+                  onClick={() => {
+                    if (logorRef.current) logorRef.current?.click();
+                  }}
+                  className="  border  rounded-xl "
+                >
+                  <img
+                    src={selectlogo || ""}
+                    alt=""
+                    className="w-24 h-24 rounded-lg"
+                  />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      </div>
-
+        </motion.div>
+      </AnimatePresence>
       <div className="w-1/2">
         <Canvas
           style={{

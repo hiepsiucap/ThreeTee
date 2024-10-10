@@ -7,7 +7,7 @@ interface Product {
   description: string;
   img: string;
 }
-
+import { motion } from "framer-motion";
 import ProductItem from "./ProductItem";
 export default function Product() {
   const Product = [
@@ -55,7 +55,12 @@ export default function Product() {
     },
   ];
   return (
-    <div className=" md:container flex flex-col items-center mx-auto text-center ">
+    <motion.div
+      initial={{ opacity: 0, x: 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.2, duration: 0.5 }}
+      className=" md:container flex flex-col items-center mx-auto text-center "
+    >
       <h3 className="font-roboto font-light text-3xl pb-12">
         Sản phẩm nổi bật
       </h3>
@@ -65,6 +70,6 @@ export default function Product() {
           return <ProductItem product={product}></ProductItem>;
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,8 +1,19 @@
 /** @format */
 
 import { createBrowserRouter } from "react-router-dom";
-import { DefaultLayout, AdminLayout, AdminOverview } from "./component";
-import { HomePage, OrdersAdmin, PostsAdmin, ProductsAdmin } from "./page";
+import {
+  DefaultLayout,
+  AdminLayout,
+  AdminOverview,
+  AdminProfile,
+} from "./component";
+import {
+  HomePage,
+  OrdersAdmin,
+  PostsAdmin,
+  ProductsAdmin,
+  Product,
+} from "./page";
 import { Navigate } from "react-router-dom";
 const router = createBrowserRouter([
   {
@@ -12,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <HomePage></HomePage>,
+      },
+      {
+        path: "/product",
+        element: <Product></Product>,
       },
     ],
   },
@@ -26,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/overview",
         element: <AdminOverview></AdminOverview>,
+      },
+      {
+        path: "/admin/profile",
+        element: <AdminProfile></AdminProfile>,
       },
       {
         path: "/admin/products",

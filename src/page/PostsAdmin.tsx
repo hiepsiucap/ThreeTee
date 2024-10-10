@@ -10,6 +10,8 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import BasicLine from "../component/LineChart";
+import Basic from "../component/ApexChart";
+import BasicPie from "../component/PieChart";
 interface Column {
   id: "name" | "code" | "population" | "size" | "density";
   label: string;
@@ -106,36 +108,44 @@ export default function OrdersAdmin() {
 
   return (
     <div className=" pl-72">
-      <p className=" text-2xl py-6 ">Sản phẩm</p>
-      <div className=" flex space-x-6 h-fit  ">
-        <div className=" flex flex-col space-y-6 w-1/3">
-          <div className=" w-full bg-gray-50 p-6 rounded-3xl shadow-md">
-            {" "}
-            <BasicLine
-              categories={categoriess}
-              data={data}
-              data1={data}
-            />
-          </div>
-          <div className=" w-full bg-gray-50 p-6 rounded-3xl shadow-md">
-            {" "}
-            <BasicLine
-              categories={categoriess}
-              data={data}
-              data1={data}
-            />
-          </div>
-          <div className=" w-full bg-gray-50 p-6 rounded-3xl shadow-md">
-            {" "}
-            <BasicLine
-              categories={categoriess}
-              data={data}
-              data1={data}
-            />
-          </div>
+      <p className=" text-2xl py-6 ">Bài viết</p>
+
+      <div className=" grid grid-cols-2 gap-10  w-full   ">
+        <div className=" w-full h-fit bg-gray-50 p-6 rounded-3xl shadow-md">
+          {" "}
+          <BasicLine
+            categories={categoriess}
+            data={data}
+            data1={data}
+          />
+        </div>
+        <div className=" w-full h-fit bg-gray-50 p-6 rounded-3xl shadow-md">
+          {" "}
+          <Basic
+            categories={categoriess}
+            data={data}
+          />
+        </div>
+        <div className=" w-full bg-gray-50 p-6 rounded-3xl shadow-md">
+          {" "}
+          <BasicLine
+            categories={categoriess}
+            data={data}
+            data1={data}
+          />
+        </div>
+        <div className=" w-full bg-gray-50 p-6 rounded-3xl shadow-md">
+          {" "}
+          <BasicPie
+            categories={categoriess}
+            data={data}
+          />
         </div>
       </div>
-      <div className=" overflow-hidden h-fit rounded-2xl  shadow-lg w-2/3">
+      <h1 className=" font-light py-6 text-center text-2xl">
+        Danh sách bài viết{" "}
+      </h1>
+      <div className=" overflow-hidden rounded-2xl  py-6">
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
           <TableContainer sx={{ maxHeight: 700 }}>
             <Table
