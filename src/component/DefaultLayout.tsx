@@ -40,9 +40,12 @@ export default function DefaultLayout() {
             </li>
           </ul>
           <div className=" flex items-center font-lexend space-x-4">
-            <button className=" font-bold border-2 border-gray-800 rounded-md py-2 px-6">
+            <Link
+              to="/admin"
+              className=" font-bold border-2 border-gray-800 rounded-md py-2 px-6"
+            >
               Trải nghiệm ngay
-            </button>
+            </Link>
           </div>
         </nav>
       </div>
