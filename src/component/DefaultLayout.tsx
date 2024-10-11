@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
-import CheveRon from "../assets/icon/Chevron";
 export default function DefaultLayout() {
   const location = useLocation();
   return (

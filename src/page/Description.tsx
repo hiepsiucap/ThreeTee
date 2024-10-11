@@ -1,6 +1,5 @@
 /** @format */
 
-import React from "react";
 import waitting from "../assets/img/image.png";
 export default function Description() {
   return (

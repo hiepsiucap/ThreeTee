@@ -1,6 +1,5 @@
 /** @format */
 
-import React from "react";
 import { PostItems } from "../component";
 import { motion } from "framer-motion";
 export default function Post() {
