@@ -6,6 +6,7 @@ import { useGLTF } from "@react-three/drei";
 import { useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { useState, useEffect, useCallback } from "react";
 const colorGroups = [
   { name: "Trắng", value: "#FFFFFF" },
@@ -25,6 +26,17 @@ const colorGroups = [
   { name: "Tím pastel", value: "#DCD0FF" },
   { name: "Xanh lá pastel", value: "#98FB98" },
 ];
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+// Thiết lập DRACOLoader global
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath(
+  "https://www.gstatic.com/draco/versioned/decoders/1.5.6/"
+);
+
+// Thiết lập GLTFLoader với DRACOLoader
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
 
 interface ColorPickerProps {
   currentColor: string;
@@ -58,6 +70,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
     </div>
   );
 };
+useGLTF.preload("/model_draco.gltf");
 const ShirtModel = ({
   color = "#ffffff",
   image,
@@ -67,7 +80,7 @@ const ShirtModel = ({
   logo: string | null;
   image: string | null;
 }) => {
-  const { scene, materials } = useGLTF("/shirt.glb");
+  const { scene, materials } = useGLTF("/model_draco.gltf", true);
   const shirtTexture = useTexture(image || "/white.png");
   const logoTexture = useTexture(logo || "/white.png");
 
