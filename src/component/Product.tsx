@@ -7,7 +7,6 @@ interface Product {
   description: string;
   img: string;
 }
-
 import { motion } from "framer-motion";
 import ProductItem from "./ProductItem";
 import { useState } from "react";
@@ -82,7 +81,7 @@ export default function Product() {
               return (prev + 1) % Product.length;
             });
           }}
-          className=" absolute -left-12 top-1/3 rounded-full border p-2 border-black translate-x-1/2"
+          className=" absolute -left-8 top-1/3 rounded-full border p-2 border-black translate-x-1/2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +89,7 @@ export default function Product() {
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            className="size-7"
+            className="size-6"
           >
             <path
               stroke-linecap="round"
@@ -105,7 +104,7 @@ export default function Product() {
               return (prev + 1) % Product.length;
             });
           }}
-          className=" absolute -right-0 top-1/3 rounded-full border p-2 border-black translate-x-1/2"
+          className=" absolute right-2 top-1/3 rounded-full border p-2 border-black translate-x-1/2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

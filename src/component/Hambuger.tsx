@@ -8,9 +8,11 @@ const customStyles = {
   content: {
     top: "0%",
     left: "50%",
-    height: "100vh",
+    height: "100%",
     width: "50%",
     bottom: "auto",
+    borderLeft: "1px solid #f0f0f0",
+    border: "none", // Remove border on all sides, including the Y-axis
   },
 };
 

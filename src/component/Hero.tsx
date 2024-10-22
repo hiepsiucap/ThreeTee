@@ -52,12 +52,14 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
       {/* Custom color input */}
 
       {/* Preset colors */}
-      <div className="  grid grid-cols-8 gap-2 py-4">
-        {colorGroups.map((color) => (
+      <div className="  grid grid-cols-6 md:grid-cols-8 gap-1 md:gap-2 py-4">
+        {colorGroups.map((color, index) => (
           <button
             key={color.value}
             onClick={() => onColorChange(color.value)}
             className={`w-12 h-12 rounded-full border-2 transition-transform hover:scale-110 ${
+              index > 11 && "hidden md:block"
+            } ${
               currentColor === color.value
                 ? "border-blue-500 scale-110"
                 : "border-gray-200"
@@ -185,11 +187,11 @@ export default function Hero() {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="flex flex-col items-center ml-6 md:ml-0 md:mt-16 md:w-1/2"
+          className="flex flex-col items-center mx-2 w-full   md:ml-0 md:mt-16 md:w-1/2"
         >
-          <p className="text-4xl leading-loose font-semibold text-center mb-4">
+          <p className="text-3xl md:text-4xl leading-loose font-semibold text-center mb-4">
             Trải nghiệm vượt trội với <br />
-            <span className="text-6xl">ThreeTee</span>
+            <span className="text-5xl md:text-6xl">ThreeTee</span>
           </p>
           <button className="font-bold border-2 border-gray-800 rounded-md py-2 px-6">
             Trải nghiệm ngay
@@ -265,11 +267,11 @@ export default function Hero() {
           </div>
         </motion.div>
       </AnimatePresence>
-      <div className="w-full md:w-1/2">
+      <div className="w-11/12 mx-auto  md:w-1/2">
         <Canvas
           style={{
             width: "100%",
-            height: "750px",
+            height: "600px",
           }}
           camera={{
             position: [0, 0, 6], // Điều chỉnh vị trí camera
