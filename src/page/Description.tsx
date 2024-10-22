@@ -4,7 +4,7 @@ import waitting from "../assets/img/image.png";
 export default function Description() {
   return (
     <section className=" w-full py-32 items-center flex  justify-center">
-      <div className=" flex items-center">
+      <div className=" flex flex-col md:flex items-center">
         <img
           src={waitting}
           alt=""

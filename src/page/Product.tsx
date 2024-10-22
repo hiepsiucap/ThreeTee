@@ -1,5 +1,8 @@
 /** @format */
 import plus from "../assets/icon/plus.svg";
+import price from "../assets/icon/price.svg";
+import color from "../assets/icon/color.svg";
+import Numb from "../assets/icon/numb.svg";
 import ProductItem from "../component/ProductItem";
 import { motion } from "framer-motion";
 interface Product {
@@ -61,9 +64,9 @@ export default function Product() {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className=" w-1/5 font-light text-md py-12"
+          className=" w-1/5 hidden md:block font-light text-md py-12"
         >
-          <div className="flex justify-between items-center py-5 border-y-2">
+          <div className="  flex justify-between items-center py-5 border-y-2">
             <div>SIZE ĐỒ</div>
             <div>
               <img
@@ -121,18 +124,52 @@ export default function Product() {
           className="w-full "
         >
           <div className=" flex justify-between items-center">
-            <h5 className=" font-light text-xl ">Danh sách sản phẩm</h5>
+            <h5 className=" font-light text-xl ">
+              Danh sách sản phẩm <span>{"(" + product.length + ")"}</span>
+            </h5>
             <div>
               <select
                 name=""
-                className=" border border-gray-700 rounded-md py-3 px-6 font-light"
+                className=" border border-gray-700 rounded-md py-2 px-4 md:py-3 md:px-6 font-light"
                 id=""
               >
                 <option>Sort theo giá</option>
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-10 p-8 ">
+          <div className=" md:hidden py-4 flex space-x-2 ">
+            <button className=" flex space-x-1  border p-2 items-center rounded-md text-sm border-gray-400">
+              <div>
+                <img
+                  src={Numb}
+                  alt=""
+                  className="w-4 h-4"
+                />
+              </div>
+              <div className="  text-xs">SỐ LƯỢNG </div>
+            </button>
+            <button className=" flex space-x-1   border p-2 items-center rounded-md text-sm border-gray-400">
+              <div>
+                <img
+                  src={color}
+                  alt=""
+                  className="w-4 h-4"
+                />
+              </div>
+              <div className="  text-xs">MÀU SẮC </div>
+            </button>
+            <button className=" flex space-x-1  border p-2 items-center rounded-md text-sm border-gray-400">
+              <div>
+                <img
+                  src={price}
+                  alt=""
+                  className="w-4 h-4"
+                />
+              </div>
+              <div className="  text-xs">MỨC GIÁ </div>
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:p-8  ">
             {product.map((product) => {
               return <ProductItem product={product}></ProductItem>;
             })}

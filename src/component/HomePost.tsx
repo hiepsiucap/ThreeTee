@@ -39,12 +39,12 @@ export default function HomePost() {
   return (
     <div className=" flex flex-col mx-auto py-16 items-center md:container">
       <h1 className=" font-light text-3xl">Bài đăng nổi bật </h1>
-      <div className="flex px-24 py-8 space-x-3">
+      <div className=" flex-col hidden md:flex md:flex-row px-12 md:px-24 py-4 md:py-8 space-x-3">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className=" w-1/2"
+          className="md:w-1/2"
         >
           <PostItem
             post={posts[0]}
@@ -56,7 +56,7 @@ export default function HomePost() {
           ref={ref}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className=" w-1/2 grid gap-3 grid-cols-2 "
+          className=" md:w-1/2 md:grid md:gap-3 md:grid-cols-2 "
         >
           {posts.map((post, index) => {
             if (index > 0) {
@@ -69,6 +69,18 @@ export default function HomePost() {
             }
           })}
         </motion.div>
+      </div>
+      <div className=" flex md:hidden mx-6 space-y-4 py-4 flex-col">
+        {posts.map((post, index) => {
+          if (index > 0) {
+            return (
+              <PostItem
+                post={post}
+                main={false}
+              ></PostItem>
+            );
+          }
+        })}
       </div>
     </div>
   );

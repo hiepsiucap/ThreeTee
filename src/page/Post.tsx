@@ -53,7 +53,7 @@ export default function Post() {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className=" flex space-x-5 px-12"
+        className=" md:flex space-x-5 hidden  px-12"
       >
         <div className=" w-3/4 h-full">
           <PostItems
@@ -72,8 +72,10 @@ export default function Post() {
           ></PostItems>
         </div>
       </motion.div>
-      <p className=" text-xl font-light py-12 px-12">Các bài đăng khác</p>
-      <div className="px-12 grid grid-cols-3 gap-5">
+      <p className=" text-xl hidden md:block font-light py-12 px-12">
+        Các bài đăng khác
+      </p>
+      <div className="px-12 grid grid-cols-1 md:grid-cols-3 gap-5">
         <PostItems
           post={posts[0]}
           size="small"

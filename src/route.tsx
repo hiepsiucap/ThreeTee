@@ -1,6 +1,7 @@
 /** @format */
 
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, ScrollRestoration } from "react-router-dom";
+
 import {
   DefaultLayout,
   AdminLayout,
@@ -15,12 +16,18 @@ import {
   Product,
   Post,
   Description,
+  DetailProduct,
 } from "./page";
 import { Navigate } from "react-router-dom";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <DefaultLayout></DefaultLayout>,
+    element: (
+      <>
+        <DefaultLayout></DefaultLayout>
+        <ScrollRestoration />
+      </>
+    ),
     children: [
       {
         path: "/",
@@ -37,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: "/description",
         element: <Description></Description>,
+      },
+      {
+        path: "/product/:id",
+        element: <DetailProduct></DetailProduct>,
       },
     ],
   },

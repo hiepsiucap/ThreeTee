@@ -5,4 +5,5 @@ import ProductsAdmin from "./ProductsAdmin";
 import Product from "./Product";
 import Post from "./Post";
 import Description from "./Description";
-export{ HomePage,Post, OrdersAdmin, PostsAdmin,Product, ProductsAdmin, Description}
+import DetailProduct from "./DetailProduct";
+export{ HomePage,Post, OrdersAdmin, PostsAdmin,Product,DetailProduct, ProductsAdmin, Description}
