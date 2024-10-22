@@ -187,7 +187,7 @@ export default function Hero() {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="flex flex-col items-center mx-2 w-full   md:ml-0 md:mt-16 md:w-1/2"
+          className="flex flex-col items-center  w-full   md:mt-16 md:w-1/2"
         >
           <p className="text-3xl md:text-4xl leading-loose font-semibold text-center mb-4">
             Trải nghiệm vượt trội với <br />

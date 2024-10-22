@@ -10,7 +10,7 @@ export default function Description() {
           alt=""
           className=" w-96"
         />
-        <h5 className=" text-3xl mt-16 font-light">
+        <h5 className=" text-2xl md:text-3xl text-center md:text-start mt-16 font-light">
           Nhóm mình đang phát triển thêm <br></br>các cậu đợi mình nhé !
         </h5>
       </div>

@@ -95,7 +95,7 @@ export default function DefaultLayout() {
         transition={{ delay: 0.2, duration: 0.5 }}
         className=" block md:hidden"
       >
-        <nav className=" md:container mx-auto flex justify-between py-3 px-2  ">
+        <nav className=" md:container mx-auto flex justify-between py-3   ">
           <ul className="flex space-x-16 px-4 justify-between w-full  font-lexend items-center text-primary ">
             <li className=" flex space-x-2 items-center  font-medium">
               <Link

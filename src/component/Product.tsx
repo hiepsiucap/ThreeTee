@@ -62,7 +62,7 @@ export default function Product() {
       initial={{ opacity: 0, x: 50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.2, duration: 0.5 }}
-      className=" md:container flex flex-col items-center mx-auto text-center "
+      className=" md:container flex flex-col items-center md:mx-auto text-center "
     >
       <h3 className="font-roboto font-light text-3xl pb-12">
         Sản phẩm nổi bật

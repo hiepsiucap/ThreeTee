@@ -59,7 +59,7 @@ const product = [
 export default function Product() {
   return (
     <div>
-      <div className=" flex md:container mx-auto space-x-8 py-12">
+      <div className=" flex md:container md:mx-auto px-4  py-12">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -130,7 +130,7 @@ export default function Product() {
             <div>
               <select
                 name=""
-                className=" border border-gray-700 rounded-md py-2 px-4 md:py-3 md:px-6 font-light"
+                className=" border border-gray-700 rounded-md py-1 px-2 text-sm md:text-base md:py-3 md:px-6 font-light"
                 id=""
               >
                 <option>Sort theo giá</option>
