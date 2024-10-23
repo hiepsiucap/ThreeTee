@@ -181,7 +181,7 @@ export default function Hero() {
     }
   };
   return (
-    <div className="  font-roboto md:flex-row  flex flex-col justify-center mt-8  md:mt-16 items-start w-full ">
+    <div className="  font-roboto md:flex-row  flex flex-col justify-center mt-8  md:mt-0 items-start w-full ">
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -189,10 +189,12 @@ export default function Hero() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="flex flex-col items-center  w-full   md:mt-16 md:w-1/2"
         >
-          <p className="text-3xl md:text-4xl leading-loose font-semibold text-center mb-4">
+          <p className="text-3xl md:text-4xl leading-relaxed font-semibold text-center mb-4">
             Trải nghiệm vượt trội với <br />
-            <span className="text-5xl md:text-6xl">ThreeTee</span>
           </p>
+          <span className="text-5xl md:text-6xl font-semibold mb-4">
+            ThreeTee
+          </span>
           <button className="font-bold border-2 border-gray-800 rounded-md py-2 px-6">
             Trải nghiệm ngay
           </button>
@@ -271,7 +273,7 @@ export default function Hero() {
         <Canvas
           style={{
             width: "100%",
-            height: "600px",
+            height: "700px",
           }}
           camera={{
             position: [0, 0, 6], // Điều chỉnh vị trí camera

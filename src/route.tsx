@@ -6,6 +6,7 @@ import {
   DefaultLayout,
   AdminLayout,
   AdminOverview,
+  VistitorLayout,
   AdminProfile,
 } from "./component";
 import {
@@ -15,10 +16,14 @@ import {
   ProductsAdmin,
   Product,
   Post,
+  Register,
+  ForgotPassword,
   Description,
   DetailProduct,
+  Login,
 } from "./page";
 import { Navigate } from "react-router-dom";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -78,6 +83,24 @@ const router = createBrowserRouter([
       {
         path: "/admin/posts",
         element: <PostsAdmin></PostsAdmin>,
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <VistitorLayout></VistitorLayout>,
+    children: [
+      {
+        path: "/login",
+        element: <Login></Login>,
+      },
+      {
+        path: "/register",
+        element: <Register></Register>,
+      },
+      {
+        path: "/forgotpassword",
+        element: <ForgotPassword></ForgotPassword>,
       },
     ],
   },

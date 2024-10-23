@@ -202,7 +202,7 @@ export default function DetailProduct() {
         </svg>
         <Link to="/product">Trở về trang sản phẩm</Link>
       </div>
-      <div className=" flex flex-col md:flex-col space-x-1">
+      <div className=" flex flex-col md:flex-row space-x-1">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
