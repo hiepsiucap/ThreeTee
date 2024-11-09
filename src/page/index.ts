@@ -9,4 +9,7 @@ import Description from "./Description";
 import ForgotPassword from "./ForgotPassword";
 import Register from "./Register";
 import DetailProduct from "./DetailProduct";
-export{ HomePage,Post, OrdersAdmin, PostsAdmin,Product, Register, ForgotPassword,DetailProduct,Login, ProductsAdmin, Description}
+import DeliveryAdmin from "./DeliveryAdmin";
+import PendingOrdersAdmin from "../component/PendingOrders";
+
+export{ HomePage,Post, OrdersAdmin, PostsAdmin,Product, Register, ForgotPassword,DetailProduct,Login, ProductsAdmin, Description, PendingOrdersAdmin, DeliveryAdmin}

@@ -20,9 +20,10 @@ import {
   ForgotPassword,
   Description,
   DetailProduct,
-  Login,
+  Login, DeliveryAdmin ,PendingOrdersAdmin
 } from "./page";
 import { Navigate } from "react-router-dom";
+
 
 const router = createBrowserRouter([
   {
@@ -83,6 +84,14 @@ const router = createBrowserRouter([
       {
         path: "/admin/posts",
         element: <PostsAdmin></PostsAdmin>,
+      },
+      {
+        path: "/admin/orders/pending",
+        element: <PendingOrdersAdmin></PendingOrdersAdmin>,
+      },
+      {
+        path: "/admin/orders/delivery",
+        element: <DeliveryAdmin></DeliveryAdmin>,
       },
     ],
   },

@@ -110,34 +110,62 @@ export default function AdminLayout() {
         <div className=" flex flex-col">
           <p className=" text-slate-400 font-light text-sm">Đơn hàng</p>
           <div className=" flex flex-col space-y-4 pl-3 py-4">
-            <div className=" flex space-x-2 ">
+          <Link
+              to="/admin/orders/pending"
+              className={
+                location.pathname === "/admin/orders/pending"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
               <img
                 src={profile}
                 alt=""
               />
               <p className=" font-light">Chờ xác nhận</p>
-            </div>
-            <div className=" flex space-x-2">
+            </Link>
+            <Link
+              to="/admin/orders/delivery"
+              className={
+                location.pathname === "/admin/orders/delivery"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
               <img
                 src={order}
                 alt=""
               />
               <p className=" font-light">Đang giao</p>
-            </div>
-            <div className=" flex space-x-2">
+            </Link>
+            <Link
+              to="/admin/orders/delivery"
+              className={
+                location.pathname === "/admin/orders/delivery"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
               <img
                 src={product}
                 alt=""
               />
               <p className=" font-light">Sản phẩm</p>
-            </div>
-            <div className=" flex space-x-2">
+            </Link>
+            <Link
+              to="/admin/orders/delivery"
+              className={
+                location.pathname === "/admin/orders/delivery"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
               <img
                 src={social}
                 alt=""
               />
               <p className=" font-light">Đã giao</p>
-            </div>
+            </Link>
           </div>
         </div>
         <div className=" flex flex-col">
