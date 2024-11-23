@@ -1,13 +1,12 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import success from "../assets/img/success.webp";
 import { Circles } from "react-loader-spinner";
 import { useStateUserContext } from "../contexts/UserContextProvider";
 import { useSearchParams } from "react-router-dom";
 import cancel from "../assets/img/cancel.webp";
 import { Link } from "react-router-dom";
-import { GetRequestWithCre } from "../utilz/Request/getRequest";
 export default function VerificationEmail() {
   const [status, changestatus] = useState("none");
   const [searchParams] = useSearchParams();
