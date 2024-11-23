@@ -1,7 +1,6 @@
 /** @format */
 
-import React, { ReactNode, useEffect } from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 export interface StateContextType {
   loading: boolean;
@@ -10,32 +9,32 @@ export interface StateContextType {
 
 export const StateContext = createContext<StateContextType>({
   loading: false,
-  changeLoading: () => {},
+  changeLoading: () => {
+    console.warn("changeLoading called outside of Provider");
+  },
 });
 
-interface UserContextProviderProps {
+interface LoadingContextProviderProps {
   children: ReactNode;
 }
 
 export const LoadingContextProvider = ({
   children,
-}: UserContextProviderProps) => {
-  const [loading, changeIsLoading] = useState<boolean>(true);
+}: LoadingContextProviderProps) => {
+  const [loading, setLoading] = useState<boolean>(false);
+
   const changeLoading = (ld: boolean) => {
-    changeIsLoading(ld);
+    setLoading(ld);
   };
+
   return (
-    <StateContext.Provider
-      value={{
-        loading,
-        changeLoading,
-      }}
-    >
+    <StateContext.Provider value={{ loading, changeLoading }}>
       {children}
     </StateContext.Provider>
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useStateLoadContext = () => {
   return useContext(StateContext);
 };

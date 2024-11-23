@@ -15,19 +15,14 @@ import { useStateUserContext } from "../contexts/UserContextProvider";
 import sun from "../assets/icon/sun.svg";
 import noti from "../assets/icon/nofi.svg";
 import SideBar from "../assets/icon/Sidebar.svg";
-import Loading from "./Loading";
-import { useState } from "react";
-import { useStateLoadContext } from "../contexts/LoadingContext";
 export default function AdminLayout() {
   const location = useLocation();
   console.log(location.pathname);
   const { user } = useStateUserContext();
-  const { loading, changeLoading } = useStateLoadContext();
-  changeLoading(true);
+
   return (
     <div className=" font-inter   bg-white  text-blackadmin flex text-admin w-full ">
-      <Loading modalIsOpen={loading}></Loading>
-      <div className=" fixed z-7  bg-white px-7 pr-7 shadow-md flex flex-col space-y-5 h-screen py-4">
+      <div className=" fixed z-10  bg-white px-7 pr-7 shadow-md flex flex-col space-y-5 h-screen py-4">
         <div className=" flex flex-col">
           <Link
             to="/admin/profile"
@@ -96,7 +91,7 @@ export default function AdminLayout() {
                 src={product}
                 alt=""
               />
-              <p className=" font-light">Sản phẩm</p>
+              <p className=" font-light">Đã huỷ</p>
             </Link>
             <Link
               to="/admin/posts"

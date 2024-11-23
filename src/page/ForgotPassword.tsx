@@ -1,11 +1,9 @@
 /** @format */
 
 import { Link } from "react-router-dom";
-import { useStateUserContext } from "../contexts/UserContextProvider";
 import { useState } from "react";
 import useFetch from "../customhook/FetchHook";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 import "sweetalert2/src/sweetalert2.scss";
 import success from "../assets/img/success.webp";
 import { Circles } from "react-loader-spinner";
@@ -14,8 +12,6 @@ interface LoginInterFace {
   email: string;
 }
 export default function ForgotPassword() {
-  const { setToken, setUserWithStorage } = useStateUserContext();
-  const navigate = useNavigate();
   const [isSend, changeSend] = useState(false);
   const [data, changeDate] = useState<LoginInterFace>({
     email: "",

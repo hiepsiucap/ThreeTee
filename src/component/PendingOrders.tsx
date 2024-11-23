@@ -74,7 +74,7 @@ export default function PendingOrdersAdmin() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage] = React.useState(10);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 

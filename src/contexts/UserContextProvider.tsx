@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { createContext, useContext, useState } from "react";
 
 interface User {
@@ -118,6 +118,7 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useStateUserContext = () => {
   return useContext(StateContext);
 };

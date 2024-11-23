@@ -16,7 +16,7 @@ const customStyles = {
     width: "100%",
   },
   overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the color and opacity here
+    backgroundColor: "rgba(0, 0, 0, 0)", // Adjust the color and opacity here
   },
 };
 Modal.setAppElement("#root");
