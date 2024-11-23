@@ -84,7 +84,8 @@ export default function PendingOrdersAdmin() {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className="text-2xl py-6">
+        className="text-2xl py-6"
+      >
         Đơn Hàng Chờ Xác Nhận
       </motion.div>
       <div className="flex space-x-6 h-full mr-6">
@@ -94,20 +95,30 @@ export default function PendingOrdersAdmin() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="overflow-hidden rounded-2xl shadow-lg w-full"
         >
-          <Paper sx={{ width: "100%", overflow: "hidden", background: "transparent" }}>
+          <Paper
+            sx={{
+              width: "100%",
+              overflow: "hidden",
+              background: "transparent",
+            }}
+          >
             <TableContainer sx={{ maxHeight: 700 }}>
-              <Table stickyHeader aria-label="pending orders table">
+              <Table
+                stickyHeader
+                aria-label="pending orders table"
+              >
                 <TableHead>
                   <TableRow>
                     {columns.map((column) => (
                       <TableCell
                         key={column.id}
                         align={column.align}
-                        style={{ minWidth: column.minWidth,
+                        style={{
+                          minWidth: column.minWidth,
                           color: "#6b7280",
                           fontWeight: "bold",
                           backgroundColor: "#f3f4f6",
-                         }}
+                        }}
                       >
                         {column.label}
                       </TableCell>
@@ -118,11 +129,19 @@ export default function PendingOrdersAdmin() {
                   {orders
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((order) => (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={order.orderId}>
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={order.orderId}
+                      >
                         {columns.map((column) => {
                           const value = order[column.id];
                           return (
-                            <TableCell key={column.id} align={column.align}>
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                            >
                               {value}
                             </TableCell>
                           );

@@ -4,11 +4,14 @@ import { Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import Hamburger from "./Hambuger";
+import cart from "../assets/img/cart.png";
+import { useStateUserContext } from "../contexts/UserContextProvider";
 import Logo from "../assets/icon/logo";
 // import { ReactComponent as Logo } from "../assets/icon/logo.svg";
 
 export default function DefaultLayout() {
   const location = useLocation();
+  const { user } = useStateUserContext();
   return (
     <div>
       <motion.div
@@ -77,12 +80,38 @@ export default function DefaultLayout() {
             </li>
           </ul>
           <div className=" flex items-center font-lexend space-x-4">
-            <Link
-              to="/admin"
-              className=" font-light text-md border-2 mb-1 border-gray-800 rounded-md py-2 px-6"
-            >
-              Trải nghiệm ngay
-            </Link>
+            {!user ? (
+              <Link
+                to="/admin"
+                className=" font-light text-md border-2 mb-1 border-gray-800 rounded-md py-2 px-6"
+              >
+                Trải nghiệm ngay
+              </Link>
+            ) : (
+              <section className=" flex font-roboto pb-4 space-x-4 items-center">
+                <Link
+                  to="/admin"
+                  className=" bg-green-500 text-sm rounded-md py-1 px-3 text-white"
+                >
+                  ADMIN
+                </Link>
+                <div className="text-lg font-semibold">Chào {user.name} !</div>
+                <img
+                  src={
+                    user?.ava ||
+                    "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1721986324/default_ava.jpg"
+                  }
+                  className=" w-12 h-12 rounded-full"
+                ></img>
+                <div className=" px-4">
+                  <img
+                    src={cart}
+                    className=" w-10 h-10 "
+                    alt=""
+                  />
+                </div>
+              </section>
+            )}
           </div>
         </nav>
       </motion.div>

@@ -1,31 +1,34 @@
 /** @format */
 
 import { Link } from "react-router-dom";
-import { useStateUserContext } from "../contexts/UserContextProvider";
 import { useState } from "react";
 import useFetch from "../customhook/FetchHook";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 import "sweetalert2/src/sweetalert2.scss";
 import success from "../assets/img/success.webp";
+import { useSearchParams, useParams } from "react-router-dom";
 import { Circles } from "react-loader-spinner";
 import { GetPostRequest } from "../utilz/Request/postRequest";
 interface LoginInterFace {
-  email: string;
+  password_confirmation: string;
+  password: string;
 }
-export default function ForgotPassword() {
-  const { setToken, setUserWithStorage } = useStateUserContext();
-  const navigate = useNavigate();
+export default function ResetPassword() {
   const [isSend, changeSend] = useState(false);
+  const [searchParams] = useSearchParams();
+  const { token } = useParams();
   const [data, changeDate] = useState<LoginInterFace>({
-    email: "",
+    password_confirmation: "",
+    password: "",
   });
   const { isLoading, setLoading } = useFetch();
   const onSubitHandler = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setLoading(true);
-    const { email } = data;
-    if (!email) {
+    const { password_confirmation, password } = data;
+    const email = searchParams.get("email");
+
+    if (!password_confirmation || !password || !token || !email) {
       Swal.fire({
         title: "Error!",
         text: "Vui lòng điền đầy đủ thông tin",
@@ -33,10 +36,10 @@ export default function ForgotPassword() {
         confirmButtonText: "Cool",
       });
     }
-    console.log(email);
+    console.log(password_confirmation, password, email, token);
     const response = await GetPostRequest({
-      route: "api/forgot-password",
-      body: { email },
+      route: "api/reset-password",
+      body: { password_confirmation, password, token, email },
     });
     if (response.success) {
       changeSend(true);
@@ -62,15 +65,32 @@ export default function ForgotPassword() {
               className=" flex flex-col space-y-6"
             >
               <h5 className=" text-center text-3xl font-light pb-2">
-                Quên mật khẩu
+                Đổi mật khẩu mới
               </h5>
               <div className=" flex flex-col space-x-1">
-                <p className=" text-sm">Email xác thực:</p>
+                <p className=" text-sm">Mật khẩu:</p>
                 <input
                   className="border border-gray-400 rounded-md py-2 px-4"
                   type="text"
-                  value={data.email}
-                  onChange={(e) => changeDate({ email: e.target.value })}
+                  value={data.password}
+                  onChange={(e) =>
+                    changeDate((prev) => {
+                      return { ...prev, password: e.target.value };
+                    })
+                  }
+                />
+              </div>
+              <div className=" flex flex-col space-x-1">
+                <p className=" text-sm">Nhập lại mật khẩu:</p>
+                <input
+                  className="border border-gray-400 rounded-md py-2 px-4"
+                  type="text"
+                  value={data.password_confirmation}
+                  onChange={(e) =>
+                    changeDate((prev) => {
+                      return { ...prev, password_confirmation: e.target.value };
+                    })
+                  }
                 />
               </div>
               <div className=" w-full flex justify-end space-x-2 italic text-xs">
@@ -105,8 +125,14 @@ export default function ForgotPassword() {
                 alt=""
               />
               <h2 className=" text-lg font-mono text-center font-semibold">
-                Đã gửi email xác nhận thành công, vui lòng kiểm tra email
+                Đổi mật khẩu thành công , đăng nhập tại
               </h2>
+              <Link
+                to="/login"
+                className=" font-mono text-lg text-primary2 bg-primary rounded-lg py-2 px-6"
+              >
+                Đăng nhập
+              </Link>
             </section>
           )}
         </div>

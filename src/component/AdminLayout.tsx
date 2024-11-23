@@ -11,16 +11,23 @@ import social from "../assets/icon/social.png";
 import profile from "../assets/icon/profile.png";
 import start from "../assets/icon/start1.svg";
 import find from "../assets/icon/find.svg";
+import { useStateUserContext } from "../contexts/UserContextProvider";
 import sun from "../assets/icon/sun.svg";
 import noti from "../assets/icon/nofi.svg";
 import SideBar from "../assets/icon/Sidebar.svg";
+import Loading from "./Loading";
+import { useState } from "react";
+import { useStateLoadContext } from "../contexts/LoadingContext";
 export default function AdminLayout() {
   const location = useLocation();
   console.log(location.pathname);
-
+  const { user } = useStateUserContext();
+  const { loading, changeLoading } = useStateLoadContext();
+  changeLoading(true);
   return (
-    <div className=" font-inter  bg-white  text-blackadmin flex text-admin w-full ">
-      <div className=" fixed z-50 bg-white px-7 pr-7 shadow-md flex flex-col space-y-5 h-screen py-4">
+    <div className=" font-inter   bg-white  text-blackadmin flex text-admin w-full ">
+      <Loading modalIsOpen={loading}></Loading>
+      <div className=" fixed z-7  bg-white px-7 pr-7 shadow-md flex flex-col space-y-5 h-screen py-4">
         <div className=" flex flex-col">
           <Link
             to="/admin/profile"
@@ -31,7 +38,7 @@ export default function AdminLayout() {
               alt=""
               className=" w-8 h-8 rounded-full"
             />
-            <div className=" font-light ">Hiệp nguyễn</div>
+            <div className=" font-light ">{user?.name}</div>
           </Link>
           <div className=" flex space-x-3 py-2   text-sm font-light">
             <p className=" text-black opacity-60">Yêu thích</p>
@@ -109,8 +116,8 @@ export default function AdminLayout() {
         </div>
         <div className=" flex flex-col">
           <p className=" text-slate-400 font-light text-sm">Đơn hàng</p>
-          <div className=" flex flex-col space-y-4 pl-3 py-4">
-          <Link
+          <div className=" flex flex-col  pl-3 py-4">
+            <Link
               to="/admin/orders/pending"
               className={
                 location.pathname === "/admin/orders/pending"
@@ -139,9 +146,9 @@ export default function AdminLayout() {
               <p className=" font-light">Đang giao</p>
             </Link>
             <Link
-              to="/admin/orders/delivery"
+              to="/admin/orders/cancel"
               className={
-                location.pathname === "/admin/orders/delivery"
+                location.pathname === "/admin/orders/cancel"
                   ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
                   : " flex space-x-2  py-2 "
               }
@@ -153,9 +160,9 @@ export default function AdminLayout() {
               <p className=" font-light">Sản phẩm</p>
             </Link>
             <Link
-              to="/admin/orders/delivery"
+              to="/admin/orders/complete"
               className={
-                location.pathname === "/admin/orders/delivery"
+                location.pathname === "/admin/orders/complete"
                   ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
                   : " flex space-x-2  py-2 "
               }
@@ -171,27 +178,48 @@ export default function AdminLayout() {
         <div className=" flex flex-col">
           <p className=" text-slate-400 font-light text-sm">Sản phẩm</p>
           <div className=" flex flex-col space-y-4 pl-3 py-4">
-            <div className=" flex space-x-2 ">
+            <Link
+              to="/admin/product/create"
+              className={
+                location.pathname === "/admin/product/create"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
               <img
                 src={profile}
                 alt=""
               />
               <p className=" font-light">Tạo sản phẩm</p>
-            </div>
-            <div className=" flex space-x-2">
+            </Link>
+            <Link
+              to="/admin/product/update"
+              className={
+                location.pathname === "/admin/product/update"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
               <img
                 src={order}
                 alt=""
               />
               <p className=" font-light">Cập nhật sản phẩm</p>
-            </div>
-            <div className=" flex space-x-2">
+            </Link>
+            <Link
+              to="/admin/product/delete"
+              className={
+                location.pathname === "/admin/product/delete"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
               <img
                 src={product}
                 alt=""
               />
               <p className=" font-light">Xoá sản phẩm</p>
-            </div>
+            </Link>
             <div className=" flex space-x-2">
               <img
                 src={social}

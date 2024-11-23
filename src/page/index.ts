@@ -11,5 +11,10 @@ import Register from "./Register";
 import DetailProduct from "./DetailProduct";
 import DeliveryAdmin from "./DeliveryAdmin";
 import PendingOrdersAdmin from "../component/PendingOrders";
-
-export{ HomePage,Post, OrdersAdmin, PostsAdmin,Product, Register, ForgotPassword,DetailProduct,Login, ProductsAdmin, Description, PendingOrdersAdmin, DeliveryAdmin}
+import CancelAdmin from "./CancelAdmin";
+import Complete from "./Complete";
+import UpdateProduct from "./UpdateProduct";
+import CreateProduct from "./CreateProduct";
+import ResetPassword from "./ResetPassword";
+import VerificationEmail from "./VerificationEmail";
+export{ HomePage,Post,Complete,VerificationEmail,CreateProduct,ResetPassword, UpdateProduct, OrdersAdmin,CancelAdmin, PostsAdmin,Product, Register, ForgotPassword,DetailProduct,Login, ProductsAdmin, Description, PendingOrdersAdmin, DeliveryAdmin}

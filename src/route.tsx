@@ -16,14 +16,21 @@ import {
   ProductsAdmin,
   Product,
   Post,
+  Complete,
   Register,
   ForgotPassword,
+  CancelAdmin,
+  VerificationEmail,
   Description,
   DetailProduct,
-  Login, DeliveryAdmin ,PendingOrdersAdmin
+  Login,
+  CreateProduct,
+  UpdateProduct,
+  DeliveryAdmin,
+  PendingOrdersAdmin,
+  ResetPassword,
 } from "./page";
 import { Navigate } from "react-router-dom";
-
 
 const router = createBrowserRouter([
   {
@@ -93,6 +100,22 @@ const router = createBrowserRouter([
         path: "/admin/orders/delivery",
         element: <DeliveryAdmin></DeliveryAdmin>,
       },
+      {
+        path: "/admin/orders/cancel",
+        element: <CancelAdmin></CancelAdmin>,
+      },
+      {
+        path: "/admin/orders/complete",
+        element: <Complete></Complete>,
+      },
+      {
+        path: "/admin/product/create",
+        element: <CreateProduct></CreateProduct>,
+      },
+      {
+        path: "/admin/product/update",
+        element: <UpdateProduct></UpdateProduct>,
+      },
     ],
   },
   {
@@ -110,6 +133,14 @@ const router = createBrowserRouter([
       {
         path: "/forgotpassword",
         element: <ForgotPassword></ForgotPassword>,
+      },
+      {
+        path: "/verificationemail",
+        element: <VerificationEmail></VerificationEmail>,
+      },
+      {
+        path: "/password-reset/:token",
+        element: <ResetPassword></ResetPassword>,
       },
     ],
   },

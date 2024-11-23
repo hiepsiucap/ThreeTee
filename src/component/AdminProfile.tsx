@@ -1,19 +1,45 @@
 /** @format */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { GetRequestWithCre } from "../utilz/Request/getRequest";
+import { useStateUserContext } from "../contexts/UserContextProvider";
+import { useStateLoadContext } from "../contexts/LoadingContext";
+interface Profile {
+  name: string;
+  avatar: string;
+  email: string;
+}
 export default function AdminProfile() {
   const [profile, setprofile] = useState("info");
-
+  const { changeLoading } = useStateLoadContext();
+  const [data, changeData] = useState<Profile>({
+    name: "",
+    avatar: "",
+    email: "",
+  });
+  const { token } = useStateUserContext();
+  useEffect(() => {
+    const getProfile = async () => {
+      changeLoading(true);
+      const response = await GetRequestWithCre({ route: "api/user", token });
+      if (response.success) {
+        changeData(response.data);
+        changeLoading(false);
+      }
+    };
+    getProfile();
+  }, [token]);
   return (
     <motion.div
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.2, duration: 0.5 }}
     >
-      <div className="w-full ">
+      <div className="w-full pl-60 ">
         <img
           src="https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728564771/header_setting_ddmmoz.png"
           alt=""
+          className=" "
         />
         <div className=" relative flex items-center h-full w-full">
           <div className="w-1/3 border-r-2 border-green-400 py-6 flex font-light items-start flex-col pl-72 space-y-4 font-inter">
@@ -58,15 +84,16 @@ export default function AdminProfile() {
           <div className=" w-2/3  relative">
             <div className=" absolute -left-52 -top-24">
               <img
-                src="https://res.cloudinary.com/dhhuv7n0h/image/upload/v1703314565/UserAvatar/imkun72e2m11al7iwfwz.jpg"
+                src={
+                  data?.avatar ||
+                  "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1721986324/default_ava.jpg"
+                }
                 alt=""
                 className=" w-44 h-44 rounded-full border-4 shadow-lg border-green-500"
               />
             </div>
 
-            <h1 className="  text-2xl pb-12 py-2 font-semibold">
-              Nguyễn Hồng Hiệp
-            </h1>
+            <h1 className="  text-2xl pb-12 py-2 font-semibold">{data.name}</h1>
             <h1 className=" text-xl pb-6 px-8">Thông tin cá nhân</h1>
             <div className=" flex space-x-12 px-8">
               <div className=" flex  space-x-5 w-1/2">
@@ -80,6 +107,7 @@ export default function AdminProfile() {
                       <input
                         type="text"
                         className="rounded-lg border py-2 px-5 focus:border-green-500 w-full "
+                        value={data.name.split(" ")[0]}
                       />
                     </div>
                     <div className=" flex flex-col w-1/2 space-x-2 items-start">
@@ -89,6 +117,7 @@ export default function AdminProfile() {
                       <input
                         type="text"
                         className="rounded-lg border py-2 px-5 focus:border-green-500 w-full "
+                        value={data.name.split(" ")[1]}
                       />
                     </div>
                   </div>
@@ -122,6 +151,7 @@ export default function AdminProfile() {
                     <p className=" pl-2.5 text-sm font-semibold">Email</p>
                     <input
                       type="text"
+                      value={data.email}
                       className="rounded-lg border py-2 px-5 focus:border-green-500 w-full "
                     />
                   </div>
