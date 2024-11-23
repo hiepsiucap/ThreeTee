@@ -82,7 +82,7 @@ export default function DefaultLayout() {
           <div className=" flex items-center font-lexend space-x-4">
             {!user ? (
               <Link
-                to="/admin"
+                to="/login"
                 className=" font-light text-md border-2 mb-1 border-gray-800 rounded-md py-2 px-6"
               >
                 Trải nghiệm ngay
