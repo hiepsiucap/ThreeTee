@@ -39,7 +39,7 @@ export default function Login() {
     if (response.success) {
       setToken(response.data?.token);
       setUserWithStorage(response.data?.user);
-      navigate("/");
+      navigate("/admin");
       setLoading(false);
     } else {
       Swal.fire({
