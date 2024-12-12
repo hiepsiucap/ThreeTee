@@ -23,7 +23,7 @@ export const GetPostRequest = async ({
       return { success: true, data: await response.json(), response };
     } else {
       const data = await response.json();
-      throw new Error((await data?.msg) || " Lấy dữ liệu ko thành công");
+      throw new Error((await data?.message) || " Lấy dữ liệu ko thành công");
     }
   } catch (e) {
     if (e instanceof Error) {

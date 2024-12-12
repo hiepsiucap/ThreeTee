@@ -112,7 +112,7 @@ export default function ResetPassword() {
                   </button>
                 ) : (
                   <button className="  border border-gray-400 flex justify-center w-full py-2 px-4 rounded-md">
-                    Gửi email xác nhận
+                    Đổi mật khẩu
                   </button>
                 )}
               </div>

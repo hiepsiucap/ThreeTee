@@ -3,41 +3,39 @@
 import { useEffect, useState } from "react";
 import success from "../assets/img/success.webp";
 import { Circles } from "react-loader-spinner";
-import { useStateUserContext } from "../contexts/UserContextProvider";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import cancel from "../assets/img/cancel.webp";
 import { Link } from "react-router-dom";
 export default function VerificationEmail() {
   const [status, changestatus] = useState("none");
-  const [searchParams] = useSearchParams();
-  const { token } = useStateUserContext();
+  const url = useLocation();
   useEffect(() => {
-    const verification_url = searchParams.get("verification_url");
-    const signature = searchParams.get("signature");
-    if (verification_url) {
-      console.log(token, verification_url);
+    if (url.search) {
       const getRequest = async () => {
-        const response = await fetch(
-          `${verification_url}&signature=${signature}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            credentials: "include",
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL_SERVER}/verify-email${url.search}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              credentials: "include",
+            }
+          );
+          if (response.ok) {
+            changestatus("success");
+          } else {
+            changestatus("cancel");
           }
-        );
-        if (response.ok) {
-          changestatus("success");
-        } else {
+        } catch {
           changestatus("cancel");
         }
       };
       getRequest();
     }
-  }, [token]);
+  }, [url]);
   return (
     <section className=" w-screen  h-screen bg-slate-50 flex items-center font-light justify-center ">
       <div className=" bg-white min-w-64 w-1/3  rounded-md shadow-lg py-12 px-6">

@@ -135,7 +135,7 @@ const router = createBrowserRouter([
         element: <ForgotPassword></ForgotPassword>,
       },
       {
-        path: "/verificationemail",
+        path: "/verify-email",
         element: <VerificationEmail></VerificationEmail>,
       },
       {
