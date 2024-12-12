@@ -14,7 +14,9 @@ export default function VerificationEmail() {
       const getRequest = async () => {
         try {
           const response = await fetch(
-            `${import.meta.env.VITE_API_URL_SERVER}/verify-email${url.search}`,
+            `${import.meta.env.VITE_API_URL_SERVER}/api/verify-email${
+              url.search
+            }`,
             {
               method: "GET",
               headers: {
