@@ -7,6 +7,7 @@ import AdminLayout from "./AdminLayout";
 import AdminOverview from "./AdminOverview";
 import AdminProfile from "./AdminProfile";
 import PostItems from "./PostItems";
+import UserLayout from "./UserLayout";
 import VistitorLayout from "./VistitorLayout";
 export {
   Hero,
@@ -17,5 +18,6 @@ export {
   HomePost,
   AdminLayout,
   PostItems,
+  UserLayout,
   VistitorLayout,
 };

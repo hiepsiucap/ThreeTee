@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import Hamburger from "./Hambuger";
-import cart from "../assets/img/cart.png";
+import cart from "../assets/icon/cart.svg";
 import { useStateUserContext } from "../contexts/UserContextProvider";
 import Logo from "../assets/icon/logo";
 // import { ReactComponent as Logo } from "../assets/icon/logo.svg";
@@ -89,6 +89,16 @@ export default function DefaultLayout() {
               </Link>
             ) : (
               <section className=" flex font-roboto pb-4 space-x-4 items-center">
+                <div className=" relative px-4">
+                  <img
+                    src={cart}
+                    className=" w-10 h-10 "
+                    alt=""
+                  />
+                  <div className=" text-xs bg-red-500 text-white absolute rounded-full font-medium py-0.5 px-1.5 top-0.5 left-1.5 bg-opacity-100">
+                    1
+                  </div>
+                </div>
                 <Link
                   to="/admin"
                   className=" bg-green-500 text-sm rounded-md py-1 px-3 text-white"
@@ -96,20 +106,17 @@ export default function DefaultLayout() {
                   ADMIN
                 </Link>
                 <div className="text-lg font-semibold">Chào {user.name} !</div>
-                <img
-                  src={
-                    user?.ava ||
-                    "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1721986324/default_ava.jpg"
-                  }
-                  className=" w-12 h-12 rounded-full"
-                ></img>
-                <div className=" px-4">
+                <Link
+                  to={user.role === "user" ? "/user/profile" : "/admin/profile"}
+                >
                   <img
-                    src={cart}
-                    className=" w-10 h-10 "
-                    alt=""
-                  />
-                </div>
+                    src={
+                      user?.ava ||
+                      "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1721986324/default_ava.jpg"
+                    }
+                    className=" w-12 h-12 rounded-full"
+                  ></img>
+                </Link>
               </section>
             )}
           </div>

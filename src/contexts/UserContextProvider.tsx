@@ -1,12 +1,13 @@
 /** @format */
 
 import { ReactNode } from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 interface User {
   name: string;
   email: string;
   ava: string;
+  role: string;
 }
 
 export interface StateContextType {
@@ -42,42 +43,41 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
     localStorage.getItem("TOKEN")
   );
 
-  // useEffect(() => {
-  //   const validate = async () => {
-  //     if (token) {
-  //       try {
-  //         const response = await fetch(
-  //           `${import.meta.env.VITE_API_URL_SERVER}/api/user`,
-  //           {
-  //             method: "POST",
-  //             headers: {
-  //               Authorization: `Bearer ${token}`,
-  //             },
-  //             credentials: "include",
-  //           }
-  //         );
+  useEffect(() => {
+    const validate = async () => {
+      if (token) {
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL_SERVER}/api/user`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              credentials: "include",
+            }
+          );
+          if (!response.ok) {
+            setUser(null);
+            setToken(null);
+            localStorage.removeItem("TOKEN");
+            localStorage.removeItem("USER_DATA");
+          } else {
+            const data = await response.json();
+            setUser(data);
+          }
+        } catch (error) {
+          console.error("Token validation error", error);
+          setUser(null);
+          setToken(null);
+          localStorage.removeItem("TOKEN");
+          localStorage.removeItem("USER_DATA");
+        }
+      }
+    };
 
-  //         if (!response.ok) {
-  //           setUser(null);
-  //           setToken(null);
-  //           localStorage.removeItem("TOKEN");
-  //           localStorage.removeItem("USER_DATA");
-  //         } else {
-  //           const data = await response.json();
-  //           setUser(data);
-  //         }
-  //       } catch (error) {
-  //         console.error("Token validation error", error);
-  //         setUser(null);
-  //         setToken(null);
-  //         localStorage.removeItem("TOKEN");
-  //         localStorage.removeItem("USER_DATA");
-  //       }
-  //     }
-  //   };
-
-  //   validate();
-  // }, []);
+    validate();
+  }, []);
 
   const handleSetToken = (newToken: string | null) => {
     if (newToken) {
@@ -95,6 +95,7 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
         name: userData.name,
         email: userData.email,
         ava: userData.ava,
+        role: userData.role,
       };
       localStorage.setItem("USER_DATA", JSON.stringify(safeUserData));
       setUser(userData);

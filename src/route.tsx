@@ -6,6 +6,7 @@ import {
   DefaultLayout,
   AdminLayout,
   AdminOverview,
+  UserLayout,
   VistitorLayout,
   AdminProfile,
 } from "./component";
@@ -115,6 +116,20 @@ const router = createBrowserRouter([
       {
         path: "/admin/product/update",
         element: <UpdateProduct></UpdateProduct>,
+      },
+    ],
+  },
+  {
+    path: "/user",
+    element: <UserLayout></UserLayout>,
+    children: [
+      {
+        path: "/user/",
+        element: <Navigate to="/admin/profile"></Navigate>,
+      },
+      {
+        path: "/user/profile",
+        element: <AdminOverview></AdminOverview>,
       },
     ],
   },
