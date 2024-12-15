@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import useFetch from "../customhook/FetchHook";
 import { GetPostRequest } from "../utilz/Request/postRequest";
-import { useStateUserContext } from "../contexts/UserContextProvider";
 import Swal from "sweetalert2";
 import { Circles } from "react-loader-spinner";
 import success from "../assets/img/success.webp";
@@ -15,7 +14,6 @@ interface LoginInterFace {
 }
 export default function Register() {
   const [isSend, changeSend] = useState<boolean>(false);
-  const { setToken } = useStateUserContext();
   const [data, changeData] = useState<LoginInterFace>({
     email: "",
     password: "",
@@ -46,23 +44,8 @@ export default function Register() {
       body: { email, password, password_confirmation, name },
     });
     if (response.success) {
-      const tempresponse = await GetPostRequest({
-        route: "api/login",
-        body: { email, password },
-      });
-      if (tempresponse.success) {
-        setToken(tempresponse.data?.token);
-        setLoading(false);
-        changeSend(true);
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: response.msg,
-          icon: "error",
-          confirmButtonText: "Cool",
-        });
-        setLoading(false);
-      }
+      setLoading(false);
+      changeSend(true);
     } else {
       Swal.fire({
         title: "Error!",
