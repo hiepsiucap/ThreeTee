@@ -1,10 +1,14 @@
 /** @format */
 import plus from "../assets/icon/plus.svg";
+import minus from "../assets/icon/minus.svg";
 import price from "../assets/icon/price.svg";
 import color from "../assets/icon/color.svg";
 import Numb from "../assets/icon/numb.svg";
 import ProductItem from "../component/ProductItem";
 import { motion } from "framer-motion";
+import { SizeFilter, AmountFilter } from "../component";
+import ColorFilter from "../component/colorFilter";
+import { useState } from "react";
 interface Product {
   name: string;
   category: string;
@@ -56,7 +60,35 @@ const product = [
     img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728526644/pngtree-white-polo-shirt-mockup-realistic-style-png-image_2004254_dcbehn.jpg",
   },
 ];
+interface OpenFilter {
+  size: boolean;
+  color: boolean;
+  amount: boolean;
+  category: boolean;
+  price: boolean;
+}
+interface Filter {
+  size: string;
+  color: string;
+  amount: string;
+  category: string;
+  price: string;
+}
 export default function Product() {
+  const [isopen, changeisopen] = useState<OpenFilter>({
+    size: false,
+    color: false,
+    amount: false,
+    category: false,
+    price: false,
+  });
+  const [filter, changefilter] = useState<Filter>({
+    size: "all",
+    color: "all",
+    amount: "all",
+    category: "all",
+    price: "all",
+  });
   return (
     <div>
       <div className=" flex md:container md:mx-auto px-4  py-12">
@@ -66,35 +98,70 @@ export default function Product() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className=" w-1/5 hidden md:block font-light text-md py-12"
         >
-          <div className="  flex justify-between items-center py-5 border-y-2">
-            <div>SIZE ĐỒ</div>
-            <div>
-              <img
-                src={plus}
-                alt=""
-                className="w-7 h-7"
-              />
+          <div className=" py-5 border-y-2 ">
+            <div
+              onClick={() => {
+                changeisopen((prev) => {
+                  return { ...prev, size: !prev.size };
+                });
+              }}
+              className=" flex justify-between items-center cursor-pointer w-full"
+            >
+              <div>SIZE ĐỒ</div>
+              <div>
+                <img
+                  src={!isopen.size ? plus : minus}
+                  alt=""
+                  className="w-7 h-7"
+                />
+              </div>
             </div>
+            {isopen.size && (
+              <SizeFilter
+                filter={filter}
+                changefilter={changefilter}
+              ></SizeFilter>
+            )}
           </div>
-          <div className="flex justify-between py-5 border-b-2">
-            <div>MÀU SẮC</div>
-            <div>
-              <img
-                src={plus}
-                alt=""
-                className="w-7 h-7"
-              />
+          <div className=" py-5 border-b-2 ">
+            <div
+              onClick={() => {
+                changeisopen((prev) => {
+                  return { ...prev, color: !prev.color };
+                });
+              }}
+              className=" flex justify-between items-center cursor-pointer w-full"
+            >
+              <div>MÀU SẮC</div>
+              <div>
+                <img
+                  src={!isopen.color ? plus : minus}
+                  alt=""
+                  className="w-7 h-7"
+                />
+              </div>
             </div>
+            {isopen.color && <ColorFilter></ColorFilter>}
           </div>
-          <div className="flex justify-between py-5 border-b-2">
-            <div>SỐ LƯỢNG </div>
-            <div>
-              <img
-                src={plus}
-                alt=""
-                className="w-7 h-7"
-              />
+          <div className=" py-5 border-b-2 ">
+            <div
+              onClick={() => {
+                changeisopen((prev) => {
+                  return { ...prev, amount: !prev.amount };
+                });
+              }}
+              className=" flex justify-between items-center cursor-pointer w-full"
+            >
+              <div>SỐ LƯỢNG</div>
+              <div>
+                <img
+                  src={!isopen.amount ? plus : minus}
+                  alt=""
+                  className="w-7 h-7"
+                />
+              </div>
             </div>
+            {isopen.color && <ColorFilter></ColorFilter>}
           </div>
           <div className="flex justify-between py-5 border-b-2">
             <div>CATEGORY </div>

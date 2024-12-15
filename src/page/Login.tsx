@@ -1,13 +1,11 @@
 /** @format */
 import { Link } from "react-router-dom";
 import { useStateUserContext } from "../contexts/UserContextProvider";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useFetch from "../customhook/FetchHook";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import "sweetalert2/src/sweetalert2.scss";
-import GetXsrf from "../utilz/Request/GetXsrf";
-import Cookies from "js-cookie";
 import { Circles } from "react-loader-spinner";
 import { GetPostRequest } from "../utilz/Request/postRequest";
 interface LoginInterFace {
@@ -15,14 +13,6 @@ interface LoginInterFace {
   password: string;
 }
 export default function Login() {
-  GetXsrf();
-  useEffect(() => {
-    setTimeout(() => {
-      const myCookie = Cookies.get("XSRF-TOKEN");
-      console.log("Specific cookie (myCookie):", myCookie);
-    }, 10000);
-  }, []);
-
   const { setToken, setUserWithStorage } = useStateUserContext();
   const navigate = useNavigate();
   const [data, changeDate] = useState<LoginInterFace>({

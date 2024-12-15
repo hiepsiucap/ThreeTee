@@ -8,6 +8,8 @@ import AdminOverview from "./AdminOverview";
 import AdminProfile from "./AdminProfile";
 import PostItems from "./PostItems";
 import UserLayout from "./UserLayout";
+import AmountFilter from "./AmountFilter";
+import SizeFilter from "./SizeFilter";
 import VistitorLayout from "./VistitorLayout";
 export {
   Hero,
@@ -18,6 +20,8 @@ export {
   HomePost,
   AdminLayout,
   PostItems,
+  SizeFilter,
+  AmountFilter,
   UserLayout,
   VistitorLayout,
 };
