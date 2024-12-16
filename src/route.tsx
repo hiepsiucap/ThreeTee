@@ -30,6 +30,7 @@ import {
   DeliveryAdmin,
   PendingOrdersAdmin,
   ResetPassword,
+  UserProfile,
 } from "./page";
 import { Navigate } from "react-router-dom";
 
@@ -125,11 +126,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/user/",
-        element: <Navigate to="/admin/profile"></Navigate>,
+        element: <Navigate to="/user/profile"></Navigate>,
       },
       {
         path: "/user/profile",
-        element: <AdminOverview></AdminOverview>,
+        element: <UserProfile></UserProfile>
       },
     ],
   },

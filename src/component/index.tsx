@@ -11,6 +11,7 @@ import UserLayout from "./UserLayout";
 import AmountFilter from "./AmountFilter";
 import SizeFilter from "./SizeFilter";
 import VistitorLayout from "./VistitorLayout";
+//import AccountSettings from "./UserProfile";
 export {
   Hero,
   Product,
@@ -24,4 +25,5 @@ export {
   AmountFilter,
   UserLayout,
   VistitorLayout,
+ // AccountSettings
 };
