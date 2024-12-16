@@ -10,10 +10,13 @@ import PostItems from "./PostItems";
 import UserLayout from "./UserLayout";
 import AmountFilter from "./AmountFilter";
 import SizeFilter from "./SizeFilter";
+import CategoryFilter from "./CategoryFilter";
 import VistitorLayout from "./VistitorLayout";
+import PriceFilter from "./PriceFilter";
 //import AccountSettings from "./UserProfile";
 export {
   Hero,
+  CategoryFilter,
   Product,
   AdminProfile,
   AdminOverview,
@@ -25,5 +28,6 @@ export {
   AmountFilter,
   UserLayout,
   VistitorLayout,
+  PriceFilter,
  // AccountSettings
 };
