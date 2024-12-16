@@ -7,6 +7,7 @@ import Post from "./Post";
 import Login from "./Login";
 import Description from "./Description";
 import ForgotPassword from "./ForgotPassword";
+import CancelPage from "./CancelPage";
 import Register from "./Register";
 import DetailProduct from "./DetailProduct";
 import DeliveryAdmin from "./DeliveryAdmin";
@@ -17,4 +18,5 @@ import UpdateProduct from "./UpdateProduct";
 import CreateProduct from "./CreateProduct";
 import ResetPassword from "./ResetPassword";
 import VerificationEmail from "./VerificationEmail";
-export{ HomePage,Post,Complete,VerificationEmail,CreateProduct,ResetPassword, UpdateProduct, OrdersAdmin,CancelAdmin, PostsAdmin,Product, Register, ForgotPassword,DetailProduct,Login, ProductsAdmin, Description, PendingOrdersAdmin, DeliveryAdmin}
+import Cart from "./Cart";
+export{ HomePage,Post,Complete,VerificationEmail,Cart,CreateProduct,ResetPassword, UpdateProduct,CancelPage, OrdersAdmin,CancelAdmin, PostsAdmin,Product, Register, ForgotPassword,DetailProduct,Login, ProductsAdmin, Description, PendingOrdersAdmin, DeliveryAdmin}
