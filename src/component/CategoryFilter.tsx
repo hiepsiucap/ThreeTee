@@ -7,7 +7,7 @@ interface Filter {
   category: string;
   price: string;
 }
-export default function ColorFilter({
+export default function CategoryFilter({
   filter,
   changefilter,
 }: {

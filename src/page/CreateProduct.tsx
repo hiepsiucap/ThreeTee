@@ -63,7 +63,10 @@ export default function CreateProduct() {
   const closeModal = () => {
     setSelectedImage(null);
   };
-
+  const onSumbitHanlder = async () => {
+    if (data.name || data.description) {
+    }
+  };
   return (
     <div className="pl-72">
       <motion.div
