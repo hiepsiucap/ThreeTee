@@ -20,4 +20,4 @@ import ResetPassword from "./ResetPassword";
 import VerificationEmail from "./VerificationEmail";
 import Cart from "./Cart";
 import UserProfile from "./UserProfile";
-export{ HomePage,Post,Complete,VerificationEmail,CreateProduct,ResetPassword, UpdateProduct, OrdersAdmin,CancelAdmin, PostsAdmin,Product, Register, ForgotPassword,DetailProduct,Login, ProductsAdmin, Description, PendingOrdersAdmin, DeliveryAdmin, Cart, UserProfile}
+export{ HomePage,Post,Complete,VerificationEmail,CreateProduct,ResetPassword, UpdateProduct, OrdersAdmin,CancelAdmin, PostsAdmin,Product, Register, ForgotPassword,DetailProduct,Login, ProductsAdmin, Description, PendingOrdersAdmin, DeliveryAdmin, Cart, UserProfile, CancelPage}
