@@ -11,7 +11,7 @@ export const PatchRequest = async ({
     const response = await fetch(
       `${import.meta.env.VITE_API_URL_SERVER}/${route}`,
       {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -33,17 +33,15 @@ export const PatchRequest = async ({
 export const PatchRequestWithCre = async ({
   route,
   body,
-  accesstoken,
-  refreshtoken,
+  token,
 }: {
   route: string;
   body: object;
-  accesstoken: string | null;
-  refreshtoken: string | null;
+  token: string | null;
 }) => {
   console.log("Gửi thành công");
   try {
-    if (accesstoken && refreshtoken) {
+    if (token) {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL_SERVER}/${route}`,
 
@@ -51,8 +49,7 @@ export const PatchRequestWithCre = async ({
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accesstoken}`, // Properly format Authorization header
-            "X-refresh-token": refreshtoken,
+            Authorization: `Bearer ${token}`,
           },
           credentials: "include",
           body: JSON.stringify(body),

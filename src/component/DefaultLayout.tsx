@@ -4,13 +4,14 @@ import { Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import Hamburger from "./Hambuger";
-import cart from "../assets/icon/cart.svg";
+import Cart from "../assets/icon/cart.png";
 import { useStateUserContext } from "../contexts/UserContextProvider";
 import Logo from "../assets/icon/logo";
+import { useStateCartContext } from "../contexts/CartContext";
 // import { ReactComponent as Logo } from "../assets/icon/logo.svg";
-
 export default function DefaultLayout() {
   const location = useLocation();
+  const { cart } = useStateCartContext();
   const { user } = useStateUserContext();
   return (
     <div>
@@ -81,24 +82,42 @@ export default function DefaultLayout() {
           </ul>
           <div className=" flex items-center font-lexend space-x-4">
             {!user ? (
-              <Link
-                to="/login"
-                className=" font-light text-md border-2 mb-1 border-gray-800 rounded-md py-2 px-6"
-              >
-                Trải nghiệm ngay
-              </Link>
-            ) : (
-              <section className=" flex font-roboto pb-4 space-x-4 items-center">
-                <div className=" relative px-4">
+              <>
+                <Link
+                  to="/cart"
+                  className=" relative px-4"
+                >
                   <img
-                    src={cart}
-                    className=" w-10 h-10 "
+                    src={Cart}
+                    className=" w-12 h-12 "
                     alt=""
                   />
-                  <div className=" text-xs bg-red-500 text-white absolute rounded-full font-medium py-0.5 px-1.5 top-0.5 left-1.5 bg-opacity-100">
-                    1
+                  <div className="text-xs bg-red-500 text-white absolute rounded-full font-medium py-0.5 px-1.5 -top-0.5 left-3.5 bg-opacity-100 w-5 h-5 flex items-center justify-center">
+                    {cart?.length || 0}
                   </div>
-                </div>
+                </Link>
+                <Link
+                  to="/login"
+                  className=" font-light text-md border-2 mb-1 border-gray-800 rounded-md py-2 px-6"
+                >
+                  Đăng nhập
+                </Link>
+              </>
+            ) : (
+              <section className=" flex font-roboto pb-4 space-x-4 items-center">
+                <Link
+                  to="/cart"
+                  className=" relative px-4"
+                >
+                  <img
+                    src={Cart}
+                    className=" w-8 h-8 "
+                    alt=""
+                  />
+                  <div className="text-xs bg-red-500 text-white absolute rounded-full font-medium py-0.5 px-1.5 -top-0.5 left-3.5 bg-opacity-100 w-5 h-5 flex items-center justify-center">
+                    {cart?.length || 0}
+                  </div>
+                </Link>
                 <Link
                   to="/admin"
                   className=" bg-green-500 text-sm rounded-md py-1 px-3 text-white"

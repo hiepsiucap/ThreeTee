@@ -5,6 +5,7 @@ interface Filter {
   amount: string;
   category: string;
   price: string;
+  pageCount: number;
 }
 export default function PriceFilter({
   filter,
@@ -30,11 +31,11 @@ export default function PriceFilter({
             onClick={() => {
               changefilter((prev) => ({
                 ...prev,
-                price: price,
+                price: price !== filter.price ? price : "all",
               }));
             }}
             className={
-              price === filter.amount
+              price === filter.price
                 ? " border-gray-800 border-2 font-semibold scale-105 rounded-sm py-1 px-3"
                 : "border border-gray-600  rounded-sm py-2 px-3"
             }

@@ -4,6 +4,9 @@ import minus from "../assets/icon/minus.svg";
 import price from "../assets/icon/price.svg";
 import color from "../assets/icon/color.svg";
 import Numb from "../assets/icon/numb.svg";
+import { InfinitySpin } from "react-loader-spinner";
+import { GetRequest } from "../utilz/Request/getRequest";
+
 import ProductItem from "../component/ProductItem";
 import { motion } from "framer-motion";
 import {
@@ -13,60 +16,7 @@ import {
   PriceFilter,
 } from "../component";
 import ColorFilter from "../component/colorFilter";
-import { useState } from "react";
-
-interface Product {
-  name: string;
-  category: string;
-  price: number;
-  description: string;
-  img: string;
-}
-
-const products: Product[] = [
-  {
-    name: "Ly sứ cao cấp",
-    category: "Dụng cụ",
-    price: 100000,
-    description: "Bán chạy nhất",
-    img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728524094/cup_f6btxs.avif",
-  },
-  {
-    name: "Bình giữ nhiệt",
-    category: "Dụng cụ",
-    price: 100000,
-    description: "Bán chạy nhất",
-    img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728523965/binh-giu-nhiet-wmf-impulse-350ml_kqqgjc.webp",
-  },
-  {
-    name: "Áo phông trắng",
-    category: "Áo quần",
-    price: 100000,
-    description: "Bán chạy nhất",
-    img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728526016/pngtree-white-t-shirt-mockup-realistic-t-shirt-png-image_9906363_oprp1f.png",
-  },
-  {
-    name: "Áo hoodie đen",
-    category: "Áo quần",
-    price: 100000,
-    description: "Bán chạy nhất",
-    img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728526010/pngtree-blank-black-male-hoodie-sweatshirt-long-sleeve-with-clipping-path-mens-png-image_12258589_xi3vzm.png",
-  },
-  {
-    name: "Áo tay dài đen",
-    category: "Áo quần",
-    price: 100000,
-    description: "Bán chạy nhất",
-    img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728526552/pngtree-white-tshirt-long-sleeve-mockup-realistic-style-png-image_2004252_gz1fik.jpg",
-  },
-  {
-    name: "Áo Polo tay ngắn",
-    category: "Áo quần",
-    price: 100000,
-    description: "Bán chạy nhất",
-    img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728526644/pngtree-white-polo-shirt-mockup-realistic-style-png-image_2004254_dcbehn.jpg",
-  },
-];
+import { useEffect, useState } from "react";
 
 interface OpenFilter {
   size: boolean;
@@ -75,13 +25,42 @@ interface OpenFilter {
   category: boolean;
   price: boolean;
 }
-
+interface Image {
+  id: number;
+  product_id: number;
+  image_link: string;
+  created_at: string;
+  updated_at: string;
+}
 interface Filter {
   size: string;
   color: string;
   amount: string;
   category: string;
   price: string;
+  pageCount: number;
+}
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  sold: number;
+  rate: number;
+  category: string;
+  created_at: string;
+  updated_at: string;
+  product_details: ProductDetail[];
+  images: Image[];
+}
+
+interface ProductDetail {
+  id: number;
+  product_id: number;
+  stock: number;
+  price: number;
+  size: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export default function Product() {
@@ -92,19 +71,63 @@ export default function Product() {
     category: false,
     price: false,
   });
-
+  const [filterProduct, changeFilterProduct] = useState<Product[]>([]);
   const [filter, setFilter] = useState<Filter>({
     size: "all",
     color: "all",
     amount: "all",
     category: "all",
     price: "all",
+    pageCount: 1,
   });
+  const [sort, changesort] = useState<string>("price");
+  const [total_pages, changetotal_pages] = useState<number>(1);
+  const [total_items, changetotal_items] = useState<number>(1);
+  const [loading, changeLoading] = useState<boolean>(true);
+  console.log(sort);
+  useEffect(() => {
+    const tempProduct = async () => {
+      changeLoading(true);
+      const queryParams = new URLSearchParams();
 
+      if (filter.size !== "all")
+        queryParams.append("filter[size]", filter.size);
+
+      if (filter.price !== "all" && typeof filter.price === "string") {
+        const [min, max] = filter.price
+          .split("-")
+          .map((p) => p.replace(/\./g, "")); // Remove dots and split the range
+        queryParams.append("filter[price][0]", min);
+        queryParams.append("filter[price][1]", max);
+      }
+
+      if (filter.color !== "all")
+        queryParams.append("filter[color]", filter.color);
+      if (filter.category !== "all")
+        queryParams.append("filter[category]", filter.category);
+
+      const url = `api/products?${queryParams.toString()}&sort=${sort}&page=${
+        filter.pageCount
+      }`;
+
+      try {
+        console.log(url);
+        const response = await GetRequest({ route: url });
+        if (!response.success) throw new Error("Failed to fetch products");
+        changetotal_pages(response.data.total_pages);
+        changetotal_items(response.data.total_items);
+        changeFilterProduct(response.data.data); // Assuming 'data' matches your Product[]
+      } catch (error) {
+        console.error("Error fetching filtered products:", error);
+      }
+      changeLoading(false);
+    };
+
+    tempProduct();
+  }, [filter, sort]);
   const toggleFilter = (key: keyof OpenFilter) => {
     setIsOpen((prev) => ({ ...prev, [key]: !prev[key] }));
   };
-
   return (
     <div>
       <div className="flex md:container md:mx-auto px-4 py-12">
@@ -120,6 +143,7 @@ export default function Product() {
               title: "SIZE ĐỒ",
               component: (
                 <SizeFilter
+                  changeLoading={changeLoading}
                   filter={filter}
                   changefilter={setFilter}
                 />
@@ -198,18 +222,24 @@ export default function Product() {
         >
           <div className="flex justify-between items-center">
             <h5 className="font-light text-xl">
-              Danh sách sản phẩm <span>{"(" + products.length + ")"}</span>
+              Danh sách sản phẩm <span>{"(" + total_items + ")"}</span>
             </h5>
             <div>
               <select
                 className="border border-gray-700 rounded-md py-1 px-2 text-sm md:text-base md:py-3 md:px-6 font-light"
                 defaultValue="Sort theo giá"
+                value={sort}
+                onChange={(e) => {
+                  changesort(e.target.value);
+                }}
               >
-                <option>Sort theo giá</option>
+                <option value="price">giá thấp đến cao</option>
+                <option value="-price">giá cao xuống thấp</option>
+                <option value="-rate">Đánh giá cao nhất</option>
+                <option value="-sold">Bán chạy nhất</option>
               </select>
             </div>
           </div>
-
           {/* Filters for Small Screens */}
           <div className="md:hidden py-4 flex space-x-2">
             {[
@@ -230,14 +260,55 @@ export default function Product() {
               </button>
             ))}
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:p-8">
-            {products.map((product, index) => (
-              <ProductItem
-                key={index}
-                product={product}
-              />
-            ))}
+          <div className=" flex flex-col items-center">
+            {loading === true ? (
+              <div className=" pt-12">
+                <InfinitySpin
+                  width="200"
+                  color="#000000"
+                />
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:p-8">
+                  {filterProduct.map((product, index) => (
+                    <ProductItem
+                      key={index}
+                      product={product}
+                    />
+                  ))}
+                </div>
+                <div className=" flex space-x-3">
+                  {filterProduct.length > 1 ? (
+                    Array(total_pages)
+                      .fill("")
+                      .map((page, index) => {
+                        return (
+                          <button
+                            onClick={() =>
+                              setFilter((prev) => {
+                                return { ...prev, pageCount: index + 1 };
+                              })
+                            }
+                            key={index}
+                            className={
+                              filter.pageCount === index + 1
+                                ? "scale-110 border-2 font-thin border-black px-3.5 py-1"
+                                : "px-3.5 py-1 border font-thin border-black"
+                            }
+                          >
+                            {index + 1}
+                          </button>
+                        );
+                      })
+                  ) : (
+                    <p className=" text-2xl font-light">
+                      Không tìm thấy sản phẩm nào
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </motion.div>
       </div>

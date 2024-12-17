@@ -1,62 +1,57 @@
 /** @format */
-
+interface Image {
+  id: number;
+  product_id: number;
+  image_link: string;
+  created_at: string;
+  updated_at: string;
+}
 interface Product {
+  id: number;
   name: string;
-  category: string;
-  price: number;
   description: string;
-  img: string;
+  sold: number;
+  rate: number;
+  category: string;
+  created_at: string;
+  updated_at: string;
+  product_details: ProductDetail[];
+  images: Image[];
+}
+
+interface ProductDetail {
+  id: number;
+  product_id: number;
+  stock: number;
+  price: number;
+  size: string;
+  created_at: string;
+  updated_at: string;
 }
 import { motion } from "framer-motion";
 import ProductItem from "./ProductItem";
-import { useState } from "react";
+import { InfinitySpin } from "react-loader-spinner";
+import { useEffect, useState } from "react";
+import { GetRequest } from "../utilz/Request/getRequest";
 export default function Product() {
-  const Product = [
-    {
-      name: "Áo hoddie đen",
-      category: "Áo quần",
-      price: 100000,
-      description: "Bán chạy nhất",
-      img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728526010/pngtree-blank-black-male-hoodie-sweatshirt-long-sleeve-with-clipping-path-mens-png-image_12258589_xi3vzm.png",
-    },
-    {
-      name: "Ly sứ cao cấp",
-      category: "Dụng cụ",
-      price: 100000,
-      description: "Bán chạy nhất",
-      img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728524094/cup_f6btxs.avif",
-    },
-    {
-      name: "Bình giữ nhiệt",
-      category: "Dụng cụ",
-      price: 100000,
-      description: "Bán chạy nhất",
-      img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728523965/binh-giu-nhiet-wmf-impulse-350ml_kqqgjc.webp",
-    },
-    {
-      name: "Áo phông trăng",
-      category: "Áo quần",
-      price: 100000,
-      description: "Bán chạy nhất",
-      img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728526016/pngtree-white-t-shirt-mockup-realistic-t-shirt-png-image_9906363_oprp1f.png",
-    },
+  const [listProduct, changeListProduct] = useState<Product[]>([]);
+  const [loading, changeLoading] = useState<boolean>(true);
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await GetRequest({ route: "api/products?sort=-sold" });
+        if (response.success) {
+          changeListProduct(response.data?.data);
+          changeLoading(false);
+        }
+      } catch (e) {
+        console.log(e);
+        changeLoading(true);
+      }
+    };
+    getData();
+  }, []);
 
-    {
-      name: "Áo tay dài đen",
-      category: "Áo quần",
-      price: 100000,
-      description: "Bán chạy nhất",
-      img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728526552/pngtree-white-tshirt-long-sleeve-mockup-realistic-style-png-image_2004252_gz1fik.jpg",
-    },
-    {
-      name: "Áo Polo tay ngắn",
-      category: "Áo quần",
-      price: 100000,
-      description: "Bán chạy nhất",
-      img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728526644/pngtree-white-polo-shirt-mockup-realistic-style-png-image_2004254_dcbehn.jpg",
-    },
-  ];
-  const [number, changenumber] = useState(0);
   return (
     <motion.div
       initial={{ opacity: 0, x: 50 }}
@@ -65,15 +60,29 @@ export default function Product() {
       className=" md:container flex flex-col items-center md:mx-auto text-center "
     >
       <h3 className="font-roboto font-light text-3xl pb-12">
-        Sản phẩm nổi bật
+        Sản phẩm bán chạy nhất
       </h3>
-
-      <div className=" md:grid-cols-3 md:grid hidden gap-10 ">
-        {Product.map((product) => {
-          return <ProductItem product={product}></ProductItem>;
-        })}
-      </div>
-      <div className=" px-6 flex md:hidden flex-col items-center relative">
+      {loading === true ? (
+        <div className=" pt-12">
+          <InfinitySpin
+            width="200"
+            color="#000000"
+          />
+        </div>
+      ) : (
+        <div className=" md:grid-cols-3 md:grid hidden gap-10 ">
+          {listProduct.map((product, index) => {
+            if (index > 5) return;
+            return (
+              <ProductItem
+                key={index}
+                product={product}
+              ></ProductItem>
+            );
+          })}
+        </div>
+      )}
+      {/* <div className=" px-6 flex md:hidden flex-col items-center relative">
         <ProductItem product={Product[number]}></ProductItem>
         <button
           onClick={() => {
@@ -121,7 +130,7 @@ export default function Product() {
             />
           </svg>
         </button>
-      </div>
+      </div> */}
     </motion.div>
   );
 }

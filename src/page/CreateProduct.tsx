@@ -2,7 +2,13 @@
 import { motion } from "framer-motion";
 import { useState, ChangeEvent } from "react";
 import add from "../assets/icon/add.png";
-
+import Loading from "../component/Loading";
+import { useStateUserContext } from "../contexts/UserContextProvider";
+import {
+  GetPostRequestWithCre,
+  GetPostRequestFormDataWithCre,
+} from "../utilz/Request/postRequest";
+import Swal from "sweetalert2";
 interface Size {
   size: string;
   quantity: string;
@@ -12,17 +18,21 @@ interface Size {
 interface ProductData {
   name: string;
   description: string;
+  category: string;
   sizes: Size[];
   images: File[];
 }
-
+const initialData = {
+  name: "",
+  description: "",
+  category: "",
+  sizes: [{ size: "", quantity: "", price: "" }],
+  images: [],
+};
 export default function CreateProduct() {
-  const [data, setData] = useState<ProductData>({
-    name: "",
-    description: "",
-    sizes: [{ size: "", quantity: "", price: "" }],
-    images: [],
-  });
+  const { token } = useStateUserContext();
+  const [loading, changeloading] = useState(false);
+  const [data, setData] = useState<ProductData>(initialData);
 
   // Handler to add a new size entry
   const addSizeRow = () => {
@@ -63,12 +73,94 @@ export default function CreateProduct() {
   const closeModal = () => {
     setSelectedImage(null);
   };
-  const onSumbitHanlder = async () => {
-    if (data.name || data.description) {
+  const onSumbitHanlder = async (e: { preventDefault: () => void }) => {
+    changeloading(true);
+    e.preventDefault();
+    console.log(data);
+    if (
+      !data.name ||
+      !data.description ||
+      !data.category ||
+      data.sizes.length < 1 ||
+      !data.images
+    ) {
+      changeloading(false);
+      return Swal.fire({
+        title: "Error!",
+        text: "Vui lòng điền đầy đủ thông tin",
+        icon: "error",
+        confirmButtonText: "Trở lại",
+      });
+    }
+    try {
+      const reponse = await GetPostRequestWithCre({
+        route: "api/products",
+        body: {
+          name: data.name,
+          description: data.description,
+          category: data.category,
+          rate: 0,
+          sold: 0,
+        },
+        token: token,
+      });
+      if (!reponse.success) {
+        throw new Error(reponse.msg);
+      }
+      const promises = data.sizes.map((detail) =>
+        GetPostRequestWithCre({
+          route: "api/product-details",
+          body: {
+            product_id: reponse.data.data.id,
+            stock: detail.quantity,
+            price: detail.price,
+            size: detail.size,
+          },
+          token,
+        }).then((tempResponse) => {
+          if (!tempResponse.success) {
+            throw new Error("Tạo size không thành công");
+          }
+        })
+      );
+      await Promise.all(promises);
+      const formdata = new FormData();
+      formdata.set("product_id", reponse.data.data.id);
+      data.images.forEach((file: File) => {
+        formdata.append("images[]", file);
+      });
+      console.log(formdata);
+      const temp = await GetPostRequestFormDataWithCre({
+        route: "api/images",
+        formdata,
+        token,
+      });
+      if (!temp.success) throw new Error("Failed to create File");
+      changeloading(false);
+      setData(initialData);
+      return Swal.fire({
+        title: "Thành công",
+        text: "Tạo sản phẩm thành công",
+        icon: "success",
+        confirmButtonText: "Trở lại",
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e: unknown) {
+      setData(initialData);
+      if (e instanceof Error) {
+        changeloading(false);
+        return Swal.fire({
+          title: "Error!",
+          text: e.message,
+          icon: "error",
+          confirmButtonText: "Trở lại",
+        });
+      }
     }
   };
   return (
     <div className="pl-72">
+      <Loading modalIsOpen={loading}></Loading>
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
@@ -83,7 +175,10 @@ export default function CreateProduct() {
         transition={{ delay: 0.2, duration: 0.5 }}
         className="text-2xl py-2"
       >
-        <form>
+        <form
+          className=" text-base"
+          onSubmit={onSumbitHanlder}
+        >
           <div className=" flex justify-start space-x-12">
             <div className="flex flex-col space-y-4 w-1/2 ">
               <p className="text-lg">Thông tin sản phẩm</p>
@@ -106,6 +201,21 @@ export default function CreateProduct() {
                     setData({ ...data, description: e.target.value })
                   }
                 />
+              </div>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm">Danh mục sản phẩm:</p>
+                <select
+                  className="border border-gray-400 rounded-md py-2 px-4"
+                  value={data.category}
+                  onChange={(e) =>
+                    setData({ ...data, category: e.target.value })
+                  }
+                >
+                  <option value="">Chọn danh mục </option>
+                  <option value="nam">Nam</option>
+                  <option value="nu">Nữ</option>
+                  <option value="phu_kien">Phụ kiện</option>
+                </select>
               </div>
               <p className="text-lg">Size và giá sản phẩm</p>
               {data.sizes.map((sizeRow, index) => (
