@@ -59,6 +59,7 @@ export const GetPostRequestWithCre = async ({
       if (response.ok) {
         return { success: true, data: await response.json() };
       } else {
+        console.log(response);
         const data = await response.json();
         throw new Error((await data?.msg) || " Lấy dữ liệu ko thành công");
       }

@@ -3,6 +3,7 @@ interface Filter {
   size: string;
   color: string;
   amount: string;
+  pageCount: number;
   category: string;
   price: string;
 }
@@ -10,8 +11,10 @@ interface Filter {
 export default function SizeFilter({
   filter,
   changefilter,
+  changeLoading,
 }: {
   filter: Filter;
+  changeLoading: (loading: boolean) => void;
   changefilter: (updateFn: (prev: Filter) => Filter) => void;
 }) {
   const listSize = ["XL", "L", "M", "XS", "S", "XXL"];
@@ -23,9 +26,10 @@ export default function SizeFilter({
           <button
             key={index}
             onClick={() => {
+              changeLoading(true);
               changefilter((prev) => ({
                 ...prev,
-                size: size,
+                size: size !== filter.size ? size : "all",
               }));
             }}
             className={

@@ -22,7 +22,7 @@ export default function AdminLayout() {
 
   return (
     <div className=" font-inter   bg-white  text-blackadmin flex text-admin w-full ">
-      <div className=" fixed overflow-y-scroll z-10  bg-white px-7 pr-7 shadow-md flex flex-col space-y-5 h-screen py-4">
+      <div className=" fixed overflow-y-scroll z-2  bg-white px-7 pr-7 shadow-md flex flex-col space-y-5 h-screen py-4">
         <div className=" flex flex-col">
           <Link
             to="/admin/profile"

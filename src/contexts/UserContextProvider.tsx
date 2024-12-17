@@ -77,7 +77,7 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
     };
 
     validate();
-  }, []);
+  }, [token]);
 
   const handleSetToken = (newToken: string | null) => {
     if (newToken) {

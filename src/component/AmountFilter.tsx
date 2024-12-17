@@ -5,6 +5,7 @@ interface Filter {
   amount: string;
   category: string;
   price: string;
+  pageCount: number;
 }
 export default function AmountFilter({
   filter,

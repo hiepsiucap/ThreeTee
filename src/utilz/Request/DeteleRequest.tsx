@@ -2,22 +2,19 @@
 
 export const DeleteRequestWithCre = async ({
   route,
-  accesstoken,
-  refreshtoken,
+  token,
 }: {
   route: string;
-  accesstoken: string | null;
-  refreshtoken: string | null;
+  token: string | null;
 }) => {
   try {
-    if (accesstoken && refreshtoken) {
+    if (token) {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL_SERVER}/${route}`,
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${accesstoken}`,
-            "X-refresh-token": refreshtoken,
+            Authorization: `Bearer ${token}`,
           },
           credentials: "include",
         }

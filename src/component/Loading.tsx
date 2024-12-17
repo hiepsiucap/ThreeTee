@@ -12,11 +12,11 @@ const customStyles = {
     backgroundColor: "rgba(0, 0, 0, 0)",
     border: "0",
     padding: "0",
-    zIndex: "20",
+    zIndex: "100",
     width: "100%",
   },
   overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0)", // Adjust the color and opacity here
+    backgroundColor: "rgba(60, 60, 60, 0.6)", // Adjust the color and opacity here
   },
 };
 Modal.setAppElement("#root");
