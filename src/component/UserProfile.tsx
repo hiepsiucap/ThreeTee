@@ -9,7 +9,7 @@ interface Profile {
   avatar: string;
   email: string;
 }
-export default function AdminProfile() {
+export default function UserLayout() {
   const [profile, setprofile] = useState("info");
 
   const [loading, changeLoading] = useState(true);
@@ -45,7 +45,7 @@ export default function AdminProfile() {
             />
           </div>
           <div className=" relative flex items-center h-full w-full">
-            <div className="w-1/3 border-r-2 border-green-400 py-6 flex font-light items-start flex-col pl-72 space-y-4 font-inter">
+            <div className=" border-r-2 border-green-400 py-6 flex font-light items-start flex-col pl-72 space-y-4 font-inter">
               <button
                 onClick={() => {
                   setprofile("info");
@@ -57,6 +57,18 @@ export default function AdminProfile() {
                 }
               >
                 Thông tin cá nhân
+              </button>
+              <button
+                onClick={() => {
+                  setprofile("order");
+                }}
+                className={
+                  profile === "order"
+                    ? "px-4 py-2 bg-green-400 bg-opacity-25 rounded-lg"
+                    : "px-4 py-2 0 bg-opacity-25 rounded-lg"
+                }
+              >
+                Đơn hàng
               </button>
               <button
                 onClick={() => {

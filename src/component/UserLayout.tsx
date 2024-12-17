@@ -1,102 +1,109 @@
-/** @format */
-
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { GetRequestWithCre } from "../utilz/Request/getRequest";
 import { useStateUserContext } from "../contexts/UserContextProvider";
+import Loading from "./Loading";
+import UserInfo from "./UserInfo";
+import UserOrder from "./UserOrder";
+import UserNotification from "./UserNotification";
+import UserSecurity from "./UserSecurity";
 
 export default function UserLayout() {
-  const location = useLocation();
-  const { user } = useStateUserContext();
+  const [profile, setProfile] = useState("info");
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({
+    name: "",
+    avatar: "",
+    email: "",
+  });
+  const { token } = useStateUserContext();
 
-  // Define reusable classes for active menu items
-  const activeClass = "bg-indigo-200 font-bold text-indigo-700";
-  const menuClass = "px-4 py-2 rounded-lg hover:bg-indigo-100 transition duration-150";
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const response = await GetRequestWithCre({ route: "api/user", token });
+      if (response.success) {
+        setData(response.data);
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, [token]);
+
+  if (loading) {
+    return <Loading modalIsOpen={loading} />;
+  }
 
   return (
-    <div className="flex h-full min-h-screen w-full bg-gray-50">
-      {/* Settings Menu */}
-      <aside className="w-1/4 min-w-[250px] bg-white p-6 border-r shadow-sm">
-        <h2 className="text-xl font-bold mb-6 text-gray-800">Settings</h2>
-
-        {/* Personal Section */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold mb-3 text-gray-700">Personal</h3>
-          <nav className="flex flex-col gap-2">
-            <Link
-              to="/user/profile"
-              className={`${menuClass} ${
-                location.pathname === "/user/profile" ? activeClass : ""
-              }`}
-            >
-              Tài khoản
-            </Link>
-            <Link
-              to="/user/api-keys"
-              className={`${menuClass} ${
-                location.pathname === "/user/order" ? activeClass : ""
-              }`}
-            >
-              Đơn hàng 
-            </Link>
-            <Link
-              to="/user/notifications"
-              className={`${menuClass} ${
-                location.pathname === "/user/notifications" ? activeClass : ""
-              }`}
-            >
-              Notifications
-            </Link>
-          </nav>
+    <motion.div
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.2, duration: 0.5 }}
+    >
+      <div className="w-full h-full">
+        {/* Header */}
+        <div className="pl-6 py-4">
+          <img
+            src="https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728564771/header_setting_ddmmoz.png"
+            alt="Header"
+            className="w-full"
+          />
         </div>
 
-        {/* Workspace Section */}
-        <div>
-          <h3 className="text-lg font-semibold mb-3 text-gray-700">Workspace</h3>
-          <nav className="flex flex-col gap-2">
-            <Link
-              to="/user/billing"
-              className={`${menuClass} ${
-                location.pathname === "/user/billing" ? activeClass : ""
+        {/* Content */}
+        <div className="flex flex-col lg:flex-row h-full w-full">
+          {/* Sidebar */}
+          <div className="w-full lg:w-1/4 border-r border-gray-300 py-6 flex flex-col items-center space-y-4 font-light font-inter">
+            <button
+              onClick={() => setProfile("info")}
+              className={`w-4/5 px-4 py-2 rounded-lg text-center ${
+                profile === "info"
+                  ? "bg-green-400 bg-opacity-25 text-green-600 font-medium"
+                  : "hover:bg-gray-100"
               }`}
             >
-              Billing
-            </Link>
-            <Link
-              to="/user/integrations"
-              className={`${menuClass} ${
-                location.pathname === "/user/integrations" ? activeClass : ""
+              Thông tin cá nhân
+            </button>
+            <button
+              onClick={() => setProfile("order")}
+              className={`w-4/5 px-4 py-2 rounded-lg text-center ${
+                profile === "order"
+                  ? "bg-green-400 bg-opacity-25 text-green-600 font-medium"
+                  : "hover:bg-gray-100"
               }`}
             >
-              Integrations
-            </Link>
-            <Link
-              to="/user/team"
-              className={`${menuClass} ${
-                location.pathname === "/user/team" ? activeClass : ""
+              Đơn hàng
+            </button>
+            <button
+              onClick={() => setProfile("nofi")}
+              className={`w-4/5 px-4 py-2 rounded-lg text-center ${
+                profile === "nofi"
+                  ? "bg-green-400 bg-opacity-25 text-green-600 font-medium"
+                  : "hover:bg-gray-100"
               }`}
             >
-              Team Members
-            </Link>
-          </nav>
-        </div>
-      </aside>
+              Thông báo
+            </button>
+            <button
+              onClick={() => setProfile("pass")}
+              className={`w-4/5 px-4 py-2 rounded-lg text-center ${
+                profile === "pass"
+                  ? "bg-green-400 bg-opacity-25 text-green-600 font-medium"
+                  : "hover:bg-gray-100"
+              }`}
+            >
+              Bảo mật & mật khẩu
+            </button>
+          </div>
 
-      {/* Main Content */}
-      <main className="flex-1 bg-white p-10">
-        <div className="max-w-4xl mx-auto">
-          {/* Header Section */}
-          <header className="mb-10">
-            <h1 className="text-3xl font-bold text-gray-800">Account Settings</h1>
-            <p className="text-gray-500 mt-2">
-              Update your profile and personal details here.
-            </p>
-          </header>
-
-          {/* Content Section */}
-          <div className="bg-gray-100 rounded-lg p-6 shadow-sm">
-            <Outlet />
+          {/* Main Content */}
+          <div className="w-full lg:w-3/4 px-6 py-4">
+            {profile === "info" && <UserInfo />}
+            {profile === "order" && <UserOrder />}
+            {profile === "nofi" && <UserNotification />}
+            {profile === "pass" && <UserSecurity />}
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </motion.div>
   );
 }
