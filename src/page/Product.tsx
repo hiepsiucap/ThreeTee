@@ -282,7 +282,7 @@ export default function Product() {
                   {filterProduct.length > 1 ? (
                     Array(total_pages)
                       .fill("")
-                      .map((page, index) => {
+                      .map((_page, index) => {
                         return (
                           <button
                             onClick={() =>

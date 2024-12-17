@@ -65,7 +65,7 @@ export default function SuccessPage() {
       };
       getData();
     }
-  }, [searchParams]);
+  }, [navigate, searchParams]);
   console.log(data);
   const notify = () => toast("Copy thành công");
 

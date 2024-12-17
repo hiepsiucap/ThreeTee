@@ -144,7 +144,7 @@ export default function CreateProduct() {
         icon: "success",
         confirmButtonText: "Trở lại",
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
     } catch (e: unknown) {
       setData(initialData);
       if (e instanceof Error) {
