@@ -9,6 +9,10 @@ import {
   UserLayout,
   VistitorLayout,
   AdminProfile,
+  UserInfo,
+  UserSecurity,
+  UserNotification,
+  UserOrder,
 } from "./component";
 import {
   HomePage,
@@ -32,6 +36,7 @@ import {
   PendingOrdersAdmin,
   ResetPassword,
   Cart,
+
 } from "./page";
 import { Navigate } from "react-router-dom";
 
@@ -135,11 +140,23 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/user/",
-        element: <Navigate to="/admin/profile"></Navigate>,
+        element: <Navigate to="/user/profile"></Navigate>,
       },
       {
         path: "/user/profile",
-        element: <AdminOverview></AdminOverview>,
+        element: <UserInfo></UserInfo>,
+      },
+      {
+        path: "/user/order",
+        element: <UserOrder></UserOrder>,
+      },
+      {
+        path: "/user/notification",
+        element: <UserNotification></UserNotification>,
+      },
+      {
+        path: "/user/security",
+        element: <UserSecurity></UserSecurity>,
       },
     ],
   },

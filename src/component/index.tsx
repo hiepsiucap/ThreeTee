@@ -13,6 +13,10 @@ import SizeFilter from "./SizeFilter";
 import CategoryFilter from "./CategoryFilter";
 import VistitorLayout from "./VistitorLayout";
 import PriceFilter from "./PriceFilter";
+import UserInfo from "../component/UserInfo";
+import UserOrder from "../component/UserOrder";
+import UserSecurity from "../component/UserSecurity";
+import UserNotification from "../component/UserNotification";
 export {
   Hero,
   CategoryFilter,
@@ -28,4 +32,8 @@ export {
   UserLayout,
   VistitorLayout,
   PriceFilter,
+  UserInfo, 
+  UserNotification, 
+  UserOrder, 
+  UserSecurity,
 };
