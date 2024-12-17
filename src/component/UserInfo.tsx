@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useStateUserContext } from "../contexts/UserContextProvider";
 import { GetRequestWithCre } from "../utilz/Request/getRequest";
-
+import { updatePassword, updateUser } from "./UserSettings";
 interface Profile {
   name: string;
   avatar: string;
@@ -13,14 +13,12 @@ interface Profile {
 export default function UserInfo() {
   const { token } = useStateUserContext();
 
-  // State quản lý dữ liệu và trạng thái
   const [data, setData] = useState<Profile>({ name: "", avatar: "", email: "" });
   const [loading, setLoading] = useState(true);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Fetch dữ liệu người dùng
   useEffect(() => {
     const getProfile = async () => {
       const response = await GetRequestWithCre({ route: "api/user", token });
@@ -49,18 +47,52 @@ export default function UserInfo() {
     }
   };
 
-  // Gửi dữ liệu cập nhật thông tin
-  const handleUpdateProfile = () => {
-    console.log("Cập nhật thông tin:", data);
+  const handleUpdateProfile = async () => {
+    try {
+      console.log("Token hiện tại:", token);
+      const response = await updateUser({
+        name: data.name,
+        email: data.email,
+        avatar: data.avatar ? new File([data.avatar], "avatar.jpg") : undefined,
+        accesstoken: token, // Sử dụng token thay cho accesstoken
+        refreshtoken: null, // Không có refreshtoken nên truyền null
+      });
+  
+      if (response.success) {
+        alert("Cập nhật thông tin thành công!");
+      } else {
+        alert(response.msg || "Cập nhật thông tin thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi cập nhật thông tin:", error);
+      alert("Có lỗi xảy ra khi cập nhật thông tin!");
+    }
   };
 
-  // Đổi mật khẩu
-  const handleChangePassword = () => {
-    if (newPassword !== confirmPassword) {
-      alert("Mật khẩu mới không khớp!");
-      return;
+  const handleChangePassword = async () => {
+    try {
+      if (newPassword !== confirmPassword) {
+        alert("Mật khẩu mới không khớp!");
+        return;
+      }
+  
+      const response = await updatePassword({
+        email: data.email,
+        password: newPassword,
+        password_confirmation: confirmPassword,
+        accesstoken: token, // Sử dụng token thay cho accesstoken
+        refreshtoken: null, // Không có refreshtoken nên truyền null
+      });
+  
+      if (response.success) {
+        alert("Đổi mật khẩu thành công!");
+      } else {
+        alert(response.msg || "Đổi mật khẩu thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi đổi mật khẩu:", error);
+      alert("Có lỗi xảy ra khi đổi mật khẩu!");
     }
-    console.log("Cập nhật mật khẩu:", { currentPassword, newPassword });
   };
 
   if (loading) return <p>Đang tải dữ liệu...</p>;

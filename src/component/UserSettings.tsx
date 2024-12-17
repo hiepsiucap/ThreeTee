@@ -4,22 +4,22 @@ import { PatchRequestWithCre } from "../utilz/Request/PatchRequest";
 import { GetPostRequestFormDataWithCre } from "../utilz/Request/PatchRequest";
 
 export const updatePassword = async ({
-    current_password,
-    new_password,
-    new_password_confirmation,
+    email,
+    password,
+    password_confirmation,
     accesstoken,
     refreshtoken,
   }: {
-    current_password: string;
-    new_password: string;
-    new_password_confirmation: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
     accesstoken: string | null;
     refreshtoken: string | null;
   }) => {
     const body = {
-      current_password,
-      new_password,
-      new_password_confirmation,
+        email,
+        password,
+        password_confirmation,
     };
     return await PatchRequestWithCre({
       route: "update-password", 
@@ -31,17 +31,20 @@ export const updatePassword = async ({
   
   export const updateUser = async ({
     name,
+    email,
     avatar,
     accesstoken,
     refreshtoken,
   }: {
     name?: string;
+    email?: string;
     avatar?: File;
     accesstoken: string | null;
     refreshtoken: string | null;
   }) => {
     const formdata = new FormData();
     if (name) formdata.append("name", name);
+    if (email) formdata.append("email", email);
     if (avatar) formdata.append("avatar", avatar);
   
     return await GetPostRequestFormDataWithCre({
