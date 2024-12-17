@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 import { useStateUserContext } from "../contexts/UserContextProvider";
 import { GetRequestWithCre } from "../utilz/Request/getRequest";
-import { updatePassword, updateUser } from "./UserSettings";
+import { PatchRequestWithCre } from "../utilz/Request/PatchRequest";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 interface Profile {
   name: string;
-  avatar: string;
+  avatar: File | null;
   email: string;
-  phone?: string;
-  address?: string;
+  // phone?: string;
+  // address?: string;
 }
 
 export default function UserInfo() {
   const { token } = useStateUserContext();
 
-  const [data, setData] = useState<Profile>({ name: "", avatar: "", email: "" });
+  const [data, setData] = useState<Profile>({ name: "", avatar: null, email: "" });
   const [loading, setLoading] = useState(true);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -23,78 +25,98 @@ export default function UserInfo() {
     const getProfile = async () => {
       const response = await GetRequestWithCre({ route: "api/user", token });
       if (response.success) {
-        setData(response.data);
+        setData({
+          name: response.data.name,
+          email: response.data.email,
+          avatar: response.data.avatar || null, 
+        });
       }
       setLoading(false);
     };
     getProfile();
   }, [token]);
+  
 
   // Cập nhật state data chung
-  const handleInputChange = (field: keyof Profile, value: string) => {
+  const handleInputChange = (field: keyof Profile, value: string | File) => {
     setData((prev) => ({ ...prev, [field]: value }));
   };
+  
 
   // Xử lý thay đổi ảnh đại diện
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        handleInputChange("avatar", reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      handleInputChange("avatar", file); // Lưu file trực tiếp vào state
     }
   };
-
+  
   const handleUpdateProfile = async () => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("_method", "PATCH");
+  
+    if (data.avatar instanceof File) {
+      formData.append("avatar", data.avatar); // Chỉ thêm avatar nếu người dùng upload file
+    }
+  
     try {
-      console.log("Token hiện tại:", token);
-      const response = await updateUser({
-        name: data.name,
-        email: data.email,
-        avatar: data.avatar ? new File([data.avatar], "avatar.jpg") : undefined,
-        accesstoken: token, // Sử dụng token thay cho accesstoken
-        refreshtoken: null, // Không có refreshtoken nên truyền null
+      const response = await fetch(`${import.meta.env.VITE_API_URL_SERVER}/api/update-user`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData, // Gửi FormData
       });
   
-      if (response.success) {
-        alert("Cập nhật thông tin thành công!");
+      if (response.ok) {
+        const result = await response.json();
+        toast.success("Cập nhật thông tin thành công!");
+        console.log("Kết quả:", result);
       } else {
-        alert(response.msg || "Cập nhật thông tin thất bại!");
+        const error = await response.text();
+        console.error("Lỗi cập nhật:", error);
+        toast.error("Cập nhật thất bại!");
       }
     } catch (error) {
-      console.error("Lỗi cập nhật thông tin:", error);
-      alert("Có lỗi xảy ra khi cập nhật thông tin!");
+      console.error("Lỗi:", error);
+      toast.error("Đã xảy ra lỗi khi cập nhật thông tin.");
     }
   };
+  
 
   const handleChangePassword = async () => {
-    try {
-      if (newPassword !== confirmPassword) {
-        alert("Mật khẩu mới không khớp!");
-        return;
-      }
+    if (newPassword !== confirmPassword) {
+      toast.error("Mật khẩu xác nhận không khớp!");
+      return;
+    }
   
-      const response = await updatePassword({
-        email: data.email,
-        password: newPassword,
-        password_confirmation: confirmPassword,
-        accesstoken: token, // Sử dụng token thay cho accesstoken
-        refreshtoken: null, // Không có refreshtoken nên truyền null
+    try {
+      const response = await PatchRequestWithCre({
+        route: "api/user/change-password",
+        body: {
+          email: data.email,
+          password: currentPassword,
+          password_confirmation: newPassword,
+          token: token,
+        },
+        token: token,
       });
   
       if (response.success) {
-        alert("Đổi mật khẩu thành công!");
+        toast.success("Đổi mật khẩu thành công!");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
       } else {
-        alert(response.msg || "Đổi mật khẩu thất bại!");
+        toast.error(`Đổi mật khẩu thất bại: ${response.msg}`);
       }
     } catch (error) {
       console.error("Lỗi đổi mật khẩu:", error);
-      alert("Có lỗi xảy ra khi đổi mật khẩu!");
+      toast.error("Đã xảy ra lỗi khi đổi mật khẩu.");
     }
   };
-
+  
   if (loading) return <p>Đang tải dữ liệu...</p>;
 
   return (
@@ -104,11 +126,18 @@ export default function UserInfo() {
         {/* Avatar */}
         <div className="flex flex-col items-center">
           <label htmlFor="avatarInput" className="relative cursor-pointer">
-            <img
-              src={data.avatar || "https://via.placeholder.com/150"}
+          <img
+              src={
+                data.avatar
+                  ? data.avatar instanceof File
+                    ? URL.createObjectURL(data.avatar) 
+                    : data.avatar 
+                  : "https://via.placeholder.com/150"
+              }
               alt="Avatar"
               className="w-32 h-32 rounded-full border-2 border-gray-300 object-cover"
             />
+
             <span className="absolute bottom-0 right-0 bg-gray-800 text-white text-xs px-2 py-1 rounded">
               Chọn ảnh
             </span>
@@ -127,8 +156,8 @@ export default function UserInfo() {
           {[
             { label: "Họ và tên", value: data.name, field: "name" },
             { label: "Email", value: data.email, field: "email" },
-            { label: "Số điện thoại", value: data.phone || "", field: "phone" },
-            { label: "Địa chỉ", value: data.address || "", field: "address" },
+            { label: "Số điện thoại", value: "0918888465", field: "phone" },
+            { label: "Địa chỉ", value: "Nhà số 2 kiệt 159 Hàn Mặc Tử", field: "address" },
           ].map((input) => (
             <label key={input.field} className="block">
               <span className="text-gray-600">{input.label}</span>
