@@ -13,6 +13,7 @@ import DetailProduct from "./DetailProduct";
 import DeliveryAdmin from "./DeliveryAdmin";
 import PendingOrdersAdmin from "../component/PendingOrders";
 import SuccessPage from "./SuccessPage";
+import CheckOut from "./CheckOut";
 import CancelAdmin from "./CancelAdmin";
 import Complete from "./Complete";
 import UpdateProduct from "./UpdateProduct";
@@ -39,6 +40,7 @@ export {
   ForgotPassword,
   DetailProduct,
   Login,
+  CheckOut,
   ProductsAdmin,
   Description,
   PendingOrdersAdmin,

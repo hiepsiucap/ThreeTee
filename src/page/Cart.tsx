@@ -4,6 +4,7 @@ import minus from "../assets/icon/minus.svg";
 import { useStateCartContext } from "../contexts/CartContext";
 import { formatPrice } from "../utilz/Price";
 import refund from "../assets/icon/refund.png";
+import { Link } from "react-router-dom";
 import delivery from "../assets/icon/delivery.png";
 export default function Cart() {
   const { cart, DeleteCart, AddCart, MinusCart, getTotal } =
@@ -30,9 +31,13 @@ export default function Cart() {
                     </div>
                     <div className=" flex flex-col space-y-1 items-start">
                       <p className=" text-2xl  font-light">{c.name}</p>
-                      <p className="   border-gray-700 pb-4">{c.category}</p>
+                      <p className="   border-gray-700 pb-2">{c.category}</p>
                       <p className="text-xl py-1">
                         {formatPrice(Number(c.price))}
+                      </p>
+                      <p className="font-light">
+                        size:{" "}
+                        <span className=" font-semibold text-lg">{c.size}</span>
                       </p>
                       <p className=" text-gray-600 text-sm py-1">
                         Số lượng: {c.amount}
@@ -145,9 +150,12 @@ export default function Cart() {
             </div>
           </div>
           <div className=" flex flex-col space-x-1 items-center justify-center py-8">
-            <button className=" font-light text-lg border-2 mb-1  border-gray-800 rounded-md py-3 px-16">
+            <Link
+              to="/checkout"
+              className=" font-light text-lg border-2 mb-1  border-gray-800 rounded-md py-3 px-16"
+            >
               Mua ngay
-            </button>
+            </Link>
             <div
               className=" bg-slate-100 p-1   rounded-lg flex space-x-2 pt-8
                     "

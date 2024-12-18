@@ -94,7 +94,7 @@ export default function CreateProduct() {
     }
     try {
       const reponse = await GetPostRequestWithCre({
-        route: "api/products",
+        route: "api/staff/products",
         body: {
           name: data.name,
           description: data.description,
@@ -109,7 +109,7 @@ export default function CreateProduct() {
       }
       const promises = data.sizes.map((detail) =>
         GetPostRequestWithCre({
-          route: "api/product-details",
+          route: "api/staff/product-details",
           body: {
             product_id: reponse.data.data.id,
             stock: detail.quantity,
@@ -144,7 +144,6 @@ export default function CreateProduct() {
         icon: "success",
         confirmButtonText: "Trở lại",
       });
-       
     } catch (e: unknown) {
       setData(initialData);
       if (e instanceof Error) {

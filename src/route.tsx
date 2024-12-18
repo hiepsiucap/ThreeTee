@@ -30,13 +30,13 @@ import {
   DetailProduct,
   Login,
   CreateProduct,
+  CheckOut,
   CancelPage,
   UpdateProduct,
   DeliveryAdmin,
   PendingOrdersAdmin,
   ResetPassword,
   Cart,
-
 } from "./page";
 import { Navigate } from "react-router-dom";
 
@@ -61,6 +61,10 @@ const router = createBrowserRouter([
       {
         path: "/posts",
         element: <Post></Post>,
+      },
+      {
+        path: "/checkout",
+        element: <CheckOut></CheckOut>,
       },
       {
         path: "/cart",

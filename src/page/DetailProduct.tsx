@@ -200,7 +200,9 @@ export default function DetailProduct() {
                   ))}
                 </div>
               </div>
-              <div className=" font-light pt-2">Chọn size áo</div>
+
+              <div className=" font-light">{data.description}</div>
+              <div className=" font-light pt-4">Chọn size áo</div>
               <div className="mb-4 flex py-3 space-x-2">
                 {data.product_details &&
                   data.product_details.map((sz) => {
