@@ -1,36 +1,63 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-// import { GetRequestWithCre } from "../utilz/Request/getRequest";
-// import { useStateUserContext } from "../contexts/UserContextProvider";
 import Loading from "./Loading";
+import { GetRequestWithCre } from "../utilz/Request/getRequest";
+import { useStateUserContext } from "../contexts/UserContextProvider";
 
-const fakeOrders = [
-  {
-    id: "ORD001",
-    createdAt: "2024-12-01T14:30:00Z",
-    status: "completed",
-    total: 150000,
-    items: [
-      { name: "Sản phẩm A", quantity: 2, price: 50000 },
-      { name: "Sản phẩm B", quantity: 1, price: 50000 },
-    ],
-  },
-  {
-    id: "ORD002",
-    createdAt: "2024-11-29T10:15:00Z",
-    status: "pending",
-    total: 200000,
-    items: [
-      { name: "Sản phẩm C", quantity: 3, price: 60000 },
-      { name: "Sản phẩm D", quantity: 2, price: 40000 },
-    ],
-  },
-];
+interface OrderItem {
+  name: string;
+  amount: number;
+  price: number;
+}
+
+interface Order {
+  id: string;
+  createdAt: string;
+  status: string;
+  total: number;
+  items: OrderItem[];
+}
 
 export default function UserOrder() {
-  const [orders, setOrders] = useState(fakeOrders);
-  const [loading, setLoading] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<null | typeof fakeOrders[0]>(null);
+  const [orders, setOrders] = useState<Order[]>([]); 
+  const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<null | Order>(null); 
+  const { token } = useStateUserContext(); 
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await GetRequestWithCre({
+          route: "api/orders",
+          token,
+        });
+
+        if (response.success) {
+          const formattedOrders = response.data.data.map((order: any) => ({
+            id: order.id,
+            createdAt: order.order_date,
+            status: order.status,
+            total: order.totalprice,
+            items: order.orderDetails.map((item: any) => ({
+              name: item.product_name,
+              quantity: item.quantity,
+              price: item.price,
+            })),
+          }));
+          setOrders(formattedOrders);
+        } else {
+          console.error("Failed to fetch orders:", response);
+        }
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [token]);
 
   if (loading) {
     return <Loading modalIsOpen={loading} />;
@@ -76,7 +103,13 @@ export default function UserOrder() {
                     </div>
                     <div className="text-gray-600 text-sm">
                       <p>Ngày tạo: {new Date(order.createdAt).toLocaleDateString()}</p>
-                      <p>Tổng tiền: {order.total.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                      <p>
+                        Tổng tiền:{" "}
+                        {order.total.toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        })}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -99,7 +132,8 @@ export default function UserOrder() {
                 Ngày tạo: {new Date(selectedOrder.createdAt).toLocaleDateString()}
               </p>
               <p className="text-gray-600 mb-4">
-                Tổng tiền: {selectedOrder.total.toLocaleString("vi-VN", {
+                Tổng tiền:{" "}
+                {selectedOrder.total.toLocaleString("vi-VN", {
                   style: "currency",
                   currency: "VND",
                 })}
@@ -114,7 +148,7 @@ export default function UserOrder() {
                     >
                       <span>{item.name}</span>
                       <span>
-                        {item.quantity} x{" "}
+                        {item.amount} x{" "}
                         {item.price.toLocaleString("vi-VN", {
                           style: "currency",
                           currency: "VND",

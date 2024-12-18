@@ -14,7 +14,7 @@ interface Profile {
 
 export default function UserInfo() {
   const { token } = useStateUserContext();
-
+  const [hasFetched, setHasFetched] = useState(false);
   const [data, setData] = useState<Profile>({ name: "", avatar: null, email: "" });
   const [loading, setLoading] = useState(true);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -23,19 +23,22 @@ export default function UserInfo() {
 
   useEffect(() => {
     const getProfile = async () => {
-      const response = await GetRequestWithCre({ route: "api/user", token });
-      if (response.success) {
-        setData({
-          name: response.data.name,
-          email: response.data.email,
-          avatar: response.data.avatar || null, 
-        });
+      if (!hasFetched) { // Chỉ tải dữ liệu nếu chưa tải
+        const response = await GetRequestWithCre({ route: "api/user", token });
+        if (response.success) {
+          setData({
+            name: response.data.name,
+            email: response.data.email,
+            avatar: response.data.avatar || null,
+          });
+        }
+        setHasFetched(true);
       }
       setLoading(false);
     };
     getProfile();
-  }, [token]);
-  
+  }, [token, hasFetched]);
+
 
   // Cập nhật state data chung
   const handleInputChange = (field: keyof Profile, value: string | File) => {
@@ -57,7 +60,7 @@ export default function UserInfo() {
     formData.append("_method", "PATCH");
   
     if (data.avatar instanceof File) {
-      formData.append("avatar", data.avatar); // Chỉ thêm avatar nếu người dùng upload file
+      formData.append("avatar", data.avatar); 
     }
   
     try {

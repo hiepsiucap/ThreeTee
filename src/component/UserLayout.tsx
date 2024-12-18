@@ -9,15 +9,16 @@ import UserNotification from "./UserNotification";
 import UserSecurity from "./UserSecurity";
 
 export default function UserLayout() {
-  const [profile, setProfile] = useState("info");
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState("info"); // Tab hiện tại
+  const [loading, setLoading] = useState(true); // Trạng thái tải dữ liệu
   const [data, setData] = useState({
     name: "",
     avatar: "",
     email: "",
-  });
+  }); // Dữ liệu người dùng
   const { token } = useStateUserContext();
 
+  // Fetch thông tin người dùng
   useEffect(() => {
     const fetchProfile = async () => {
       const response = await GetRequestWithCre({ route: "api/user", token });
@@ -41,7 +42,7 @@ export default function UserLayout() {
     >
       <div className="w-full h-full">
         {/* Header */}
-        <div className="pl-6 py-4">
+        <div>
           <img
             src="https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728564771/header_setting_ddmmoz.png"
             alt="Header"
@@ -53,54 +54,41 @@ export default function UserLayout() {
         <div className="flex flex-col lg:flex-row h-full w-full">
           {/* Sidebar */}
           <div className="w-full lg:w-1/4 border-r border-gray-300 py-6 flex flex-col items-center space-y-4 font-light font-inter">
-            <button
-              onClick={() => setProfile("info")}
-              className={`w-4/5 px-4 py-2 rounded-lg text-center ${
-                profile === "info"
-                  ? "bg-green-400 bg-opacity-25 text-green-600 font-medium"
-                  : "hover:bg-gray-100"
-              }`}
-            >
-              Thông tin cá nhân
-            </button>
-            <button
-              onClick={() => setProfile("order")}
-              className={`w-4/5 px-4 py-2 rounded-lg text-center ${
-                profile === "order"
-                  ? "bg-green-400 bg-opacity-25 text-green-600 font-medium"
-                  : "hover:bg-gray-100"
-              }`}
-            >
-              Đơn hàng
-            </button>
-            <button
-              onClick={() => setProfile("nofi")}
-              className={`w-4/5 px-4 py-2 rounded-lg text-center ${
-                profile === "nofi"
-                  ? "bg-green-400 bg-opacity-25 text-green-600 font-medium"
-                  : "hover:bg-gray-100"
-              }`}
-            >
-              Thông báo
-            </button>
-            <button
-              onClick={() => setProfile("pass")}
-              className={`w-4/5 px-4 py-2 rounded-lg text-center ${
-                profile === "pass"
-                  ? "bg-green-400 bg-opacity-25 text-green-600 font-medium"
-                  : "hover:bg-gray-100"
-              }`}
-            >
-              Bảo mật & mật khẩu
-            </button>
+            {[
+              { key: "info", label: "Thông tin cá nhân" },
+              { key: "order", label: "Đơn hàng" },
+              { key: "nofi", label: "Thông báo" },
+              { key: "pass", label: "Bảo mật & mật khẩu" },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setProfile(tab.key)}
+                className={`w-4/5 px-4 py-2 rounded-lg text-center ${
+                  profile === tab.key
+                    ? "bg-green-400 bg-opacity-25 text-green-600 font-medium"
+                    : "hover:bg-gray-100"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
 
           {/* Main Content */}
           <div className="w-full lg:w-3/4 px-6 py-4">
-            {profile === "info" && <UserInfo />}
-            {profile === "order" && <UserOrder />}
-            {profile === "nofi" && <UserNotification />}
-            {profile === "pass" && <UserSecurity />}
+            {/* Thay vì unmount, chúng ta dùng CSS để hiển thị/ẩn */}
+            <div style={{ display: profile === "info" ? "block" : "none" }}>
+              <UserInfo />
+            </div>
+            <div style={{ display: profile === "order" ? "block" : "none" }}>
+              <UserOrder />
+            </div>
+            <div style={{ display: profile === "nofi" ? "block" : "none" }}>
+              <UserNotification />
+            </div>
+            <div style={{ display: profile === "pass" ? "block" : "none" }}>
+              <UserSecurity />
+            </div>
           </div>
         </div>
       </div>
