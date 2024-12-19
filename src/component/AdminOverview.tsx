@@ -52,9 +52,7 @@ export default function AdminOverview() {
     "Áo Polo",
   ];
   const categoriesss = ["Quý 1", "Quý 2", "Quý 3", "Quý 4", "Cả Năm"];
-  const data2 = [30, 40, 50, 40, 30, 40, 80, 85, 100, 60, 120, 30];
   const data = [20, 30, 40, 50, 60];
-  const data3 = [30, 40, 50, 25, 70, 40, 80, 60, 90];
   const truycap = [
     {
       name: "Hiệp nguyễn",
@@ -183,7 +181,7 @@ export default function AdminOverview() {
     return () => {
       // Could add cleanup if needed
     };
-  }, [token, transformUserData, getYearlyProfit]);
+  }, [token, transformUserData]);
   return (
     <div className=" font-inter pl-72 w-full py-6">
       <div className=" flex space-x-6">

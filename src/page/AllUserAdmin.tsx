@@ -50,11 +50,11 @@ const UserTable = () => {
       changeIsLoading(false);
     };
     getData();
-  }, []);
+  }, [token]);
   // Sample data - replace with your actual data
 
   const handleChangePage = (
-    event: unknown,
+    _event: unknown,
     newPage: SetStateAction<number>
   ) => {
     setPage(newPage);
