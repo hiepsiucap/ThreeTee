@@ -9,19 +9,15 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-// import BasicLine from "../component/LineChart";
+import BasicLine from "../component/LineChart";
 import { InfinitySpin } from "react-loader-spinner";
 import { useStateUserContext } from "../contexts/UserContextProvider";
 import { motion } from "framer-motion";
+
 import { GetRequestWithCre } from "../utilz/Request/getRequest";
 
-// const categoriess = [
-//   "Áo thun",
-//   "Áo Hoddies",
-//   "Ly sứ",
-//   "Bình giữ nhiệt",
-//   "Áo Polo",
-// ];
+const categoriess = ["Áo Polo Nam", "Áo Sơ my Nam", "Áo phông nữ"];
+const categoriesss = ["Áo Polo Nữ", "Giày thể thao nữ", "Giày thể thao nam"];
 interface Order {
   id: number;
   user_id: number;
@@ -172,18 +168,20 @@ export default function OrdersAdmin() {
           </motion.div>
 
           <div className="flex flex-col space-y-6 w-1/3">
-            {/* <div className="w-full bg-gray-50 p-6 rounded-3xl shadow-md">
+            <div className="w-full bg-gray-50 p-6 rounded-3xl shadow-md">
               <BasicLine
                 categories={categoriess}
-                data={orders.map((o) => o.totalprice)}
+                data={[0, 10, 20, 30, 40, 50]}
+                data1={[0, 15, 30, 40, 35, 50]}
               />
             </div>
             <div className="w-full bg-gray-50 p-6 rounded-3xl shadow-md">
               <BasicLine
-                categories={categoriess}
-                data={orders.map((o) => o.totalprice)}
+                categories={categoriesss}
+                data={[0, 10, 20, 30, 40, 50]}
+                data1={[70, 60, 20, 10, 40, 50]}
               />
-            </div> */}
+            </div>
           </div>
         </div>
       )}

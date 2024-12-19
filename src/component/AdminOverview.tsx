@@ -2,10 +2,11 @@
 
 import BasicLine from "./LineChart";
 import Basic from "./ApexChart";
-import React from "react";
+import React, { useState } from "react";
 import BasicPie from "./PieChart";
 import { useStateUserContext } from "../contexts/UserContextProvider";
 import { GetRequestWithCre } from "../utilz/Request/getRequest";
+import getYearlyProfit from "../utilz/Filter";
 interface Summary {
   revenue: {
     total: string; // The total revenue as a string, e.g., "400000"
@@ -24,14 +25,16 @@ interface Summary {
     growth: number; // The growth percentage, e.g., 0
   };
 }
+type YearlyProfit = { [key: number]: number[] };
 export default function AdminOverview() {
   const [summary, changeSummary] = React.useState<Summary | null>();
+  const [user, changeUser] = useState<TransformedUser[]>([]);
+  const [profit, changeProfit] = useState<YearlyProfit>({});
   const categories = [
     "Tháng 1",
     "Tháng 2",
     "Tháng 3",
     "Tháng 4",
-    "Tháng 5",
     "Tháng 5",
     "Tháng 6",
     "Tháng 7",
@@ -49,64 +52,138 @@ export default function AdminOverview() {
     "Áo Polo",
   ];
   const categoriesss = ["Quý 1", "Quý 2", "Quý 3", "Quý 4", "Cả Năm"];
-  const data2 = [30, 40, 50, 40, 30, 40, 80, 85, 100];
+  const data2 = [30, 40, 50, 40, 30, 40, 80, 85, 100, 60, 120, 30];
   const data = [20, 30, 40, 50, 60];
   const data3 = [30, 40, 50, 25, 70, 40, 80, 60, 90];
   const truycap = [
     {
       name: "Hiệp nguyễn",
       role: "user",
-      activity: "15 mins",
+      activity: "2 months",
       img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1721986324/default_ava.jpg",
     },
     {
       name: "Vy nguyễn",
       role: "staff",
-      activity: "15 mins",
+      activity: "4 months",
       img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1727711973/461481020_328739150328316_8329668403506128640_n_tkxenm.jpg",
     },
-    {
-      name: "Minh nguyễn",
-      role: "user",
-      activity: "15 mins",
-      img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1727751526/Joyner-8E2A9181-cmyk_web_t2bsnn.jpg",
-    },
-    {
-      name: "Phước nguyễn",
-      role: "staff",
-      activity: "15 mins",
-      img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1710902959/efvhzegkbsvirtippnzd.png",
-    },
-    {
-      name: "Hoàng nguyễn",
-      role: "user",
-      activity: "15 mins",
-      img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1721986324/default_ava.jpg",
-    },
-    {
-      name: "Hiệp nguyễn",
-      role: "staff",
-      activity: "15 mins",
-      img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1721986324/default_ava.jpg",
-    },
   ];
+  interface TransformedUser {
+    name: string;
+    role: "admin" | "user";
+    activity: string;
+    img: string;
+  }
+
+  const calculateActivity = (updatedAt: string): string => {
+    const lastUpdate = new Date(updatedAt);
+    const now = new Date();
+    const diffInMinutes = Math.floor(
+      (now.getTime() - lastUpdate.getTime()) / (1000 * 60)
+    );
+
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes} mins`;
+    } else if (diffInMinutes < 1440) {
+      // less than 24 hours
+      const hours = Math.floor(diffInMinutes / 60);
+      return `${hours} hours`;
+    } else {
+      const days = Math.floor(diffInMinutes / 1440);
+      return `${days} days`;
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const transformUserData = (users: OriginalUser[]): TransformedUser[] => {
+    return users.map((user) => ({
+      name: user.name,
+      role: user.role,
+      activity: calculateActivity(user.updated_at),
+      img: user.avatar,
+    }));
+  };
+
+  interface OriginalUser {
+    id: number;
+    user_id: number;
+    name: string;
+    role: "admin" | "user";
+    avatar: string;
+    created_at: string;
+    updated_at: string;
+  }
   const { token } = useStateUserContext();
 
   const [, changeLoading] = React.useState<boolean>(true);
   React.useEffect(() => {
-    const fetchOrders = async () => {
-      const response = await GetRequestWithCre({
-        route: "api/admin/dashboard-statistics",
-        token,
-      });
-      if (response.success) {
-        changeSummary(response.data);
-      }
-      changeLoading(false);
-    };
-    fetchOrders();
-  }, [token]);
+    const fetchDashboardData = async () => {
+      try {
+        changeLoading(true); // Good practice to set loading at start of fetch
 
+        const [summaryResponse, userResponse, profitResponse] =
+          await Promise.all([
+            GetRequestWithCre({
+              route: "api/admin/dashboard-statistics",
+              token,
+            }),
+            GetRequestWithCre({
+              route: "api/admin/user-logs",
+              token,
+            }),
+            GetRequestWithCre({
+              route: "api/staff/profit-statistics",
+              token,
+            }),
+          ]);
+
+        // Process each response independently to avoid one failure affecting others
+        try {
+          if (summaryResponse?.success) {
+            changeSummary(summaryResponse.data);
+          } else {
+            console.error("Summary fetch failed:", summaryResponse);
+          }
+        } catch (e) {
+          console.error("Error processing summary data:", e);
+        }
+
+        try {
+          if (userResponse?.success) {
+            changeUser(transformUserData(userResponse.data));
+          } else {
+            console.error("User logs fetch failed:", userResponse);
+          }
+        } catch (e) {
+          console.error("Error processing user data:", e);
+        }
+
+        try {
+          if (profitResponse?.success) {
+            changeProfit(getYearlyProfit(profitResponse.data, [2023, 2024]));
+          } else {
+            console.error("Profit fetch failed:", profitResponse);
+          }
+        } catch (e) {
+          console.error("Error processing profit data:", e);
+        }
+      } catch (error) {
+        console.error("Network or fetch error:", error);
+      } finally {
+        changeLoading(false);
+      }
+    };
+
+    if (token) {
+      // Add token check
+      fetchDashboardData();
+    }
+
+    return () => {
+      // Could add cleanup if needed
+    };
+  }, [token, transformUserData, getYearlyProfit]);
   return (
     <div className=" font-inter pl-72 w-full py-6">
       <div className=" flex space-x-6">
@@ -160,13 +237,39 @@ export default function AdminOverview() {
           {" "}
           <BasicLine
             categories={categories}
-            data={data2}
-            data1={data3}
+            data={profit[2023]}
+            data1={profit[2024]}
           />
         </div>
         <div className=" w-1/3 p-5 bg-gray-50 shadow-md rounded-3xl">
           <p className=" font-bold">Lượng truy cập </p>
           <div className=" flex flex-col space-y-3 py-4 font-light text-sm">
+            {user.map((user) => {
+              return (
+                <div className=" flex justify-between items-center">
+                  <div className=" flex items-center">
+                    <img
+                      src={user.img}
+                      alt=""
+                      className=" w-8 h-8 mr-2 rounded-full"
+                    />
+                    <div className=" w-28 font-light ">{user.name}</div>
+                    <p
+                      className={
+                        user.role === "user"
+                          ? "bg-teal-600 py-1 px-2 text-white rounded-lg"
+                          : "bg-sky-500 py-1 px-2 text-white rounded-lg"
+                      }
+                    >
+                      {user.role}
+                    </p>
+                  </div>
+                  <div className=" flex space-x-2 items-end">
+                    <p className=" text-xs text-gray-500">{user.activity}</p>
+                  </div>
+                </div>
+              );
+            })}
             {truycap.map((user) => {
               return (
                 <div className=" flex justify-between items-center">

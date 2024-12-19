@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { GetRequest } from "../utilz/Request/getRequest";
 import Swal from "sweetalert2";
-import ProductTable from "../component/TableProductCancel";
+import ProductTable from "../component/TableProduct";
 import { InfinitySpin } from "react-loader-spinner";
 // Chi tiết của một sản phẩm (size, giá, số lượng)
 interface ProductDetail {

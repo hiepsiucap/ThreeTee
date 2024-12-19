@@ -32,11 +32,13 @@ import {
   CreateProduct,
   CheckOut,
   CancelPage,
+  UserTable,
   UpdateProduct,
   DeliveryAdmin,
   PendingOrdersAdmin,
   ResetPassword,
   Cart,
+  AllProductAdmin,
 } from "./page";
 import { Navigate } from "react-router-dom";
 
@@ -133,8 +135,20 @@ const router = createBrowserRouter([
         element: <CreateProduct></CreateProduct>,
       },
       {
-        path: "/admin/product/update",
+        path: "/admin/product/delete",
+        element: <CancelAdmin></CancelAdmin>,
+      },
+      {
+        path: "/admin/product/update/:id",
         element: <UpdateProduct></UpdateProduct>,
+      },
+      {
+        path: "/admin/product/allproduct",
+        element: <AllProductAdmin></AllProductAdmin>,
+      },
+      {
+        path: "/admin/user/alluser",
+        element: <UserTable></UserTable>,
       },
     ],
   },

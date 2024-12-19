@@ -17,10 +17,12 @@ import CheckOut from "./CheckOut";
 import CancelAdmin from "./CancelAdmin";
 import Complete from "./Complete";
 import UpdateProduct from "./UpdateProduct";
+import UserTable from "./AllUserAdmin";
 import CreateProduct from "./CreateProduct";
 import ResetPassword from "./ResetPassword";
 import VerificationEmail from "./VerificationEmail";
 import Cart from "./Cart";
+import AllProductAdmin from "./AllProductAdmin";
 export {
   HomePage,
   Post,
@@ -33,6 +35,7 @@ export {
   CancelPage,
   SuccessPage,
   OrdersAdmin,
+  UserTable,
   CancelAdmin,
   PostsAdmin,
   Product,
@@ -41,6 +44,7 @@ export {
   DetailProduct,
   Login,
   CheckOut,
+  AllProductAdmin,
   ProductsAdmin,
   Description,
   PendingOrdersAdmin,

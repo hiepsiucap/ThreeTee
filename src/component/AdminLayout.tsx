@@ -188,9 +188,9 @@ export default function AdminLayout() {
               <p className=" font-light">Tạo sản phẩm</p>
             </Link>
             <Link
-              to="/admin/product/update"
+              to="/admin/product/update/-1"
               className={
-                location.pathname === "/admin/product/update"
+                location.pathname === "/admin/product/update/-1"
                   ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
                   : " flex space-x-2  py-2 "
               }
@@ -215,22 +215,25 @@ export default function AdminLayout() {
               />
               <p className=" font-light">Xoá sản phẩm</p>
             </Link>
-            <div className=" flex space-x-2">
+            <Link
+              to="/admin/product/allproduct"
+              className=" flex space-x-2"
+            >
               <img
                 src={social}
                 alt=""
               />
               <p className=" font-light">Thống kê sản phẩm</p>
-            </div>
+            </Link>
           </div>
         </div>
         <div className=" flex flex-col">
           <p className=" text-slate-400 font-light text-sm">Tài khoản</p>
           <div className=" flex flex-col  pl-3 py-4">
             <Link
-              to="/admin/product/create"
+              to="/admin/user/alluser"
               className={
-                location.pathname === "/admin/product/create"
+                location.pathname === "/admin/user/alluser"
                   ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
                   : " flex space-x-2  py-2 "
               }
@@ -242,7 +245,7 @@ export default function AdminLayout() {
               <p className=" font-light">Danh sách tài khoản</p>
             </Link>
             <Link
-              to="/admin/product/update"
+              to="/admin/user/alluser"
               className={
                 location.pathname === "/admin/product/update"
                   ? " flex space-x-2 bg-gray-100 py-2 rounded-md"

@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import { useState, ChangeEvent, useEffect } from "react";
 import add from "../assets/icon/add.png";
 import Loading from "../component/Loading";
+import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { InfinitySpin } from "react-loader-spinner";
 import { useStateUserContext } from "../contexts/UserContextProvider";
 import {
   GetPostRequestWithCre,
@@ -57,47 +60,22 @@ const initialData = {
 
 export default function UpdateProduct() {
   const { token } = useStateUserContext();
+  const { id } = useParams();
+
   const [loading, changeloading] = useState(false);
+  const [isLoading, changeisLoading] = useState(false);
   const [data, setData] = useState<ProductData>(initialData);
-  const postOrder = async () => {
-    const url = "https://threeteebe.fly.dev/api/orders";
-    const data = {
-      phonenumber: "1231231231",
-      address: "quan que gi vay",
-      totalprice: 1,
-    };
-
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization:
-            "Bearer 90|DTmidKywwnxmTW3WXoyCFfAgumUj9pKP8TGPDf6da7795cd2",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("Response:", result);
-    } catch (error) {
-      if (error instanceof Error) console.error("Error:", error.message);
-    }
-  };
-  postOrder();
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        changeisLoading(true);
         const response = await GetRequestWithCre({
-          route: `api/products/16`,
+          route: `api/products/${id}`,
           token,
         });
 
         if (!response.success) {
+          changeisLoading(false);
           throw new Error(response.msg);
         }
 
@@ -115,19 +93,20 @@ export default function UpdateProduct() {
           images: [],
           existingImages: productData.images,
         });
+        changeisLoading(false);
       } catch (error) {
+        changeisLoading(false);
         if (error instanceof Error)
           Swal.fire({
             title: "Error!",
-            text: "Không thể tải thông tin sản phẩm",
+            text: error.message,
             icon: "error",
             confirmButtonText: "Trở lại",
           });
       }
     };
-
-    fetchProduct();
-  }, []);
+    if (id && Number(id) !== -1) fetchProduct();
+  }, [id, token]);
 
   const addSizeRow = () => {
     setData({
@@ -274,220 +253,246 @@ export default function UpdateProduct() {
       }
     }
   };
-
-  return (
-    <div className="pl-72">
-      <Loading modalIsOpen={loading}></Loading>
-      <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-        className="text-2xl py-4 pt-6"
-      >
-        Cập nhật sản phẩm
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-        className="text-2xl py-2"
-      >
-        <form
-          className="text-base"
-          onSubmit={onSubmitHandler}
+  if (Number(id) === -1)
+    return (
+      <section className=" pl-72  flex items-center justify-center flex-col py-16 ">
+        <p className=" text-2xl font-light py-12">
+          Vui lòng chọn đơn hàng muốn update
+        </p>
+        <Link
+          to="/admin/product/allproduct"
+          className="  border border-gray-400  flex justify-center py-2 px-4 rounded-md"
         >
-          <div className="flex justify-start space-x-12">
-            <div className="flex flex-col space-y-4 w-1/2">
-              <p className="text-lg">Thông tin sản phẩm</p>
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm">Tên sản phẩm:</p>
-                <input
-                  className="border border-gray-400 rounded-md py-2 px-4"
-                  type="text"
-                  value={data.name}
-                  onChange={(e) => setData({ ...data, name: e.target.value })}
-                />
-              </div>
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm">Mô tả sản phẩm:</p>
-                <input
-                  className="border border-gray-400 rounded-md py-2 px-4"
-                  type="text"
-                  value={data.description}
-                  onChange={(e) =>
-                    setData({ ...data, description: e.target.value })
-                  }
-                />
-              </div>
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm">Danh mục sản phẩm:</p>
-                <select
-                  className="border border-gray-400 rounded-md py-2 px-4"
-                  value={data.category}
-                  onChange={(e) =>
-                    setData({ ...data, category: e.target.value })
-                  }
-                >
-                  <option value="">Chọn danh mục</option>
-                  <option value="nam">Nam</option>
-                  <option value="nu">Nữ</option>
-                  <option value="phu_kien">Phụ kiện</option>
-                </select>
-              </div>
-              <p className="text-lg">Size và giá sản phẩm</p>
-              {data.sizes.map((sizeRow, index) => (
-                <div
-                  key={index}
-                  className="flex space-x-2 flex-row"
-                >
-                  <div className="flex flex-col space-y-1 w-1/3">
-                    <p className="text-sm">Kích cỡ:</p>
+          Thống kê đơn hàng
+        </Link>
+      </section>
+    );
+  return (
+    <section>
+      {isLoading === true ? (
+        <div className=" pt-36 pl-72 flex w-full justify-center items-center">
+          <InfinitySpin
+            width="200"
+            color="#000000"
+          />
+        </div>
+      ) : (
+        <div className="pl-72">
+          <Loading modalIsOpen={loading}></Loading>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-2xl py-4 pt-6"
+          >
+            Cập nhật sản phẩm
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-2xl py-2"
+          >
+            <form
+              className="text-base"
+              onSubmit={onSubmitHandler}
+            >
+              <div className="flex justify-start space-x-12">
+                <div className="flex flex-col space-y-4 w-1/2">
+                  <p className="text-lg">Thông tin sản phẩm</p>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm">Tên sản phẩm:</p>
                     <input
                       className="border border-gray-400 rounded-md py-2 px-4"
                       type="text"
-                      value={sizeRow.size}
+                      value={data.name}
                       onChange={(e) =>
-                        updateSizeRow(index, "size", e.target.value)
+                        setData({ ...data, name: e.target.value })
                       }
                     />
                   </div>
-                  <div className="flex flex-col space-y-1 w-1/3">
-                    <p className="text-sm">Số lượng:</p>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm">Mô tả sản phẩm:</p>
                     <input
                       className="border border-gray-400 rounded-md py-2 px-4"
                       type="text"
-                      value={sizeRow.quantity}
+                      value={data.description}
                       onChange={(e) =>
-                        updateSizeRow(index, "quantity", e.target.value)
+                        setData({ ...data, description: e.target.value })
                       }
                     />
                   </div>
-                  <div className="flex flex-col space-y-1 w-1/3">
-                    <p className="text-sm">Giá:</p>
-                    <input
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm">Danh mục sản phẩm:</p>
+                    <select
                       className="border border-gray-400 rounded-md py-2 px-4"
-                      type="text"
-                      value={sizeRow.price}
+                      value={data.category}
                       onChange={(e) =>
-                        updateSizeRow(index, "price", e.target.value)
+                        setData({ ...data, category: e.target.value })
                       }
-                    />
+                    >
+                      <option value="">Chọn danh mục</option>
+                      <option value="nam">Nam</option>
+                      <option value="nu">Nữ</option>
+                      <option value="phu_kien">Phụ kiện</option>
+                    </select>
+                  </div>
+                  <p className="text-lg">Size và giá sản phẩm</p>
+                  {data.sizes.map((sizeRow, index) => (
+                    <div
+                      key={index}
+                      className="flex space-x-2 flex-row"
+                    >
+                      <div className="flex flex-col space-y-1 w-1/3">
+                        <p className="text-sm">Kích cỡ:</p>
+                        <input
+                          className="border border-gray-400 rounded-md py-2 px-4"
+                          type="text"
+                          value={sizeRow.size}
+                          onChange={(e) =>
+                            updateSizeRow(index, "size", e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="flex flex-col space-y-1 w-1/3">
+                        <p className="text-sm">Số lượng:</p>
+                        <input
+                          className="border border-gray-400 rounded-md py-2 px-4"
+                          type="text"
+                          value={sizeRow.quantity}
+                          onChange={(e) =>
+                            updateSizeRow(index, "quantity", e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="flex flex-col space-y-1 w-1/3">
+                        <p className="text-sm">Giá:</p>
+                        <input
+                          className="border border-gray-400 rounded-md py-2 px-4"
+                          type="text"
+                          value={sizeRow.price}
+                          onChange={(e) =>
+                            updateSizeRow(index, "price", e.target.value)
+                          }
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <div className="w-full flex items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={addSizeRow}
+                      className="flex items-center space-x-2"
+                    >
+                      <img
+                        src={add}
+                        alt="Add"
+                        className="w-8 h-8"
+                      />
+                      <span className="text-sm">Thêm</span>
+                    </button>
                   </div>
                 </div>
-              ))}
-              <div className="w-full flex items-center justify-center">
+                <div className="w-5/12">
+                  <p className="text-lg">Thêm ảnh</p>
+                  <div className="flex flex-col space-y-4">
+                    <div className="relative border-dashed border-2 border-gray-400 rounded-lg p-4 py-12 flex flex-col items-center">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        className="opacity-0 absolute w-full h-full"
+                        style={{ zIndex: 10 }}
+                      />
+                      <p className="text-gray-500 text-base">
+                        Kéo và thả ảnh vào đây hoặc nhấn để tải lên
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      {data.existingImages.map((image) => (
+                        <div
+                          key={image.id}
+                          className="relative"
+                        >
+                          <img
+                            src={image.image_link}
+                            alt="Product"
+                            className="w-full h-32 object-cover rounded-md cursor-pointer"
+                            onClick={() => openModal(image.image_link)}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeExistingImage(image.id)}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:opacity-100 transition"
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))}
+                      {data.images.map((image, index) => (
+                        <div
+                          key={`new-${index}`}
+                          className="relative"
+                        >
+                          <img
+                            src={
+                              image instanceof File
+                                ? URL.createObjectURL(image)
+                                : image.image_link
+                            }
+                            alt={`Uploaded ${index}`}
+                            className="w-full h-32 object-cover rounded-md cursor-pointer"
+                            onClick={() =>
+                              openModal(
+                                image instanceof File
+                                  ? URL.createObjectURL(image)
+                                  : image.image_link
+                              )
+                            }
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:opacity-100 transition"
+                          >
+                            X
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex pt-16 items-center justify-center text-lg">
+                <button className="border border-gray-400 hover:scale-110 py-3 px-6 rounded-md">
+                  Cập nhật sản phẩm
+                </button>
+              </div>
+            </form>
+          </motion.div>
+          {selectedImage && (
+            <div
+              onClick={closeModal}
+              className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+            >
+              <div className="relative">
+                <img
+                  src={selectedImage}
+                  alt="Selected"
+                  className="rounded-md"
+                />
                 <button
-                  type="button"
-                  onClick={addSizeRow}
-                  className="flex items-center space-x-2"
+                  onClick={closeModal}
+                  className="absolute top-4 right-4 text-white bg-gray-700 rounded-full p-2 hover:bg-gray-800"
                 >
-                  <img
-                    src={add}
-                    alt="Add"
-                    className="w-8 h-8"
-                  />
-                  <span className="text-sm">Thêm</span>
+                  Đóng
                 </button>
               </div>
             </div>
-            <div className="w-5/12">
-              <p className="text-lg">Thêm ảnh</p>
-              <div className="flex flex-col space-y-4">
-                <div className="relative border-dashed border-2 border-gray-400 rounded-lg p-4 py-12 flex flex-col items-center">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageUpload}
-                    className="opacity-0 absolute w-full h-full"
-                    style={{ zIndex: 10 }}
-                  />
-                  <p className="text-gray-500 text-base">
-                    Kéo và thả ảnh vào đây hoặc nhấn để tải lên
-                  </p>
-                </div>
-                <div className="grid grid-cols-3 gap-4">
-                  {data.existingImages.map((image) => (
-                    <div
-                      key={image.id}
-                      className="relative"
-                    >
-                      <img
-                        src={image.image_link}
-                        alt="Product"
-                        className="w-full h-32 object-cover rounded-md cursor-pointer"
-                        onClick={() => openModal(image.image_link)}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeExistingImage(image.id)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:opacity-100 transition"
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
-                  {data.images.map((image, index) => (
-                    <div
-                      key={`new-${index}`}
-                      className="relative"
-                    >
-                      <img
-                        src={
-                          image instanceof File
-                            ? URL.createObjectURL(image)
-                            : image.image_link
-                        }
-                        alt={`Uploaded ${index}`}
-                        className="w-full h-32 object-cover rounded-md cursor-pointer"
-                        onClick={() =>
-                          openModal(
-                            image instanceof File
-                              ? URL.createObjectURL(image)
-                              : image.image_link
-                          )
-                        }
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:opacity-100 transition"
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex pt-16 items-center justify-center text-lg">
-            <button className="border border-gray-400 hover:scale-110 py-3 px-6 rounded-md">
-              Cập nhật sản phẩm
-            </button>
-          </div>
-        </form>
-      </motion.div>
-      {selectedImage && (
-        <div
-          onClick={closeModal}
-          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
-        >
-          <div className="relative">
-            <img
-              src={selectedImage}
-              alt="Selected"
-              className="rounded-md"
-            />
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-white bg-gray-700 rounded-full p-2 hover:bg-gray-800"
-            >
-              Đóng
-            </button>
-          </div>
+          )}
         </div>
       )}
-    </div>
+    </section>
   );
 }

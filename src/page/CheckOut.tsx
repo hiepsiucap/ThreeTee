@@ -58,7 +58,8 @@ export default function CheckOut() {
         token,
       });
       if (!anores.success) throw new Error(anores.msg);
-      window.location.href = response.data.data.payment_link;
+
+      window.location.href = anores.data.payment_link;
     } catch (e) {
       if (e instanceof Error) {
         changeloading(false);
