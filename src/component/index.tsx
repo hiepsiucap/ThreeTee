@@ -32,8 +32,8 @@ export {
   UserLayout,
   VistitorLayout,
   PriceFilter,
-  UserInfo, 
-  UserNotification, 
-  UserOrder, 
+  UserInfo,
+  UserNotification,
+  UserOrder,
   UserSecurity,
 };
