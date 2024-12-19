@@ -2,8 +2,30 @@
 
 import BasicLine from "./LineChart";
 import Basic from "./ApexChart";
+import React from "react";
 import BasicPie from "./PieChart";
+import { useStateUserContext } from "../contexts/UserContextProvider";
+import { GetRequestWithCre } from "../utilz/Request/getRequest";
+interface Summary {
+  revenue: {
+    total: string; // The total revenue as a string, e.g., "400000"
+    growth: number; // The growth percentage, e.g., 0
+  };
+  users: {
+    total: number; // The total number of users, e.g., 46
+    growth: number; // The growth percentage, e.g., 42.11
+  };
+  products: {
+    total: number; // The total number of products, e.g., 2
+    growth: number; // The growth percentage, e.g., 0
+  };
+  sold_products: {
+    total: string; // The total sold products as a string, e.g., "2"
+    growth: number; // The growth percentage, e.g., 0
+  };
+}
 export default function AdminOverview() {
+  const [summary, changeSummary] = React.useState<Summary | null>();
   const categories = [
     "Tháng 1",
     "Tháng 2",
@@ -68,35 +90,68 @@ export default function AdminOverview() {
       img: "https://res.cloudinary.com/dhhuv7n0h/image/upload/v1721986324/default_ava.jpg",
     },
   ];
+  const { token } = useStateUserContext();
+
+  const [, changeLoading] = React.useState<boolean>(true);
+  React.useEffect(() => {
+    const fetchOrders = async () => {
+      const response = await GetRequestWithCre({
+        route: "api/admin/dashboard-statistics",
+        token,
+      });
+      if (response.success) {
+        changeSummary(response.data);
+      }
+      changeLoading(false);
+    };
+    fetchOrders();
+  }, [token]);
+
   return (
     <div className=" font-inter pl-72 w-full py-6">
       <div className=" flex space-x-6">
         <div className=" p-8 space-y-3 w-1/5 bg-cyan-300 tracking-wide bg-opacity-40 rounded-2xl">
-          <p className=" font-light">Lượt xem</p>
+          <p className=" font-light">Tổng doanh thu</p>
           <div className=" flex space-x-2 items-end">
-            <p className=" font text-2xl">7, 265 </p>
-            <div className=" font-light text-xs pb-2">+11.02%</div>
+            <p className=" font text-xl">
+              {" "}
+              {Number(summary?.revenue?.total).toLocaleString() + "VNĐ"}{" "}
+            </p>
+            <div className=" font-light text-xs pb-2">
+              +{summary?.revenue?.growth}%
+            </div>
           </div>
         </div>
         <div className=" p-8 space-y-3 w-1/5 bg-slate-300 tracking-wide bg-opacity-40 rounded-2xl">
-          <p className=" font-light text-sm">Lượt visit</p>
+          <p className=" font-light text-sm">Số user</p>
           <div className=" flex space-x-2 items-end">
-            <p className=" font text-2xl">10.000 </p>
-            <div className=" font-light text-xs pb-2">+11.02%</div>
+            <p className=" font text-2xl">
+              {Number(summary?.users?.total).toLocaleString()}{" "}
+            </p>
+            <div className=" font-light text-xs pb-2">
+              +{summary?.users?.growth}%
+            </div>
           </div>
         </div>
         <div className=" p-8 space-y-3 w-1/5 bg-cyan-300 tracking-wide bg-opacity-40 rounded-2xl">
-          <p className=" font-light text-sm">Số user</p>
+          <p className=" font-light text-sm">Số sản phẩm</p>
           <div className=" flex space-x-2 items-end">
-            <p className=" font text-2xl">7, 265 </p>
-            <div className=" font-light text-xs pb-2">+11.02%</div>
+            <p className=" font text-2xl">
+              {" "}
+              {Number(summary?.products?.total).toLocaleString()}{" "}
+            </p>
+            <div className=" font-light text-xs pb-2">
+              +{summary?.products?.growth}%
+            </div>
           </div>
         </div>
         <div className=" p-8 space-y-3 w-1/5 bg-slate-300 tracking-wide bg-opacity-40 rounded-2xl">
-          <p className=" font-light text-sm">Lượt visit</p>
+          <p className=" font-light text-sm">Sản phẩm bán ra</p>
           <div className=" flex space-x-2 items-end">
-            <p className=" font text-2xl">10.000 </p>
-            <div className=" font-light text-xs pb-2">+11.02%</div>
+            <p className=" font text-2xl">{summary?.sold_products?.total} </p>
+            <div className=" font-light text-xs pb-2">
+              +{summary?.sold_products?.growth}%
+            </div>
           </div>
         </div>
       </div>

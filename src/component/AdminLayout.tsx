@@ -152,7 +152,7 @@ export default function AdminLayout() {
                 src={product}
                 alt=""
               />
-              <p className=" font-light">Sản phẩm</p>
+              <p className=" font-light">Đã huỷ</p>
             </Link>
             <Link
               to="/admin/orders/complete"
@@ -222,6 +222,39 @@ export default function AdminLayout() {
               />
               <p className=" font-light">Thống kê sản phẩm</p>
             </div>
+          </div>
+        </div>
+        <div className=" flex flex-col">
+          <p className=" text-slate-400 font-light text-sm">Tài khoản</p>
+          <div className=" flex flex-col  pl-3 py-4">
+            <Link
+              to="/admin/product/create"
+              className={
+                location.pathname === "/admin/product/create"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
+              <img
+                src={profile}
+                alt=""
+              />
+              <p className=" font-light">Danh sách tài khoản</p>
+            </Link>
+            <Link
+              to="/admin/product/update"
+              className={
+                location.pathname === "/admin/product/update"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
+              <img
+                src={order}
+                alt=""
+              />
+              <p className=" font-light">Cấp quyền tài khoản</p>
+            </Link>
           </div>
         </div>
       </div>
