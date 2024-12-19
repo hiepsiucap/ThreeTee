@@ -10,7 +10,6 @@ import {
 } from "../utilz/Request/postRequest";
 import { GetRequestWithCre } from "../utilz/Request/getRequest";
 import Swal from "sweetalert2";
-import { useParams } from "react-router-dom";
 
 interface Size {
   size: string;
@@ -86,7 +85,7 @@ export default function UpdateProduct() {
       const result = await response.json();
       console.log("Response:", result);
     } catch (error) {
-      console.error("Error:", error.message);
+      if (error instanceof Error) console.error("Error:", error.message);
     }
   };
   postOrder();
@@ -117,12 +116,13 @@ export default function UpdateProduct() {
           existingImages: productData.images,
         });
       } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: "Không thể tải thông tin sản phẩm",
-          icon: "error",
-          confirmButtonText: "Trở lại",
-        });
+        if (error instanceof Error)
+          Swal.fire({
+            title: "Error!",
+            text: "Không thể tải thông tin sản phẩm",
+            icon: "error",
+            confirmButtonText: "Trở lại",
+          });
       }
     };
 
@@ -193,7 +193,7 @@ export default function UpdateProduct() {
     try {
       // Update main product info
       const response = await GetPostRequestWithCre({
-        route: `api/staff/products/${id}`,
+        route: `api/staff/products/${17}`,
         body: {
           name: data.name,
           description: data.description,
@@ -211,7 +211,7 @@ export default function UpdateProduct() {
         GetPostRequestWithCre({
           route: "api/staff/product-details",
           body: {
-            product_id: id,
+            product_id: 17,
             stock: detail.quantity,
             price: detail.price,
             size: detail.size,
@@ -225,7 +225,7 @@ export default function UpdateProduct() {
       // Upload new images if any
       if (data.images.length > 0) {
         const formdata = new FormData();
-        formdata.set("product_id", id!);
+        formdata.set("product_id", "17");
         data.images.forEach((file) => {
           if (file instanceof File) {
             formdata.append("images[]", file);
