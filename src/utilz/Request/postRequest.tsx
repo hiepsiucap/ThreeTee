@@ -50,9 +50,9 @@ export const GetPostRequestWithCre = async ({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Properly format Authorization header
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json", // Properly format Authorization header
           },
-          credentials: "include",
           body: JSON.stringify(body),
         }
       );

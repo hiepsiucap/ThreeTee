@@ -9,74 +9,81 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+// import BasicLine from "../component/LineChart";
+import { InfinitySpin } from "react-loader-spinner";
+import { useStateUserContext } from "../contexts/UserContextProvider";
 import { motion } from "framer-motion";
+import { GetRequestWithCre } from "../utilz/Request/getRequest";
 
-interface Column {
-  id: "orderId" | "customerName" | "quantity" | "orderDate" | "status";
-  label: string;
-  minWidth?: number;
-  align?: "right";
-}
-
-const columns: readonly Column[] = [
-  { id: "orderId", label: "Mã Đơn Hàng", minWidth: 120 },
-  { id: "customerName", label: "Tên Khách Hàng", minWidth: 150 },
-  { id: "quantity", label: "Số Lượng Sản Phẩm", minWidth: 100, align: "right" },
-  { id: "orderDate", label: "Ngày Đặt Hàng", minWidth: 150, align: "right" },
-  { id: "status", label: "Trạng Thái", minWidth: 120 },
-];
-
-interface OrderData {
-  orderId: string;
-  customerName: string;
-  quantity: number;
-  orderDate: string;
+// const categoriess = [
+//   "Áo thun",
+//   "Áo Hoddies",
+//   "Ly sứ",
+//   "Bình giữ nhiệt",
+//   "Áo Polo",
+// ];
+interface Order {
+  id: number;
+  user_id: number;
+  phonenumber: string;
+  address: string;
+  order_date: string;
+  totalprice: number;
   status: string;
+  payment_date: string | null;
+  payment_status: string | null;
+  payment_link: string | null;
+  payment_link_id: string | null;
+  order_details: OrderDetail[];
 }
 
-function createOrderData(
-  orderId: string,
-  customerName: string,
-  quantity: number,
-  orderDate: string,
-  status: string
-): OrderData {
-  return { orderId, customerName, quantity, orderDate, status };
+interface OrderDetail {
+  name: string;
 }
 
-const orders = [
-  createOrderData("ORD001", "Nguyen Van A", 3, "2024-11-01", "Chờ Xác Nhận"),
-  createOrderData("ORD002", "Tran Thi B", 1, "2024-11-02", "Chờ Xác Nhận"),
-  createOrderData("ORD003", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD004", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD005", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD006", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD007", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD008", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD009", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00a", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00z", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00x", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00c", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00v", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00b", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00n", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00m", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00l", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00p", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00o", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00i", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  createOrderData("ORD00u", "Le Van C", 5, "2024-11-03", "Chờ Xác Nhận"),
-  // Thêm các đơn hàng khác nếu cần
+const columns = [
+  { id: "id", label: "Mã đơn hàng", minWidth: 170 },
+  { id: "phonenumber", label: "Số điện thoại", minWidth: 170 },
+  { id: "totalprice", label: "Tổng tiền", minWidth: 100 },
+  { id: "order_date", label: "Ngày đặt", minWidth: 170 },
+  { id: "status", label: "Trạng thái", minWidth: 170 },
 ];
 
-export default function PendingOrdersAdmin() {
+export default function OrdersAdmin() {
+  const [orders, setOrders] = React.useState<Order[]>([]);
+  const { token } = useStateUserContext();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [loading, changeLoading] = React.useState<boolean>(true);
+  React.useEffect(() => {
+    const fetchOrders = async () => {
+      const response = await GetRequestWithCre({
+        route: "api/admin/orders/all?status=pending",
+        token,
+      });
+      if (response.success) {
+        setOrders(response.data.data.data || []);
+      }
+      changeLoading(false);
+    };
+    fetchOrders();
+  }, [token]);
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const displayedOrders = orders.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
     <div className="pl-72">
@@ -86,82 +93,88 @@ export default function PendingOrdersAdmin() {
         transition={{ delay: 0.2, duration: 0.5 }}
         className="text-2xl py-6"
       >
-        Đơn Hàng Chờ Xác Nhận
+        Đơn hàng
       </motion.div>
-      <div className="flex space-x-6 h-full mr-6">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="overflow-hidden rounded-2xl shadow-lg w-full"
-        >
-          <Paper
-            sx={{
-              width: "100%",
-              overflow: "hidden",
-              background: "transparent",
-            }}
+      {loading === true ? (
+        <div className=" pt-36 flex w-full justify-center items-center">
+          <InfinitySpin
+            width="200"
+            color="#000000"
+          />
+        </div>
+      ) : (
+        <div className="flex  px-6 h-full">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="overflow-hidden rounded-2xl shadow-lg w-full "
           >
-            <TableContainer sx={{ maxHeight: 700 }}>
-              <Table
-                stickyHeader
-                aria-label="pending orders table"
-              >
-                <TableHead>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{
-                          minWidth: column.minWidth,
-                          color: "#6b7280",
-                          fontWeight: "bold",
-                          backgroundColor: "#f3f4f6",
-                        }}
-                      >
-                        {column.label}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {orders
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((order) => (
+            <Paper sx={{ width: "100%", overflow: "hidden" }}>
+              <TableContainer sx={{ maxHeight: 1000 }}>
+                <Table
+                  stickyHeader
+                  aria-label="sticky table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          {column.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {displayedOrders.map((order) => (
                       <TableRow
                         hover
                         role="checkbox"
                         tabIndex={-1}
-                        key={order.orderId}
+                        key={order.id}
                       >
-                        {columns.map((column) => {
-                          const value = order[column.id];
-                          return (
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                            >
-                              {value}
-                            </TableCell>
-                          );
-                        })}
+                        {columns.map((column) => (
+                          <TableCell key={column.id}>
+                            {column.id === "totalprice"
+                              ? `${(order.totalprice ?? 0).toLocaleString()} ₫`
+                              : column.id === "order_date"
+                              ? new Date(order.order_date).toLocaleDateString(
+                                  "vi-VN"
+                                )
+                              : column.id === "id"
+                              ? order.id.toString()
+                              : column.id === "phonenumber"
+                              ? order.phonenumber ?? "-"
+                              : column.id === "order_details"
+                              ? order.order_details
+                                  .map((detail) => detail.name)
+                                  .join(", ")
+                              : (
+                                  order[column.id as keyof Order] ?? "-"
+                                ).toString()}
+                          </TableCell>
+                        ))}
                       </TableRow>
                     ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              component="div"
-              count={orders.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              rowsPerPageOptions={[10]}
-            />
-          </Paper>
-        </motion.div>
-      </div>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 50]}
+                component="div"
+                count={orders.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Paper>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
