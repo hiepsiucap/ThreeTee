@@ -15,7 +15,11 @@ export default function CategoryFilter({
   filter: Filter;
   changefilter: (updateFn: (prev: Filter) => Filter) => void;
 }) {
-  const listSize = ["Nam", "Nữ", "Phụ kiện"];
+  const listSize = [
+    { label: "Nam", data: "nam" },
+    { label: "Nữ", data: "nu" },
+    { label: "Phụ kiện", data: "phukien" },
+  ];
 
   return (
     <div className="grid grid-cols-2 gap-3 py-6">
@@ -26,16 +30,16 @@ export default function CategoryFilter({
             onClick={() => {
               changefilter((prev) => ({
                 ...prev,
-                size: size !== filter.size ? size : "all",
+                category: size.data !== filter.category ? size.data : "all",
               }));
             }}
             className={
-              size === filter.size
+              size.data === filter.category
                 ? "border-gray-800 border-2 font-semibold scale-105 rounded-sm py-1 px-3"
                 : "border border-gray-600 rounded-sm py-2 px-3"
             }
           >
-            {size}
+            {size.label}
           </button>
         );
       })}

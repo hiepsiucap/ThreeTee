@@ -80,9 +80,9 @@ export default function CheckOut() {
         className="   "
       >
         <Loading modalIsOpen={loading}></Loading>
-        <div className="flex items-center space-x-10">
-          <div className=" flex flex-col w-1/2 ">
-            <p className=" text-2xl py-6">Thông tin đặt hàng</p>
+        <div className="flex flex-col md:flex-row items-center md:space-x-10">
+          <div className=" flex flex-col w-full px-6 md:px-0 md:w-1/2 ">
+            <p className=" text-2xl md:py-6 py-3">Thông tin đặt hàng</p>
             <div className=" bg-slate-50 p-12  flex flex-col space-y-6">
               <h2 className="text-xl font-light  py-2">Thông tin cá nhân</h2>
               <div className="flex flex-col space-y-1">
@@ -228,9 +228,9 @@ export default function CheckOut() {
               </div>
             </div>
           </div>
-          <div className=" w-1/2 flex flex-col space-y-4">
+          <div className=" md:w-1/2 flex flex-col space-y-4">
             <div className=" flex justify-between">
-              <p className=" text-2xl py-4">Danh sách sản phẩm</p>
+              <p className=" text-xl md:text-2xl py-4">Danh sách sản phẩm</p>
               <p className=" text-lg py-4 px-3">Đơn giá</p>
             </div>
 

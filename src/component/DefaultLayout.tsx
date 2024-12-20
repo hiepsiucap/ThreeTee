@@ -163,7 +163,20 @@ export default function DefaultLayout() {
                 <Logo />
               </Link>
             </li>
-            <li className=" flex space-x-2 justify-between font-medium">
+            <li className=" flex space-x-2 items-center  justify-between font-medium">
+              <Link
+                to="/cart"
+                className=" relative px-4 pb-2"
+              >
+                <img
+                  src={Cart}
+                  className=" w-10 h-10 "
+                  alt=""
+                />
+                <div className="text-xs bg-red-500 text-white absolute rounded-full font-medium py-0.5  px-1.5 -top-0.5 left-3.5 bg-opacity-100 w-5 h-5 flex items-center justify-center">
+                  {cart?.length || 0}
+                </div>
+              </Link>
               <Hamburger></Hamburger>
             </li>
             {/* <li className=" flex space-x-2   items-center text-md font-light">

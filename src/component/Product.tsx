@@ -70,17 +70,30 @@ export default function Product() {
           />
         </div>
       ) : (
-        <div className=" md:grid-cols-3 md:grid hidden gap-10 ">
-          {listProduct.map((product, index) => {
-            if (index > 5) return;
-            return (
-              <ProductItem
-                key={index}
-                product={product}
-              ></ProductItem>
-            );
-          })}
-        </div>
+        <>
+          <div className=" md:grid-cols-3 grid-cols-1 hidden md:grid gap-10 ">
+            {listProduct.map((product, index) => {
+              if (index > 5) return;
+              return (
+                <ProductItem
+                  key={index}
+                  product={product}
+                ></ProductItem>
+              );
+            })}
+          </div>
+          <div className=" md:hidden grid-cols-1 grid  gap-10 ">
+            {listProduct.map((product, index) => {
+              if (index > 5) return;
+              return (
+                <ProductItem
+                  key={index}
+                  product={product}
+                ></ProductItem>
+              );
+            })}
+          </div>
+        </>
       )}
       {/* <div className=" px-6 flex md:hidden flex-col items-center relative">
         <ProductItem product={Product[number]}></ProductItem>

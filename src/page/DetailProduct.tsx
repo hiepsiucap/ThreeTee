@@ -136,8 +136,8 @@ export default function DetailProduct() {
     getReview();
   }, [id]);
   return (
-    <section className=" md:container mx-auto py-6  px-24">
-      <div className="font-roboto pl-6 flex space-x-2 font-light">
+    <section className=" md:container mx-auto py-6  md:px-24">
+      <div className=" hidden font-roboto pl-6 md:flex flex-col items-center md:flex-row md:space-x-2 font-light">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -163,7 +163,7 @@ export default function DetailProduct() {
         </div>
       ) : (
         <>
-          <div className=" flex flex-col md:flex-row space-x-16">
+          <div className=" flex flex-col md:flex-row md:space-x-16">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -180,12 +180,12 @@ export default function DetailProduct() {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="  py-6 px-6"
+              className="  py-6 px-6 flex flex-col items-center w-full md:w-1/2  md:items-start"
             >
               <div className=" pt-6 font-roboto font-light text-3xl">
                 {data.name}
               </div>
-              <div className=" flex font-light ">Nam</div>
+              <div className=" flex font-light ">{data.category}</div>
               <div className=" font-roboto pb-3 pt-4  font-light text-3xl">
                 {formatPrice(100000)}
               </div>

@@ -10,83 +10,150 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import BasicLine from "../component/LineChart";
-import { motion } from "framer-motion";
+import Basic from "../component/ApexChart";
+import BasicPie from "../component/PieChart";
+
 interface Column {
-  id: "name" | "code" | "population" | "size" | "density";
+  id: "productID" | "name" | "category" | "price" | "stock" | "sold" | "status";
   label: string;
   minWidth?: number;
-  align?: "right";
+  align?: "right" | "left";
   format?: (value: number) => string;
 }
-const data = [20, 30, 40, 50, 60];
-// const categoriesss = ["Quý 1", "Quý 2", "Quý 3", "Quý 4", "Cả Năm"];
-const categoriess = [
-  "Áo thun",
-  "Áo Hoddies",
-  "Ly sứ",
-  "Bình giữ nhiệt",
-  "Áo Polo",
-];
+
+// Dữ liệu bán hàng theo tháng
+const monthlySales = [150, 180, 165, 220, 195, 210];
+const monthLabels = ["T1", "T2", "T3", "T4", "T5", "T6"];
+
+// Dữ liệu phân loại sản phẩm
+const categoryData = [40, 25, 15, 12, 8];
+const categoryLabels = ["Áo", "Quần", "Váy", "Phụ kiện", "Khác"];
+
+// Trạng thái sản phẩm
+type ProductStatus = "Còn hàng" | "Sắp hết" | "Hết hàng" | "Ngừng kinh doanh";
+
 const columns: readonly Column[] = [
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "code", label: "ISO\u00a0Code", minWidth: 100 },
+  { id: "productID", label: "Mã SP", minWidth: 100 },
+  { id: "name", label: "Tên sản phẩm", minWidth: 200 },
+  { id: "category", label: "Danh mục", minWidth: 120 },
   {
-    id: "population",
-    label: "Population",
-    minWidth: 170,
+    id: "price",
+    label: "Giá bán",
+    minWidth: 120,
     align: "right",
-    format: (value: number) => value.toLocaleString("en-US"),
+    format: (value: number) => value.toLocaleString("vi-VN") + "đ",
   },
   {
-    id: "size",
-    label: "Size\u00a0(km\u00b2)",
-    minWidth: 170,
+    id: "stock",
+    label: "Tồn kho",
+    minWidth: 100,
     align: "right",
-    format: (value: number) => value.toLocaleString("en-US"),
+    format: (value: number) => value.toString(),
   },
   {
-    id: "density",
-    label: "Density",
-    minWidth: 170,
+    id: "sold",
+    label: "Đã bán",
+    minWidth: 100,
     align: "right",
-    format: (value: number) => value.toFixed(2),
+    format: (value: number) => value.toString(),
   },
+  { id: "status", label: "Trạng thái", minWidth: 150 },
 ];
 
-interface Data {
+interface ProductData {
+  id: string;
+  productID: string;
   name: string;
-  code: string;
-  population: number;
-  size: number;
-  density: number;
+  category: string;
+  price: number;
+  stock: number;
+  sold: number;
+  status: ProductStatus;
 }
 
 function createData(
+  id: string,
+  productID: string,
   name: string,
-  code: string,
-  population: number,
-  size: number
-): Data {
-  const density = population / size;
-  return { name, code, population, size, density };
+  category: string,
+  price: number,
+  stock: number,
+  sold: number,
+  status: ProductStatus
+): ProductData {
+  return { id, productID, name, category, price, stock, sold, status };
 }
 
 const rows = [
-  createData("India", "IN", 1324171354, 3287263),
-  createData("China", "CN", 1403500365, 9596961),
-  createData("Italy", "IT", 60483973, 301340),
-  createData("United States", "US", 327167434, 9833520),
-  createData("Canada", "CA", 37602103, 9984670),
-  createData("Australia", "AU", 25475400, 7692024),
-  createData("Germany", "DE", 83019200, 357578),
-  createData("Ireland", "IE", 4857000, 70273),
-  createData("Mexico", "MX", 126577691, 1972550),
-  createData("Japan", "JP", 126317000, 377973),
-  createData("France", "FR", 67022000, 640679),
-  createData("United Kingdom", "GB", 67545757, 242495),
-  createData("Russia", "RU", 146793744, 17098246),
-  createData("Nigeria", "NG", 200962417, 923768),
-  createData("Brazil", "BR", 210147125, 8515767),
+  createData("1", "SP001", "Áo thun basic", "Áo", 299000, 50, 150, "Còn hàng"),
+  createData(
+    "2",
+    "SP002",
+    "Quần jean slim fit",
+    "Quần",
+    599000,
+    30,
+    85,
+    "Còn hàng"
+  ),
+  createData("3", "SP003", "Váy hoa dáng xòe", "Váy", 449000, 5, 95, "Sắp hết"),
+  createData("4", "SP004", "Áo sơ mi trắng", "Áo", 399000, 0, 120, "Hết hàng"),
+  createData(
+    "5",
+    "SP005",
+    "Túi xách da",
+    "Phụ kiện",
+    899000,
+    15,
+    45,
+    "Còn hàng"
+  ),
+  createData("6", "SP006", "Áo khoác denim", "Áo", 799000, 25, 78, "Còn hàng"),
+  createData("7", "SP007", "Quần tây âu", "Quần", 499000, 3, 92, "Sắp hết"),
+  createData("8", "SP008", "Váy công sở", "Váy", 599000, 20, 65, "Còn hàng"),
+  createData(
+    "9",
+    "SP009",
+    "Thắt lưng da",
+    "Phụ kiện",
+    299000,
+    40,
+    30,
+    "Còn hàng"
+  ),
+  createData("10", "SP010", "Áo len cổ lọ", "Áo", 449000, 0, 88, "Hết hàng"),
+  createData(
+    "11",
+    "SP011",
+    "Quần short jean",
+    "Quần",
+    399000,
+    35,
+    110,
+    "Còn hàng"
+  ),
+  createData("12", "SP012", "Váy dạ hội", "Váy", 1299000, 8, 25, "Còn hàng"),
+  createData(
+    "13",
+    "SP013",
+    "Ví cầm tay",
+    "Phụ kiện",
+    499000,
+    12,
+    55,
+    "Còn hàng"
+  ),
+  createData(
+    "14",
+    "SP014",
+    "Áo polo",
+    "Áo",
+    349000,
+    0,
+    135,
+    "Ngừng kinh doanh"
+  ),
+  createData("15", "SP015", "Quần kaki", "Quần", 459000, 28, 72, "Còn hàng"),
 ];
 
 export default function ProductsAdmin() {
@@ -106,100 +173,111 @@ export default function ProductsAdmin() {
   };
 
   return (
-    <div className=" pl-72">
-      <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-        className=" text-2xl py-6 "
-      >
-        Sản phẩm
-      </motion.div>
-      <div className=" flex space-x-6 h-full ">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className=" overflow-hidden rounded-2xl  shadow-lg w-2/3"
-        >
-          <Paper sx={{ width: "100%", overflow: "hidden" }}>
-            <TableContainer sx={{ maxHeight: 700 }}>
-              <Table
-                stickyHeader
-                aria-label="sticky table"
-              >
-                <TableHead>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth }}
-                      >
-                        {column.label}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      return (
-                        <TableRow
-                          hover
-                          role="checkbox"
-                          tabIndex={-1}
-                          key={row.code}
-                        >
-                          {columns.map((column) => {
-                            const value = row[column.id];
-                            return (
-                              <TableCell
-                                key={column.id}
-                                align={column.align}
-                              >
-                                {column.format && typeof value === "number"
-                                  ? column.format(value)
-                                  : value}
-                              </TableCell>
-                            );
-                          })}
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[15]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
-        </motion.div>
-        <div className=" flex flex-col space-y-6 w-1/3">
-          <div className=" w-full bg-gray-50 p-6 rounded-3xl shadow-md">
-            {" "}
-            <BasicLine
-              categories={categoriess}
-              data={data}
-              data1={data}
-            />
-          </div>
-          <div className=" w-full bg-gray-50 p-6 rounded-3xl shadow-md">
-            {" "}
-            <BasicLine
-              categories={categoriess}
-              data={data}
-              data1={data}
-            />
-          </div>
+    <div className="pl-72">
+      <p className="text-2xl py-6">Quản lý sản phẩm</p>
+
+      <div className="grid grid-cols-2 gap-10 w-full">
+        <div className="w-full h-fit bg-gray-50 p-6 rounded-3xl shadow-md">
+          <h3 className="text-lg font-medium mb-4">
+            Số lượng bán ra theo tháng
+          </h3>
+          <BasicLine
+            categories={monthLabels}
+            data={monthlySales}
+            data1={monthlySales.map((v) => v * 0.8)} // Dự báo tháng tới
+          />
         </div>
+        <div className="w-full h-fit bg-gray-50 p-6 rounded-3xl shadow-md">
+          <h3 className="text-lg font-medium mb-4">
+            Tỷ lệ tồn kho theo danh mục
+          </h3>
+          <Basic
+            categories={categoryLabels}
+            data={categoryData}
+          />
+        </div>
+        <div className="w-full bg-gray-50 p-6 rounded-3xl shadow-md">
+          <h3 className="text-lg font-medium mb-4">
+            Phân bố trạng thái sản phẩm
+          </h3>
+          <BasicPie
+            categories={["Còn hàng", "Sắp hết", "Hết hàng", "Ngừng kinh doanh"]}
+            data={[60, 20, 15, 5]}
+          />
+        </div>
+        <div className="w-full bg-gray-50 p-6 rounded-3xl shadow-md">
+          <h3 className="text-lg font-medium mb-4">Top danh mục bán chạy</h3>
+          <BasicPie
+            categories={categoryLabels}
+            data={[45, 25, 15, 10, 5]}
+          />
+        </div>
+      </div>
+
+      <h1 className="font-light py-6 text-center text-2xl">
+        Danh sách sản phẩm
+      </h1>
+
+      <div className="overflow-hidden rounded-2xl py-6">
+        <Paper sx={{ width: "100%", overflow: "hidden" }}>
+          <TableContainer sx={{ maxHeight: 700 }}>
+            <Table
+              stickyHeader
+              aria-label="sticky table"
+            >
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={row.id}
+                      >
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                            >
+                              {column.format && typeof value === "number"
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 15, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
       </div>
     </div>
   );

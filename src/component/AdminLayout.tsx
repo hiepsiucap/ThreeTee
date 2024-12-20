@@ -1,6 +1,6 @@
 /** @format */
 
-import { Outlet } from "react-router-dom";
+import { Outlet, redirect } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import pie from "../assets/icon/ChartPieSlice.svg";
@@ -18,8 +18,10 @@ import SideBar from "../assets/icon/Sidebar.svg";
 export default function AdminLayout() {
   const location = useLocation();
   console.log(location.pathname);
-  const { user } = useStateUserContext();
-
+  const { user, token } = useStateUserContext();
+  if (!token) {
+    redirect("/login");
+  }
   return (
     <div className=" font-inter   bg-white  text-blackadmin flex text-admin w-full ">
       <div className=" fixed overflow-y-scroll z-2  bg-white px-7 pr-7 shadow-md flex flex-col space-y-5 h-screen py-4">
@@ -91,7 +93,7 @@ export default function AdminLayout() {
                 src={product}
                 alt=""
               />
-              <p className=" font-light">Đã huỷ</p>
+              <p className=" font-light">Sản phẩm</p>
             </Link>
             <Link
               to="/admin/posts"

@@ -2,11 +2,13 @@
 
 import BasicLine from "./LineChart";
 import Basic from "./ApexChart";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import BasicPie from "./PieChart";
 import { useStateUserContext } from "../contexts/UserContextProvider";
 import { GetRequestWithCre } from "../utilz/Request/getRequest";
+import { InfinitySpin } from "react-loader-spinner";
 import getYearlyProfit from "../utilz/Filter";
+import { aggregateOrdersByQuarterWithTotal } from "../utilz/Filter";
 interface Summary {
   revenue: {
     total: string; // The total revenue as a string, e.g., "400000"
@@ -27,9 +29,10 @@ interface Summary {
 }
 type YearlyProfit = { [key: number]: number[] };
 export default function AdminOverview() {
-  const [summary, changeSummary] = React.useState<Summary | null>();
+  const [summary, changeSummary] = useState<Summary | null>();
   const [user, changeUser] = useState<TransformedUser[]>([]);
   const [profit, changeProfit] = useState<YearlyProfit>({});
+  const [order, changeOrder] = useState<number[]>([]);
   const categories = [
     "Tháng 1",
     "Tháng 2",
@@ -113,14 +116,13 @@ export default function AdminOverview() {
     updated_at: string;
   }
   const { token } = useStateUserContext();
-
-  const [, changeLoading] = React.useState<boolean>(true);
-  React.useEffect(() => {
+  const [isLoading, changeIsLoading] = useState<boolean>(true);
+  useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        changeLoading(true); // Good practice to set loading at start of fetch
+        changeIsLoading(true); // Set to true at start
 
-        const [summaryResponse, userResponse, profitResponse] =
+        const [summaryResponse, userResponse, profitResponse, orderResponse] =
           await Promise.all([
             GetRequestWithCre({
               route: "api/admin/dashboard-statistics",
@@ -134,183 +136,203 @@ export default function AdminOverview() {
               route: "api/staff/profit-statistics",
               token,
             }),
+            GetRequestWithCre({
+              route: "api/staff/order-statistics",
+              token,
+            }),
           ]);
 
-        // Process each response independently to avoid one failure affecting others
-        try {
-          if (summaryResponse?.success) {
-            changeSummary(summaryResponse.data);
-          } else {
-            console.error("Summary fetch failed:", summaryResponse);
-          }
-        } catch (e) {
-          console.error("Error processing summary data:", e);
+        // Process responses
+        if (summaryResponse?.success) {
+          changeSummary(summaryResponse.data);
+        } else {
+          console.error("Summary fetch failed:", summaryResponse);
+        }
+        if (orderResponse?.success) {
+          changeOrder(aggregateOrdersByQuarterWithTotal(orderResponse.data));
+        } else {
+          console.error("Summary fetch failed:", summaryResponse);
+        }
+        if (userResponse?.success) {
+          changeUser(transformUserData(userResponse.data));
+        } else {
+          console.error("User logs fetch failed:", userResponse);
         }
 
-        try {
-          if (userResponse?.success) {
-            changeUser(transformUserData(userResponse.data));
-          } else {
-            console.error("User logs fetch failed:", userResponse);
-          }
-        } catch (e) {
-          console.error("Error processing user data:", e);
-        }
-
-        try {
-          if (profitResponse?.success) {
-            changeProfit(getYearlyProfit(profitResponse.data, [2023, 2024]));
-          } else {
-            console.error("Profit fetch failed:", profitResponse);
-          }
-        } catch (e) {
-          console.error("Error processing profit data:", e);
+        if (profitResponse?.success) {
+          changeProfit(getYearlyProfit(profitResponse.data, [2023, 2024]));
+        } else {
+          console.error("Profit fetch failed:", profitResponse);
         }
       } catch (error) {
         console.error("Network or fetch error:", error);
       } finally {
-        changeLoading(false);
+        changeIsLoading(false); // Single place to handle loading state
       }
     };
 
     if (token) {
-      // Add token check
       fetchDashboardData();
     }
 
     return () => {
-      // Could add cleanup if needed
+      // Optional: Add cleanup if needed
     };
-  }, [token, transformUserData]);
+  }, [
+    token,
+    changeSummary,
+    changeUser,
+    changeProfit,
+    changeIsLoading,
+    changeOrder,
+  ]); // Include all dependencies
   return (
-    <div className=" font-inter pl-72 w-full py-6">
-      <div className=" flex space-x-6">
-        <div className=" p-8 space-y-3 w-1/5 bg-cyan-300 tracking-wide bg-opacity-40 rounded-2xl">
-          <p className=" font-light">Tổng doanh thu</p>
-          <div className=" flex space-x-2 items-end">
-            <p className=" font text-xl">
-              {" "}
-              {Number(summary?.revenue?.total).toLocaleString() + "VNĐ"}{" "}
-            </p>
-            <div className=" font-light text-xs pb-2">
-              +{summary?.revenue?.growth}%
-            </div>
-          </div>
-        </div>
-        <div className=" p-8 space-y-3 w-1/5 bg-slate-300 tracking-wide bg-opacity-40 rounded-2xl">
-          <p className=" font-light text-sm">Số user</p>
-          <div className=" flex space-x-2 items-end">
-            <p className=" font text-2xl">
-              {Number(summary?.users?.total).toLocaleString()}{" "}
-            </p>
-            <div className=" font-light text-xs pb-2">
-              +{summary?.users?.growth}%
-            </div>
-          </div>
-        </div>
-        <div className=" p-8 space-y-3 w-1/5 bg-cyan-300 tracking-wide bg-opacity-40 rounded-2xl">
-          <p className=" font-light text-sm">Số sản phẩm</p>
-          <div className=" flex space-x-2 items-end">
-            <p className=" font text-2xl">
-              {" "}
-              {Number(summary?.products?.total).toLocaleString()}{" "}
-            </p>
-            <div className=" font-light text-xs pb-2">
-              +{summary?.products?.growth}%
-            </div>
-          </div>
-        </div>
-        <div className=" p-8 space-y-3 w-1/5 bg-slate-300 tracking-wide bg-opacity-40 rounded-2xl">
-          <p className=" font-light text-sm">Sản phẩm bán ra</p>
-          <div className=" flex space-x-2 items-end">
-            <p className=" font text-2xl">{summary?.sold_products?.total} </p>
-            <div className=" font-light text-xs pb-2">
-              +{summary?.sold_products?.growth}%
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="  flex py-6 space-x-8 mr-6">
-        <div className=" w-2/3 bg-gray-50 p-6 rounded-3xl shadow-md">
-          {" "}
-          <BasicLine
-            categories={categories}
-            data={profit[2023]}
-            data1={profit[2024]}
+    <section>
+      {isLoading === true ? (
+        <div className=" pt-36 pl-72 flex w-full justify-center items-center">
+          <InfinitySpin
+            width="200"
+            color="#000000"
           />
         </div>
-        <div className=" w-1/3 p-5 bg-gray-50 shadow-md rounded-3xl">
-          <p className=" font-bold">Lượng truy cập </p>
-          <div className=" flex flex-col space-y-3 py-4 font-light text-sm">
-            {user.map((user) => {
-              return (
-                <div className=" flex justify-between items-center">
-                  <div className=" flex items-center">
-                    <img
-                      src={user.img}
-                      alt=""
-                      className=" w-8 h-8 mr-2 rounded-full"
-                    />
-                    <div className=" w-28 font-light ">{user.name}</div>
-                    <p
-                      className={
-                        user.role === "user"
-                          ? "bg-teal-600 py-1 px-2 text-white rounded-lg"
-                          : "bg-sky-500 py-1 px-2 text-white rounded-lg"
-                      }
-                    >
-                      {user.role}
-                    </p>
-                  </div>
-                  <div className=" flex space-x-2 items-end">
-                    <p className=" text-xs text-gray-500">{user.activity}</p>
-                  </div>
+      ) : (
+        <div className=" font-inter pl-72 w-full py-6">
+          <div className=" flex space-x-6">
+            <div className=" p-8 space-y-3 w-1/5 bg-cyan-300 tracking-wide bg-opacity-40 rounded-2xl">
+              <p className=" font-light">Tổng doanh thu</p>
+              <div className=" flex space-x-2 items-end">
+                <p className=" font text-xl">
+                  {" "}
+                  {Number(summary?.revenue?.total).toLocaleString() +
+                    "VNĐ"}{" "}
+                </p>
+                <div className=" font-light text-xs pb-2">
+                  +{summary?.revenue?.growth}%
                 </div>
-              );
-            })}
-            {truycap.map((user) => {
-              return (
-                <div className=" flex justify-between items-center">
-                  <div className=" flex items-center">
-                    <img
-                      src={user.img}
-                      alt=""
-                      className=" w-8 h-8 mr-2 rounded-full"
-                    />
-                    <div className=" w-28 font-light ">{user.name}</div>
-                    <p
-                      className={
-                        user.role === "user"
-                          ? "bg-teal-600 py-1 px-2 text-white rounded-lg"
-                          : "bg-sky-500 py-1 px-2 text-white rounded-lg"
-                      }
-                    >
-                      {user.role}
-                    </p>
-                  </div>
-                  <div className=" flex space-x-2 items-end">
-                    <p className=" text-xs text-gray-500">{user.activity}</p>
-                  </div>
+              </div>
+            </div>
+            <div className=" p-8 space-y-3 w-1/5 bg-slate-300 tracking-wide bg-opacity-40 rounded-2xl">
+              <p className=" font-light text-sm">Số user</p>
+              <div className=" flex space-x-2 items-end">
+                <p className=" font text-2xl">
+                  {Number(summary?.users?.total).toLocaleString()}{" "}
+                </p>
+                <div className=" font-light text-xs pb-2">
+                  +{summary?.users?.growth}%
                 </div>
-              );
-            })}
+              </div>
+            </div>
+            <div className=" p-8 space-y-3 w-1/5 bg-cyan-300 tracking-wide bg-opacity-40 rounded-2xl">
+              <p className=" font-light text-sm">Số sản phẩm</p>
+              <div className=" flex space-x-2 items-end">
+                <p className=" font text-2xl">
+                  {" "}
+                  {Number(summary?.products?.total).toLocaleString()}{" "}
+                </p>
+                <div className=" font-light text-xs pb-2">
+                  +{summary?.products?.growth}%
+                </div>
+              </div>
+            </div>
+            <div className=" p-8 space-y-3 w-1/5 bg-slate-300 tracking-wide bg-opacity-40 rounded-2xl">
+              <p className=" font-light text-sm">Sản phẩm bán ra</p>
+              <div className=" flex space-x-2 items-end">
+                <p className=" font text-2xl">
+                  {summary?.sold_products?.total}{" "}
+                </p>
+                <div className=" font-light text-xs pb-2">
+                  +{summary?.sold_products?.growth}%
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="  flex py-6 space-x-8 mr-6">
+            <div className=" w-2/3 bg-gray-50 p-6 rounded-3xl shadow-md">
+              {" "}
+              <BasicLine
+                categories={categories}
+                data={profit[2023]}
+                data1={profit[2024]}
+              />
+            </div>
+            <div className=" w-1/3 p-5 bg-gray-50 shadow-md rounded-3xl">
+              <p className=" font-bold">Lượng truy cập </p>
+              <div className=" flex flex-col space-y-3 py-4 font-light text-sm">
+                {user.map((user) => {
+                  return (
+                    <div className=" flex justify-between items-center">
+                      <div className=" flex items-center">
+                        <img
+                          src={user.img}
+                          alt=""
+                          className=" w-8 h-8 mr-2 rounded-full"
+                        />
+                        <div className=" w-28 font-light ">{user.name}</div>
+                        <p
+                          className={
+                            user.role === "user"
+                              ? "bg-teal-600 py-1 px-2 text-white rounded-lg"
+                              : "bg-sky-500 py-1 px-2 text-white rounded-lg"
+                          }
+                        >
+                          {user.role}
+                        </p>
+                      </div>
+                      <div className=" flex space-x-2 items-end">
+                        <p className=" text-xs text-gray-500">
+                          {user.activity}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+                {truycap.map((user) => {
+                  return (
+                    <div className=" flex justify-between items-center">
+                      <div className=" flex items-center">
+                        <img
+                          src={user.img}
+                          alt=""
+                          className=" w-8 h-8 mr-2 rounded-full"
+                        />
+                        <div className=" w-28 font-light ">{user.name}</div>
+                        <p
+                          className={
+                            user.role === "user"
+                              ? "bg-teal-600 py-1 px-2 text-white rounded-lg"
+                              : "bg-sky-500 py-1 px-2 text-white rounded-lg"
+                          }
+                        >
+                          {user.role}
+                        </p>
+                      </div>
+                      <div className=" flex space-x-2 items-end">
+                        <p className=" text-xs text-gray-500">
+                          {user.activity}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          <div className=" space-x-6 flex">
+            <div className="bg-gray-50 p-6 px-8  rounded-3xl shadow-md w-1/2">
+              <Basic
+                categories={categoriesss}
+                data={order}
+              ></Basic>
+            </div>
+            <div className="bg-gray-50 p-6 px-8  rounded-3xl shadow-md w-1/2">
+              <BasicPie
+                categories={categoriess}
+                data={data}
+              ></BasicPie>
+            </div>
           </div>
         </div>
-      </div>
-      <div className=" space-x-6 flex">
-        <div className="bg-gray-50 p-6 px-8  rounded-3xl shadow-md w-1/2">
-          <Basic
-            categories={categoriesss}
-            data={data}
-          ></Basic>
-        </div>
-        <div className="bg-gray-50 p-6 px-8  rounded-3xl shadow-md w-1/2">
-          <BasicPie
-            categories={categoriess}
-            data={data}
-          ></BasicPie>
-        </div>
-      </div>
-    </div>
+      )}
+    </section>
   );
 }

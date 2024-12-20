@@ -10,8 +10,8 @@ export default function Cart() {
   const { cart, DeleteCart, AddCart, MinusCart, getTotal } =
     useStateCartContext();
   return (
-    <section className=" md:container mx-auto flex space-x-10">
-      <div className=" w-2/3">
+    <section className=" md:container mx-auto flex flex-col md:flex-row md:space-x-10 px-6">
+      <div className=" md:w-2/3 px-3 md:px-0">
         <h2 className=" text-2xl py-2 pt-6"> Giỏ hàng</h2>
         <div className=" flex flex-col space-y-6 py-6">
           {cart && cart?.length > 0 ? (
@@ -78,7 +78,7 @@ export default function Cart() {
                       </div>
                     </div>
                   </div>
-                  <div className=" flex flex-col items-center">
+                  <div className=" hidden md:flex flex-col items-center">
                     <p className=" text-2xl font-light pb-2">
                       {formatPrice(Number(c.price) * Number(c.amount))}
                     </p>
@@ -105,7 +105,7 @@ export default function Cart() {
         </div>
       </div>
       {getTotal() > 0 && (
-        <div className=" mt-12 p-8 bg-slate-100 w-1/3  space-y-6">
+        <div className=" mt-12 p-8 bg-slate-100 md:w-1/3   space-y-6">
           <h2 className=" text-2xl py-2 pb-4"> Tổng tiền thanh toán</h2>
           <div className=" flex justify-between">
             <p className=" font-light">Mã khuyến mãi</p>
