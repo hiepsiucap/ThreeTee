@@ -1,20 +1,25 @@
 /** @format */
 
-import { useState, useEffect } from "react";
-import { useStateUserContext } from "../contexts/UserContextProvider";
-import { GetRequestWithCre } from "../utilz/Request/getRequest";
-import { PatchRequestWithCre } from "../utilz/Request/PatchRequest";
-import { toast } from "react-toastify";
+import React, { useState } from "react";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+<<<<<<< HEAD
 import { InfinitySpin } from "react-loader-spinner";
+=======
+
+>>>>>>> refs/remotes/origin/main
 interface Profile {
   name: string;
-  avatar: File | null;
+  avatar: File | string | null;
   email: string;
-  // phone?: string;
-  // address?: string;
+  city?: string;
+  address?: string;
+  country?: string;
+  phone_number?: string;
+  token: string | null;
 }
 
+<<<<<<< HEAD
 export default function UserInfo() {
   const { token } = useStateUserContext();
 
@@ -24,10 +29,19 @@ export default function UserInfo() {
     email: "",
   });
   const [loading, setLoading] = useState(true);
+=======
+interface UserInfoProps {
+  userData: Profile;
+}
+
+export default function UserInfo({ userData }: UserInfoProps) {
+  const [data, setData] = useState<Profile>(userData); // Sử dụng dữ liệu từ prop
+>>>>>>> refs/remotes/origin/main
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+<<<<<<< HEAD
   useEffect(() => {
     const getProfile = async () => {
       // Chỉ tải dữ liệu nếu chưa tải
@@ -45,22 +59,22 @@ export default function UserInfo() {
   }, [token]);
 
   // Cập nhật state data chung
+=======
+>>>>>>> refs/remotes/origin/main
   const handleInputChange = (field: keyof Profile, value: string | File) => {
     setData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Xử lý thay đổi ảnh đại diện
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      handleInputChange("avatar", file); // Lưu file trực tiếp vào state
+      handleInputChange("avatar", file);
     }
   };
 
   const handleUpdateProfile = async () => {
     const formData = new FormData();
     formData.append("name", data.name);
-    formData.append("_method", "PATCH");
 
     if (data.avatar instanceof File) {
       formData.append("avatar", data.avatar);
@@ -72,9 +86,9 @@ export default function UserInfo() {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userData.token}`,
           },
-          body: formData, // Gửi FormData
+          body: formData,
         }
       );
 
@@ -100,24 +114,30 @@ export default function UserInfo() {
     }
 
     try {
-      const response = await PatchRequestWithCre({
-        route: "api/user/change-password",
-        body: {
-          email: data.email,
-          password: currentPassword,
-          password_confirmation: newPassword,
-          token: token,
-        },
-        token: token,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL_SERVER}/api/user/change-password`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userData.token}`,
+          },
+          body: JSON.stringify({
+            email: data.email,
+            password: currentPassword,
+            password_confirmation: newPassword,
+          }),
+        }
+      );
 
-      if (response.success) {
+      if (response.ok) {
         toast.success("Đổi mật khẩu thành công!");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
       } else {
-        toast.error(`Đổi mật khẩu thất bại: ${response.msg}`);
+        const error = await response.json();
+        toast.error(`Đổi mật khẩu thất bại: ${error.message}`);
       }
     } catch (error) {
       console.error("Lỗi đổi mật khẩu:", error);
@@ -125,6 +145,7 @@ export default function UserInfo() {
     }
   };
 
+<<<<<<< HEAD
   if (loading)
     return (
       <div className=" pt-36 flex w-full justify-center items-center">
@@ -134,6 +155,8 @@ export default function UserInfo() {
         />
       </div>
     );
+=======
+>>>>>>> refs/remotes/origin/main
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -175,11 +198,21 @@ export default function UserInfo() {
           {[
             { label: "Họ và tên", value: data.name, field: "name" },
             { label: "Email", value: data.email, field: "email" },
-            { label: "Số điện thoại", value: "0918888465", field: "phone" },
+            { label: "Số điện thoại", value: data.phone_number, field: "phone_number" },
             {
               label: "Địa chỉ",
-              value: "Nhà số 2 kiệt 159 Hàn Mặc Tử",
+              value: data.address,
               field: "address",
+            },
+            {
+              label: "Thành phố",
+              value: data.city,
+              field: "city",
+            },
+            {
+              label: "Quốc gia",
+              value: data.country,
+              field: "country",
             },
           ].map((input) => (
             <label
