@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { GetRequestWithCre } from "../utilz/Request/getRequest";
 import { useStateUserContext } from "../contexts/UserContextProvider";
-import Loading from "./Loading";
+import { InfinitySpin } from "react-loader-spinner";
 interface Profile {
   name: string;
   avatar: string;
@@ -11,7 +11,6 @@ interface Profile {
 }
 export default function AdminProfile() {
   const [profile, setprofile] = useState("info");
-
   const [loading, changeLoading] = useState(true);
   const [data, changeData] = useState<Profile>({
     name: "",
@@ -31,12 +30,20 @@ export default function AdminProfile() {
   }, [token]);
   return (
     <motion.div
+      className=" z-0"
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.2, duration: 0.5 }}
     >
-      {!loading ? (
-        <div className="w-full ">
+      {loading === true ? (
+        <div className=" pt-36 md:pl-72 flex w-full justify-center items-center">
+          <InfinitySpin
+            width="200"
+            color="#000000"
+          />
+        </div>
+      ) : (
+        <div className="w-full -z-1 ">
           <div className=" pl-60">
             <img
               src="https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728564771/header_setting_ddmmoz.png"
@@ -44,7 +51,7 @@ export default function AdminProfile() {
               className=" "
             />
           </div>
-          <div className=" relative flex items-center h-full w-full">
+          <div className=" relative z-0 flex items-center h-full w-full">
             <div className="w-1/3 border-r-2 border-green-400 py-6 flex font-light items-start flex-col md:pl-72 space-y-4 font-inter">
               <button
                 onClick={() => {
@@ -84,7 +91,7 @@ export default function AdminProfile() {
               </button>
             </div>
 
-            <div className=" w-2/3  relative">
+            <div className=" w-2/3  -z-0 relative">
               <div className=" absolute -left-52 -top-24">
                 <img
                   src={
@@ -204,8 +211,6 @@ export default function AdminProfile() {
           </div>
           <div></div>
         </div>
-      ) : (
-        <Loading modalIsOpen={loading}></Loading>
       )}
     </motion.div>
   );

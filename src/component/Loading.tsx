@@ -22,7 +22,7 @@ const customStyles = {
 Modal.setAppElement("#root");
 export default function Loading({ modalIsOpen }: { modalIsOpen: boolean }) {
   return (
-    <section className=" relative z-10">
+    <section className=" relative z-50">
       <Modal
         isOpen={modalIsOpen}
         style={

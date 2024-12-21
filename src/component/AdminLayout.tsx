@@ -25,7 +25,7 @@ export default function AdminLayout() {
   }
   return (
     <div className=" font-inter   bg-white   text-blackadmin flex text-admin w-full ">
-      <div className=" fixed overflow-y-scroll hidden z-2  bg-white px-7 pr-7  shadow-md md:flex flex-col space-y-5 h-screen py-4">
+      <div className=" fixed overflow-y-scroll hidden  z-30  bg-white px-7 pr-7  shadow-md md:flex flex-col space-y-5 h-screen py-4">
         <div className=" flex flex-col">
           <Link
             to="/admin/profile"
@@ -175,7 +175,7 @@ export default function AdminLayout() {
         </div>
         <div className=" flex flex-col">
           <p className=" text-slate-400 font-light text-sm">Sản phẩm</p>
-          <div className=" flex flex-col space-y-2 pl-3 py-4">
+          <div className=" flex flex-col pl-3 py-4">
             <Link
               to="/admin/product/create"
               className={

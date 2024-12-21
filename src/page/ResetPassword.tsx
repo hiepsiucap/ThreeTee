@@ -58,7 +58,7 @@ export default function ResetPassword() {
   return (
     <div>
       <section className=" w-screen  h-screen bg-slate-50 flex items-center font-light justify-center ">
-        <div className=" bg-white min-w-64 w-1/3  rounded-md shadow-lg py-12 px-6">
+        <div className=" bg-white min-w-64 md:w-1/3  w-2/3  rounded-md shadow-lg py-12 px-6">
           {!isSend ? (
             <form
               onSubmit={onSubitHandler}
