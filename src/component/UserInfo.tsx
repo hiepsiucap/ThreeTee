@@ -1,71 +1,38 @@
 /** @format */
 
-import { useState, useEffect } from "react";
-import { useStateUserContext } from "../contexts/UserContextProvider";
-import { GetRequestWithCre } from "../utilz/Request/getRequest";
-import { PatchRequestWithCre } from "../utilz/Request/PatchRequest";
-import {  ToastContainer,toast } from "react-toastify";
+import React, { useState } from "react";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 interface Profile {
   name: string;
-  avatar: File | null;
+  avatar: File | string | null;
   email: string;
   city?: string;
   address?: string;
   country?: string;
-  phone_number?: string,
+  phone_number?: string;
+  token: string | null;
 }
 
-export default function UserInfo() {
-  const { token } = useStateUserContext();
-  const [hasFetched, setHasFetched] = useState(false);
-  const [data, setData] = useState<Profile>({
-    name: "",
-    avatar: null,
-    email: "",
-    city: "",
-    address: "",
-    country: "",
-    phone_number: "",
-  });
-  const [loading, setLoading] = useState(true);
+interface UserInfoProps {
+  userData: Profile;
+}
+
+export default function UserInfo({ userData }: UserInfoProps) {
+  const [data, setData] = useState<Profile>(userData); // Sử dụng dữ liệu từ prop
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  useEffect(() => {
-    const getProfile = async () => {
-      if (!hasFetched) {
-        // Chỉ tải dữ liệu nếu chưa tải
-        const response = await GetRequestWithCre({ route: "api/user", token });
-        if (response.success) {
-          setData({
-            name: response.data.name,
-            email: response.data.email,
-            avatar: response.data.avatar || null,
-            city: response.data.city || "",
-            address: response.data.address || "",
-            country: response.data.country || "",
-            phone_number: response.data.phone_number || "",
-          });
-        }
-        setHasFetched(true);
-      }
-      setLoading(false);
-    };
-    getProfile();
-  }, [token, hasFetched]);
-
-  // Cập nhật state data chung
   const handleInputChange = (field: keyof Profile, value: string | File) => {
     setData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Xử lý thay đổi ảnh đại diện
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      handleInputChange("avatar", file); // Lưu file trực tiếp vào state
+      handleInputChange("avatar", file);
     }
   };
 
@@ -83,9 +50,9 @@ export default function UserInfo() {
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${userData.token}`,
           },
-          body: formData, // Gửi FormData
+          body: formData,
         }
       );
 
@@ -111,24 +78,30 @@ export default function UserInfo() {
     }
 
     try {
-      const response = await PatchRequestWithCre({
-        route: "api/user/change-password",
-        body: {
-          email: data.email,
-          password: currentPassword,
-          password_confirmation: newPassword,
-          token: token,
-        },
-        token: token,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL_SERVER}/api/user/change-password`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userData.token}`,
+          },
+          body: JSON.stringify({
+            email: data.email,
+            password: currentPassword,
+            password_confirmation: newPassword,
+          }),
+        }
+      );
 
-      if (response.success) {
+      if (response.ok) {
         toast.success("Đổi mật khẩu thành công!");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
       } else {
-        toast.error(`Đổi mật khẩu thất bại: ${response.msg}`);
+        const error = await response.json();
+        toast.error(`Đổi mật khẩu thất bại: ${error.message}`);
       }
     } catch (error) {
       console.error("Lỗi đổi mật khẩu:", error);
@@ -136,7 +109,6 @@ export default function UserInfo() {
     }
   };
 
-  if (loading) return <p>Đang tải dữ liệu...</p>;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -1,5 +1,3 @@
-/** @format */
-
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { GetRequestWithCre } from "../utilz/Request/getRequest";
@@ -10,27 +8,61 @@ import UserOrder from "./UserOrder";
 import UserNotification from "./UserNotification";
 import UserSecurity from "./UserSecurity";
 
-export default function UserLayout() {
-  const [profile, setProfile] = useState("info");
-  const [loading, setLoading] = useState(true);
-  const [, setData] = useState({
-    name: "",
-    avatar: "",
-    email: "",
-  });
-  const { token } = useStateUserContext();
+interface Profile {
+  name: string;
+  avatar: File | string | null;
+  email: string;
+  city?: string;
+  address?: string;
+  country?: string;
+  phone_number?: string;
+  token: string | null;
+}
 
+export default function UserLayout() {
+  const [profile, setProfile] = useState("info"); // Quản lý tab hiện tại
+  const [loading, setLoading] = useState(true); // Trạng thái loading
+  const { token } = useStateUserContext(); // Lấy token từ context
+
+  // Khởi tạo dữ liệu mặc định
+  const [data, setData] = useState<Profile>({
+    name: "",
+    avatar: null,
+    email: "",
+    city: "",
+    address: "",
+    country: "",
+    phone_number: "",
+    token: null,
+  });
+
+  // Cập nhật token vào `data` khi `token` thay đổi
+  useEffect(() => {
+    if (token) {
+      setData((prevData) => ({ ...prevData, token }));
+    }
+  }, [token]);
+
+  // Lấy dữ liệu người dùng khi token sẵn sàng
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!token) return; // Chỉ gọi API nếu token hợp lệ
+
+      setLoading(true); // Bắt đầu loading
       const response = await GetRequestWithCre({ route: "api/user", token });
       if (response.success) {
-        setData(response.data);
-        setLoading(false);
+        setData((prevData) => ({
+          ...prevData, // Giữ lại token và các giá trị cũ
+          ...response.data, // Gộp dữ liệu từ API
+        }));
       }
+      setLoading(false); // Kết thúc loading
     };
+
     fetchProfile();
   }, [token]);
 
+  // Hiển thị trạng thái loading
   if (loading) {
     return <Loading modalIsOpen={loading} />;
   }
@@ -99,7 +131,7 @@ export default function UserLayout() {
 
           {/* Main Content */}
           <div className="w-full lg:w-3/4 px-6 py-4">
-            {profile === "info" && <UserInfo />}
+            {profile === "info" && <UserInfo userData={data} />}
             {profile === "order" && <UserOrder />}
             {profile === "nofi" && <UserNotification />}
             {profile === "pass" && <UserSecurity />}
