@@ -84,7 +84,7 @@ export default function Product() {
     name: "",
     pageCount: 1,
   });
-  const [sort, changesort] = useState<string>("price");
+  const [sort, changesort] = useState<string>("");
   const [total_pages, changetotal_pages] = useState<number>(1);
   const [total_items, changetotal_items] = useState<number>(1);
   const [loading, changeLoading] = useState<boolean>(true);
