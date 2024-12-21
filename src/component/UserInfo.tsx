@@ -4,14 +4,16 @@ import { useState, useEffect } from "react";
 import { useStateUserContext } from "../contexts/UserContextProvider";
 import { GetRequestWithCre } from "../utilz/Request/getRequest";
 import { PatchRequestWithCre } from "../utilz/Request/PatchRequest";
-import { toast } from "react-toastify";
+import {  ToastContainer,toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 interface Profile {
   name: string;
   avatar: File | null;
   email: string;
-  // phone?: string;
-  // address?: string;
+  city?: string;
+  address?: string;
+  country?: string;
+  phone_number?: string,
 }
 
 export default function UserInfo() {
@@ -21,6 +23,10 @@ export default function UserInfo() {
     name: "",
     avatar: null,
     email: "",
+    city: "",
+    address: "",
+    country: "",
+    phone_number: "",
   });
   const [loading, setLoading] = useState(true);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -37,6 +43,10 @@ export default function UserInfo() {
             name: response.data.name,
             email: response.data.email,
             avatar: response.data.avatar || null,
+            city: response.data.city || "",
+            address: response.data.address || "",
+            country: response.data.country || "",
+            phone_number: response.data.phone_number || "",
           });
         }
         setHasFetched(true);
@@ -62,7 +72,6 @@ export default function UserInfo() {
   const handleUpdateProfile = async () => {
     const formData = new FormData();
     formData.append("name", data.name);
-    formData.append("_method", "PATCH");
 
     if (data.avatar instanceof File) {
       formData.append("avatar", data.avatar);
@@ -169,11 +178,21 @@ export default function UserInfo() {
           {[
             { label: "Họ và tên", value: data.name, field: "name" },
             { label: "Email", value: data.email, field: "email" },
-            { label: "Số điện thoại", value: "0918888465", field: "phone" },
+            { label: "Số điện thoại", value: data.phone_number, field: "phone_number" },
             {
               label: "Địa chỉ",
-              value: "Nhà số 2 kiệt 159 Hàn Mặc Tử",
+              value: data.address,
               field: "address",
+            },
+            {
+              label: "Thành phố",
+              value: data.city,
+              field: "city",
+            },
+            {
+              label: "Quốc gia",
+              value: data.country,
+              field: "country",
             },
           ].map((input) => (
             <label
