@@ -178,7 +178,7 @@ export default function AdminOverview() {
     return () => {
       // Optional: Add cleanup if needed
     };
-  }, [token, transformUserData]); // Include all dependencies
+  }, []); // Include all dependencies
   return (
     <section>
       {isLoading === true ? (
