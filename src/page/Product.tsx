@@ -1,20 +1,14 @@
 /** @format */
-
-import { Search } from "lucide-react";
-import { InfinitySpin } from "react-loader-spinner";
-import { useEffect, useState, useCallback } from "react";
-import { debounce } from "lodash";
-import { motion } from "framer-motion";
-
-// Import SVG assets
 import plus from "../assets/icon/plus.svg";
 import minus from "../assets/icon/minus.svg";
 import price from "../assets/icon/price.svg";
 import color from "../assets/icon/color.svg";
 import Numb from "../assets/icon/numb.svg";
-
-// Import components
+import { InfinitySpin } from "react-loader-spinner";
+import { GetRequest } from "../utilz/Request/getRequest";
+import { Search } from "lucide-react";
 import ProductItem from "../component/ProductItem";
+import { motion } from "framer-motion";
 import ProductItem3D from "../component/ProductItem3D";
 import {
   SizeFilter,
@@ -23,9 +17,9 @@ import {
   PriceFilter,
 } from "../component";
 import ColorFilter from "../component/colorFilter";
-import { GetRequest } from "../utilz/Request/getRequest";
+import { useEffect, useState, useCallback } from "react";
+import { debounce } from "lodash";
 
-// Types
 interface OpenFilter {
   size: boolean;
   color: boolean;
@@ -33,7 +27,6 @@ interface OpenFilter {
   category: boolean;
   price: boolean;
 }
-
 interface Image {
   id: number;
   product_id: number;
@@ -41,7 +34,6 @@ interface Image {
   created_at: string;
   updated_at: string;
 }
-
 interface Filter {
   size: string;
   color: string;
@@ -51,17 +43,6 @@ interface Filter {
   name: string;
   pageCount: number;
 }
-
-interface ProductDetail {
-  id: number;
-  product_id: number;
-  stock: number;
-  price: number;
-  size: string;
-  created_at: string;
-  updated_at: string;
-}
-
 interface Product {
   id: number;
   name: string;
@@ -75,6 +56,16 @@ interface Product {
   images: Image[];
 }
 
+interface ProductDetail {
+  id: number;
+  product_id: number;
+  stock: number;
+  price: number;
+  size: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export default function Product() {
   const [isOpen, setIsOpen] = useState<OpenFilter>({
     size: false,
@@ -83,8 +74,7 @@ export default function Product() {
     category: false,
     price: false,
   });
-
-  const [filterProduct, setFilterProduct] = useState<Product[]>([]);
+  const [filterProduct, changeFilterProduct] = useState<Product[]>([]);
   const [filter, setFilter] = useState<Filter>({
     size: "all",
     color: "all",
@@ -94,14 +84,14 @@ export default function Product() {
     name: "",
     pageCount: 1,
   });
-
-  const [sort, setSort] = useState<string>("price");
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [totalItems, setTotalItems] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [sort, changesort] = useState<string>("price");
+  const [total_pages, changetotal_pages] = useState<number>(1);
+  const [total_items, changetotal_items] = useState<number>(1);
+  const [loading, changeLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Debounced search function
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce((value: string) => {
       setFilter((prev) => ({ ...prev, name: value, pageCount: 1 }));
@@ -109,64 +99,52 @@ export default function Product() {
     []
   );
 
+  // Handle input change with debounce
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
     debouncedSearch(value);
   };
 
-  const fetchProducts = useCallback(async () => {
-    setLoading(true);
-    const queryParams = new URLSearchParams();
-
-    if (filter.size !== "all") {
-      queryParams.append("filter[size]", filter.size);
-    }
-
-    if (filter.price !== "all" && typeof filter.price === "string") {
-      const [min, max] = filter.price
-        .split("-")
-        .map((p) => p.replace(/\./g, ""));
-      queryParams.append("filter[price][0]", min);
-      queryParams.append("filter[price][1]", max);
-    }
-
-    if (filter.name) {
-      queryParams.append("filter[name]", filter.name);
-    }
-
-    if (filter.color !== "all") {
-      queryParams.append("filter[color]", filter.color);
-    }
-
-    if (filter.category !== "all") {
-      queryParams.append("filter[category]", filter.category);
-    }
-
-    const url = `api/products?${queryParams.toString()}&sort=${sort}&page=${
-      filter.pageCount
-    }`;
-
-    try {
-      const response = await GetRequest({ route: url });
-      if (!response.success) {
-        throw new Error("Failed to fetch products");
-      }
-
-      setTotalPages(response.data.total_pages);
-      setTotalItems(response.data.total_items);
-      setFilterProduct(response.data.data);
-    } catch (error) {
-      console.error("Error fetching filtered products:", error);
-      // Consider adding error state and UI feedback
-    } finally {
-      setLoading(false);
-    }
-  }, [filter, sort]);
-
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    const tempProduct = async () => {
+      changeLoading(true);
+      const queryParams = new URLSearchParams();
+
+      if (filter.size !== "all")
+        queryParams.append("filter[size]", filter.size);
+
+      if (filter.price !== "all" && typeof filter.price === "string") {
+        const [min, max] = filter.price
+          .split("-")
+          .map((p) => p.replace(/\./g, "")); // Remove dots and split the range
+        queryParams.append("filter[price][0]", min);
+        queryParams.append("filter[price][1]", max);
+      }
+      if (filter.name) queryParams.append("filter[name]", filter.name);
+      if (filter.color !== "all")
+        queryParams.append("filter[color]", filter.color);
+      if (filter.category !== "all")
+        queryParams.append("filter[category]", filter.category);
+
+      const url = `api/products?${queryParams.toString()}&sort=${sort}&page=${
+        filter.pageCount
+      }`;
+
+      try {
+        const response = await GetRequest({ route: url });
+        if (!response.success) throw new Error("Failed to fetch products");
+        changetotal_pages(response.data.total_pages);
+        changetotal_items(response.data.total_items);
+        changeFilterProduct(response.data.data);
+      } catch (error) {
+        console.error("Error fetching filtered products:", error);
+      }
+      changeLoading(false);
+    };
+
+    tempProduct();
+  }, [filter, sort]);
 
   // Cleanup debounce on unmount
   useEffect(() => {
@@ -177,30 +155,6 @@ export default function Product() {
 
   const toggleFilter = (key: keyof OpenFilter) => {
     setIsOpen((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const renderPagination = () => {
-    if (!filterProduct?.length) {
-      return <p className="text-2xl font-light">Không tìm thấy sản phẩm nào</p>;
-    }
-
-    return (
-      <div className="flex space-x-3">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index}
-            onClick={() =>
-              setFilter((prev) => ({ ...prev, pageCount: index + 1 }))
-            }
-            className={`px-3.5 py-1 border font-thin border-black ${
-              filter.pageCount === index + 1 ? "scale-110 border-2" : ""
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
-    );
   };
 
   return (
@@ -218,7 +172,7 @@ export default function Product() {
               title: "SIZE ĐỒ",
               component: (
                 <SizeFilter
-                  changeLoading={setLoading}
+                  changeLoading={changeLoading}
                   filter={filter}
                   changefilter={setFilter}
                 />
@@ -278,7 +232,7 @@ export default function Product() {
                 <div>
                   <img
                     src={!isOpen[key as keyof OpenFilter] ? plus : minus}
-                    alt={`Toggle ${key} filter`}
+                    alt=""
                     className="w-7 h-7"
                   />
                 </div>
@@ -297,9 +251,8 @@ export default function Product() {
         >
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 justify-between items-center">
             <h5 className="font-light text-xl">
-              Danh sách sản phẩm <span>({totalItems})</span>
+              Danh sách sản phẩm <span>{"(" + total_items + ")"}</span>
             </h5>
-
             <div className="flex space-x-4">
               <div className="relative w-full">
                 <Search className="absolute left-2 md:left-6 top-1/2 transform -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-500" />
@@ -315,7 +268,9 @@ export default function Product() {
               <select
                 className="border border-gray-700 rounded-md py-1 px-2 text-sm md:text-base md:py-3 md:px-6 font-light"
                 value={sort}
-                onChange={(e) => setSort(e.target.value)}
+                onChange={(e) => {
+                  changesort(e.target.value);
+                }}
               >
                 <option value="price">giá thấp đến cao</option>
                 <option value="-price">giá cao xuống thấp</option>
@@ -325,7 +280,7 @@ export default function Product() {
             </div>
           </div>
 
-          {/* Mobile Filters */}
+          {/* Filters for Small Screens */}
           <div className="md:hidden py-4 flex space-x-2">
             {[
               { title: "SỐ LƯỢNG", icon: Numb },
@@ -338,7 +293,7 @@ export default function Product() {
               >
                 <img
                   src={icon}
-                  alt={title}
+                  alt=""
                   className="w-4 h-4"
                 />
                 <div className="text-xs">{title}</div>
@@ -347,7 +302,7 @@ export default function Product() {
           </div>
 
           <div className="flex flex-col items-center">
-            {loading ? (
+            {loading === true ? (
               <div className="pt-12">
                 <InfinitySpin
                   width="200"
@@ -359,17 +314,46 @@ export default function Product() {
                 {filter.category !== "custom" ? (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:p-8">
-                      {filterProduct?.map((product) => (
-                        <ProductItem
-                          key={product.id}
-                          product={product}
-                        />
-                      ))}
+                      {filterProduct &&
+                        filterProduct?.map((product, index) => (
+                          <ProductItem
+                            key={index}
+                            product={product}
+                          />
+                        ))}
                     </div>
-                    {renderPagination()}
+                    <div className="flex space-x-3">
+                      {filterProduct?.length > 1 ? (
+                        Array(total_pages)
+                          .fill("")
+                          .map((_page, index) => {
+                            return (
+                              <button
+                                onClick={() =>
+                                  setFilter((prev) => {
+                                    return { ...prev, pageCount: index + 1 };
+                                  })
+                                }
+                                key={index}
+                                className={
+                                  filter.pageCount === index + 1
+                                    ? "scale-110 border-2 font-thin border-black px-3.5 py-1"
+                                    : "px-3.5 py-1 border font-thin border-black"
+                                }
+                              >
+                                {index + 1}
+                              </button>
+                            );
+                          })
+                      ) : (
+                        <p className="text-2xl font-light">
+                          Không tìm thấy sản phẩm nào
+                        </p>
+                      )}
+                    </div>
                   </>
                 ) : (
-                  <ProductItem3D />
+                  <ProductItem3D></ProductItem3D>
                 )}
               </>
             )}
