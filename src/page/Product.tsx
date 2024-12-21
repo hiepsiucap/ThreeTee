@@ -91,7 +91,6 @@ export default function Product() {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Debounced search function
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce((value: string) => {
       setFilter((prev) => ({ ...prev, name: value, pageCount: 1 }));
