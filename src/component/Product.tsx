@@ -39,7 +39,7 @@ export default function Product() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await GetRequest({ route: "api/products?sort=-sold" });
+        const response = await GetRequest({ route: "api/products" });
         if (response.success) {
           changeListProduct(response.data?.data);
           changeLoading(false);
