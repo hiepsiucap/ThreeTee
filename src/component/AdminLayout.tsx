@@ -265,7 +265,7 @@ export default function AdminLayout() {
         </div>
         <div className=" flex flex-col">
           <p className=" text-slate-400 font-light text-sm">Khuyến mãi</p>
-          <div className=" flex flex-col space-y-2 pl-3 py-4">
+          <div className=" flex flex-col  pl-3 py-4">
             <Link
               to="/admin/coupon"
               className={
