@@ -6,6 +6,7 @@ import { GetRequestWithCre } from "../utilz/Request/getRequest";
 import { PatchRequestWithCre } from "../utilz/Request/PatchRequest";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { InfinitySpin } from "react-loader-spinner";
 interface Profile {
   name: string;
   avatar: File | null;
@@ -16,7 +17,7 @@ interface Profile {
 
 export default function UserInfo() {
   const { token } = useStateUserContext();
-  const [hasFetched, setHasFetched] = useState(false);
+
   const [data, setData] = useState<Profile>({
     name: "",
     avatar: null,
@@ -29,22 +30,19 @@ export default function UserInfo() {
 
   useEffect(() => {
     const getProfile = async () => {
-      if (!hasFetched) {
-        // Chỉ tải dữ liệu nếu chưa tải
-        const response = await GetRequestWithCre({ route: "api/user", token });
-        if (response.success) {
-          setData({
-            name: response.data.name,
-            email: response.data.email,
-            avatar: response.data.avatar || null,
-          });
-        }
-        setHasFetched(true);
+      // Chỉ tải dữ liệu nếu chưa tải
+      const response = await GetRequestWithCre({ route: "api/user", token });
+      if (response.success) {
+        setData({
+          name: response.data.name,
+          email: response.data.email,
+          avatar: response.data.avatar || null,
+        });
       }
       setLoading(false);
     };
     getProfile();
-  }, [token, hasFetched]);
+  }, [token]);
 
   // Cập nhật state data chung
   const handleInputChange = (field: keyof Profile, value: string | File) => {
@@ -127,7 +125,15 @@ export default function UserInfo() {
     }
   };
 
-  if (loading) return <p>Đang tải dữ liệu...</p>;
+  if (loading)
+    return (
+      <div className=" pt-36 flex w-full justify-center items-center">
+        <InfinitySpin
+          width="200"
+          color="#000000"
+        />
+      </div>
+    );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -23,10 +23,15 @@ import ResetPassword from "./ResetPassword";
 import VerificationEmail from "./VerificationEmail";
 import Cart from "./Cart";
 import AllProductAdmin from "./AllProductAdmin";
+import UpdateUserAdmin  from "./UpdateUser";
+import DetailHat from "./Detail3DHat";
+import DetailShirt from "./Detail3DShirt";
+import CouponAdmin from "./couponAdmin";
 export {
   HomePage,
   Post,
   Complete,
+  CouponAdmin,
   VerificationEmail,
   Cart,
   CreateProduct,
@@ -36,6 +41,8 @@ export {
   SuccessPage,
   OrdersAdmin,
   UserTable,
+  DetailHat,
+  DetailShirt,
   CancelAdmin,
   PostsAdmin,
   Product,
@@ -47,6 +54,7 @@ export {
   AllProductAdmin,
   ProductsAdmin,
   Description,
+  UpdateUserAdmin,
   PendingOrdersAdmin,
-  DeliveryAdmin
+  DeliveryAdmin,
 };

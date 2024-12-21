@@ -15,6 +15,7 @@ import { useStateUserContext } from "../contexts/UserContextProvider";
 import sun from "../assets/icon/sun.svg";
 import noti from "../assets/icon/nofi.svg";
 import SideBar from "../assets/icon/Sidebar.svg";
+import Hamburger from "./HambugerAdmin";
 export default function AdminLayout() {
   const location = useLocation();
   console.log(location.pathname);
@@ -23,8 +24,8 @@ export default function AdminLayout() {
     redirect("/login");
   }
   return (
-    <div className=" font-inter   bg-white  text-blackadmin flex text-admin w-full ">
-      <div className=" fixed overflow-y-scroll z-2  bg-white px-7 pr-7 shadow-md flex flex-col space-y-5 h-screen py-4">
+    <div className=" font-inter   bg-white   text-blackadmin flex text-admin w-full ">
+      <div className=" fixed overflow-y-scroll hidden z-2  bg-white px-7 pr-7  shadow-md md:flex flex-col space-y-5 h-screen py-4">
         <div className=" flex flex-col">
           <Link
             to="/admin/profile"
@@ -247,9 +248,9 @@ export default function AdminLayout() {
               <p className=" font-light">Danh sách tài khoản</p>
             </Link>
             <Link
-              to="/admin/user/alluser"
+              to="/admin/user/updatestaff"
               className={
-                location.pathname === "/admin/product/update"
+                location.pathname === "/admin/user/updatestaff"
                   ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
                   : " flex space-x-2  py-2 "
               }
@@ -262,10 +263,44 @@ export default function AdminLayout() {
             </Link>
           </div>
         </div>
+        <div className=" flex flex-col">
+          <p className=" text-slate-400 font-light text-sm">Khuyến mãi</p>
+          <div className=" flex flex-col space-y-2 pl-3 py-4">
+            <Link
+              to="/admin/coupon"
+              className={
+                location.pathname === "/admin/coupon"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
+              <img
+                src={order}
+                alt=""
+              />
+              <p className=" font-light">Danh sách khuyến mãi</p>
+            </Link>
+            <Link
+              to="/admin/product/delete"
+              className={
+                location.pathname === "/admin/product/delete"
+                  ? " flex space-x-2 bg-gray-100 py-2 rounded-md"
+                  : " flex space-x-2  py-2 "
+              }
+            >
+              <img
+                src={product}
+                alt=""
+              />
+              <p className=" font-light">Tạo mã khuyến mãi </p>
+            </Link>
+          </div>
+        </div>
       </div>
       <div className=" w-full">
-        <div className="pl-72 py-6 pr-12 items-center shadow-sm w-full flex justify-between">
-          <div className=" flex space-x-4 items-end">
+        <div className="md:pl-72 py-6 px-6 pr-12 items-center shadow-sm w-full  flex justify-between ">
+          {window.innerWidth < 763 && <Hamburger></Hamburger>}
+          <div className=" hidden md:flex space-x-4 items-end">
             <img
               src={SideBar}
               alt=""
@@ -278,8 +313,8 @@ export default function AdminLayout() {
             <p>/</p>
             <p className=" font-light text-sm ">Tổng quan</p>
           </div>
-          <div className=" flex space-x-4">
-            <div className="bg-gray-100 flex w-44 px-2 space-x-2 rounded-lg py-2">
+          <div className="  flex space-x-4">
+            <div className="bg-gray-100 flex md:w-44 px-2 space-x-2 rounded-lg py-2">
               <img
                 src={find}
                 alt=""

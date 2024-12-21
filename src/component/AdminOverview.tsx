@@ -178,40 +178,35 @@ export default function AdminOverview() {
     return () => {
       // Optional: Add cleanup if needed
     };
-  }, [
-    token,
-    changeSummary,
-    changeUser,
-    changeProfit,
-    changeIsLoading,
-    changeOrder,
-  ]); // Include all dependencies
+  }, [token, transformUserData]); // Include all dependencies
   return (
     <section>
       {isLoading === true ? (
-        <div className=" pt-36 pl-72 flex w-full justify-center items-center">
+        <div className=" pt-36 md:pl-72 flex w-full justify-center items-center">
           <InfinitySpin
             width="200"
             color="#000000"
           />
         </div>
       ) : (
-        <div className=" font-inter pl-72 w-full py-6">
-          <div className=" flex space-x-6">
-            <div className=" p-8 space-y-3 w-1/5 bg-cyan-300 tracking-wide bg-opacity-40 rounded-2xl">
+        <div className=" font-inter md:pl-72 w-full py-6">
+          <div className=" grid grid-cols-2 gap-6 md:gap-0 p-6 md:flex md:space-x-6 ">
+            <div className=" p-8 space-y-3 md:w-fit  bg-cyan-300 tracking-wide bg-opacity-40 rounded-2xl">
               <p className=" font-light">Tổng doanh thu</p>
               <div className=" flex space-x-2 items-end">
-                <p className=" font text-xl">
+                <p className=" font text-2xl">
                   {" "}
-                  {Number(summary?.revenue?.total).toLocaleString() +
-                    "VNĐ"}{" "}
+                  {(
+                    Number(summary?.revenue?.total) / 1000000
+                  ).toLocaleString() + " "}
+                  <span className=" text-lg font-light">triệu</span>
                 </p>
                 <div className=" font-light text-xs pb-2">
                   +{summary?.revenue?.growth}%
                 </div>
               </div>
             </div>
-            <div className=" p-8 space-y-3 w-1/5 bg-slate-300 tracking-wide bg-opacity-40 rounded-2xl">
+            <div className=" p-8 space-y-3 md:w-1/5  bg-slate-300 tracking-wide bg-opacity-40 rounded-2xl">
               <p className=" font-light text-sm">Số user</p>
               <div className=" flex space-x-2 items-end">
                 <p className=" font text-2xl">
@@ -222,7 +217,7 @@ export default function AdminOverview() {
                 </div>
               </div>
             </div>
-            <div className=" p-8 space-y-3 w-1/5 bg-cyan-300 tracking-wide bg-opacity-40 rounded-2xl">
+            <div className=" p-8 space-y-3 md:w-1/5 bg-cyan-300 tracking-wide bg-opacity-40 rounded-2xl">
               <p className=" font-light text-sm">Số sản phẩm</p>
               <div className=" flex space-x-2 items-end">
                 <p className=" font text-2xl">
@@ -234,7 +229,7 @@ export default function AdminOverview() {
                 </div>
               </div>
             </div>
-            <div className=" p-8 space-y-3 w-1/5 bg-slate-300 tracking-wide bg-opacity-40 rounded-2xl">
+            <div className=" p-8 space-y-3 md:w-1/5 bg-slate-300 tracking-wide bg-opacity-40 rounded-2xl">
               <p className=" font-light text-sm">Sản phẩm bán ra</p>
               <div className=" flex space-x-2 items-end">
                 <p className=" font text-2xl">
@@ -246,8 +241,8 @@ export default function AdminOverview() {
               </div>
             </div>
           </div>
-          <div className="  flex py-6 space-x-8 mr-6">
-            <div className=" w-2/3 bg-gray-50 p-6 rounded-3xl shadow-md">
+          <div className="  md:flex px-6 md:px-0 py-6 space-x-8 mr-6">
+            <div className=" md:w-2/3 bg-gray-50 p-6 rounded-3xl shadow-md">
               {" "}
               <BasicLine
                 categories={categories}
@@ -255,12 +250,15 @@ export default function AdminOverview() {
                 data1={profit[2024]}
               />
             </div>
-            <div className=" w-1/3 p-5 bg-gray-50 shadow-md rounded-3xl">
+            <div className="md:w-1/3 py-6 md:py-0 my-6 md:my-0 p-5 bg-gray-50 shadow-md rounded-3xl">
               <p className=" font-bold">Lượng truy cập </p>
               <div className=" flex flex-col space-y-3 py-4 font-light text-sm">
                 {user.map((user) => {
                   return (
-                    <div className=" flex justify-between items-center">
+                    <div
+                      key={user.name}
+                      className=" flex justify-between items-center"
+                    >
                       <div className=" flex items-center">
                         <img
                           src={user.img}
@@ -317,14 +315,14 @@ export default function AdminOverview() {
               </div>
             </div>
           </div>
-          <div className=" space-x-6 flex">
-            <div className="bg-gray-50 p-6 px-8  rounded-3xl shadow-md w-1/2">
+          <div className=" space-x-6 md:flex px-6 md:px-0  my-6 md:my-0 md:py-0 ">
+            <div className="bg-gray-50 p-6 px-8  rounded-3xl shadow-md md:w-1/2">
               <Basic
                 categories={categoriesss}
                 data={order}
               ></Basic>
             </div>
-            <div className="bg-gray-50 p-6 px-8  rounded-3xl shadow-md w-1/2">
+            <div className="bg-gray-50 md:p-6 px-8 my-6 md:my-0 py-6 md:py-0 rounded-3xl shadow-md md:w-1/2">
               <BasicPie
                 categories={categoriess}
                 data={data}

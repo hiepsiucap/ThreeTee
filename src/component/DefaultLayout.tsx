@@ -118,16 +118,26 @@ export default function DefaultLayout() {
                     {cart?.length || 0}
                   </div>
                 </Link>
-                <Link
-                  to="/admin"
-                  className=" bg-green-500 text-sm rounded-md py-1 px-3 text-white"
-                >
-                  ADMIN
-                </Link>
+                {user.role ? (
+                  <Link
+                    to="/admin"
+                    className=" bg-green-500 text-sm rounded-md py-1 px-3 text-white"
+                  >
+                    ADMIN
+                  </Link>
+                ) : user.role ? (
+                  <Link
+                    to="/admin"
+                    className=" bg-green-500 text-sm rounded-md py-1 px-3 text-white"
+                  >
+                    STAFF
+                  </Link>
+                ) : (
+                  <></>
+                )}
+
                 <div className="text-lg font-semibold">Chào {user.name} !</div>
-                <Link
-                  to={user.role === "user" ? "/user/profile" : "/admin/profile"}
-                >
+                <Link to="/user/profile">
                   <img
                     src={
                       user?.ava ||

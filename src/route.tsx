@@ -12,6 +12,7 @@ import {
   UserInfo,
   UserSecurity,
   UserNotification,
+  DetailHoodie,
   UserOrder,
 } from "./component";
 import {
@@ -22,6 +23,7 @@ import {
   Product,
   Post,
   Complete,
+  UpdateUserAdmin,
   Register,
   ForgotPassword,
   CancelAdmin,
@@ -35,10 +37,14 @@ import {
   UserTable,
   UpdateProduct,
   DeliveryAdmin,
+  DetailHat,
+  DetailShirt,
   PendingOrdersAdmin,
   ResetPassword,
+  CouponAdmin,
   Cart,
   AllProductAdmin,
+  SuccessPage,
 } from "./page";
 import { Navigate } from "react-router-dom";
 
@@ -81,8 +87,24 @@ const router = createBrowserRouter([
         element: <Description></Description>,
       },
       {
+        path: "/success",
+        element: <SuccessPage></SuccessPage>,
+      },
+      {
         path: "/product/:id",
         element: <DetailProduct></DetailProduct>,
+      },
+      {
+        path: "/producthoodie",
+        element: <DetailHoodie></DetailHoodie>,
+      },
+      {
+        path: "/productshirt",
+        element: <DetailShirt></DetailShirt>,
+      },
+      {
+        path: "/producthat",
+        element: <DetailHat></DetailHat>,
       },
     ],
   },
@@ -109,6 +131,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/orders",
         element: <OrdersAdmin></OrdersAdmin>,
+      },
+      {
+        path: "/admin/coupon",
+        element: <CouponAdmin></CouponAdmin>,
       },
       {
         path: "/admin/posts",
@@ -150,31 +176,41 @@ const router = createBrowserRouter([
         path: "/admin/user/alluser",
         element: <UserTable></UserTable>,
       },
+      {
+        path: "/admin/user/updatestaff",
+        element: <UpdateUserAdmin></UpdateUserAdmin>,
+      },
     ],
   },
   {
     path: "/user",
-    element: <UserLayout></UserLayout>,
+    element: <DefaultLayout></DefaultLayout>,
     children: [
       {
-        path: "/user/",
-        element: <Navigate to="/user/profile"></Navigate>,
-      },
-      {
-        path: "/user/profile",
-        element: <UserInfo></UserInfo>,
-      },
-      {
-        path: "/user/order",
-        element: <UserOrder></UserOrder>,
-      },
-      {
-        path: "/user/notification",
-        element: <UserNotification></UserNotification>,
-      },
-      {
-        path: "/user/security",
-        element: <UserSecurity></UserSecurity>,
+        path: "/user",
+        element: <UserLayout></UserLayout>,
+        children: [
+          {
+            path: "/user/",
+            element: <Navigate to="/user/profile"></Navigate>,
+          },
+          {
+            path: "/user/profile",
+            element: <UserInfo></UserInfo>,
+          },
+          {
+            path: "/user/order",
+            element: <UserOrder></UserOrder>,
+          },
+          {
+            path: "/user/notification",
+            element: <UserNotification></UserNotification>,
+          },
+          {
+            path: "/user/security",
+            element: <UserSecurity></UserSecurity>,
+          },
+        ],
       },
     ],
   },

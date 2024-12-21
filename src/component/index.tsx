@@ -16,6 +16,7 @@ import PriceFilter from "./PriceFilter";
 import UserInfo from "../component/UserInfo";
 import UserOrder from "../component/UserOrder";
 import UserSecurity from "../component/UserSecurity";
+import DetailHoodie from "../page/Detail3DHoodie";
 import UserNotification from "../component/UserNotification";
 export {
   Hero,
@@ -33,6 +34,7 @@ export {
   VistitorLayout,
   PriceFilter,
   UserInfo,
+  DetailHoodie,
   UserNotification,
   UserOrder,
   UserSecurity,

@@ -208,7 +208,7 @@ export default function OrdersAdmin() {
   };
 
   return (
-    <div className="pl-72">
+    <div className="px-6 md:px-0 md:pl-72">
       <p className="text-2xl py-6">Thống kê bài viết thời trang</p>
 
       <div className="grid grid-cols-2 gap-10 w-full">

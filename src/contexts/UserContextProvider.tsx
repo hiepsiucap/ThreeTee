@@ -15,6 +15,7 @@ export interface StateContextType {
   token: string | null;
   setUserWithStorage: (user: User | null) => void;
   setToken: (token: string | null) => void;
+  LogOut: () => void;
 }
 
 export const StateContext = createContext<StateContextType>({
@@ -22,6 +23,7 @@ export const StateContext = createContext<StateContextType>({
   token: null,
   setUserWithStorage: () => {},
   setToken: () => {},
+  LogOut: () => {},
 });
 
 interface UserContextProviderProps {
@@ -88,7 +90,12 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
       setToken(null);
     }
   };
-
+  const LogOut = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("TOKEN");
+    localStorage.removeItem("USER_DATA");
+  };
   const setUserWithStorage = (userData: User | null) => {
     if (userData) {
       const safeUserData = {
@@ -112,6 +119,7 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
         token,
         setUserWithStorage,
         setToken: handleSetToken,
+        LogOut,
       }}
     >
       {children}

@@ -1,78 +1,77 @@
 /** @format */
 import success from "../assets/img/success.webp";
 import { Circles } from "react-loader-spinner";
-import { useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import copy from "../assets/img/copy.png";
-import { ToastContainer, toast } from "react-toastify";
+// import { useSearchParams }  "react-router-dom";
+// import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import pro from "../assets/img/pro.png";
-import { useNavigate } from "react-router-dom";
-interface Subscription {
-  title: string;
-  time: number;
-}
+// import pro from "../assets/img/pro.png";
+// import { useNavigate } from "react-router-dom";
+// interface Subscription {
+//   title: string;
+//   time: number;
+// }
 
-interface Order {
-  _id: string;
-  total: number;
-}
+// interface Order {
+//   _id: string;
+//   total: number;
+// }
 
-interface OrderData {
-  name: string;
-  email: string;
-  password: string;
-  order: Order;
-  subscription: Subscription;
-}
+// interface OrderData {
+//   name: string;
+//   email: string;
+//   password: string;
+//   order: Order;
+//   subscription: Subscription;
+// }
 export default function SuccessPage() {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const [, setCopied] = useState(false);
+  // const [searchParams] = useSearchParams();
+  // const navigate = useNavigate();
+  // const [, setCopied] = useState(false);
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      })
-      .catch((err) => console.error("Copy failed", err));
-  };
-  const [data, changeData] = useState<OrderData | null>(null);
-  useEffect(() => {
-    const orderCode = searchParams.get("orderCode");
-    const id = searchParams.get("id");
-    if (orderCode && id) {
-      const getData = async () => {
-        const reponse = await fetch(
-          `${
-            import.meta.env.VITE_BACKEND_SERVERR
-          }/api/payment/getorder?id=${id}&orderCode=${orderCode}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (reponse.ok) {
-          const data = await reponse.json();
-          changeData(data);
-        } else {
-          navigate("/failed");
-        }
-      };
-      getData();
-    }
-  }, [navigate, searchParams]);
-  console.log(data);
-  const notify = () => toast("Copy thành công");
+  // const handleCopy = (text: string) => {
+  //   navigator.clipboard
+  //     .writeText(text)
+  //     .then(() => {
+  //       setCopied(true);
+  //       setTimeout(() => setCopied(false), 2000);
+  //     })
+  //     .catch((err) => console.error("Copy failed", err));
+  // };
+  // const [data, changeData] = useState<OrderData | null>(null);
+  // useEffect(() => {
+  //   const orderCode = searchParams.get("orderCode");
+  //   const id = searchParams.get("id");
+  //   if (orderCode && id) {
+  //     const getData = async () => {
+  //       const reponse = await fetch(
+  //         `${
+  //           import.meta.env.VITE_BACKEND_SERVERR
+  //         }/api/payment/getorder?id=${id}&orderCode=${orderCode}`,
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
+  //       if (reponse.ok) {
+  //         const data = await reponse.json();
+  //         changeData(data);
+  //       } else {
+  //         navigate("/failed");
+  //       }
+  //     };
+  //     getData();
+  //   }
+  // }, [navigate, searchParams]);
+  // console.log(data);
+  // const notify = () => toast("Copy thành công");
 
   return (
     <div className=" bg-slate-50 h-screen flex flex-col md:py-12 md:space-y-6 items-center">
       <ToastContainer />
-      {data ? (
+      {/* {data ? (
         <section className=" bg-white py-6 w-11/12 md:w-fit  font-poppins text-center  md:text-start md:px-12 rounded-lg shadow-lg ">
           <p className=" text-center font-poppins  text-3xl ">HOÁ ĐƠN</p>
           <h4 className=" text-lg md:py-4 md:pt-6 pt-4">Thông tin cá nhân</h4>
@@ -163,26 +162,26 @@ export default function SuccessPage() {
             </h4>
           </div>
         </section>
-      ) : (
-        <>
-          <img
-            src={success}
-            alt=""
-            className=" w-24 h-24 animate-bounce"
-          />
-          <p className=" font-poppins text-2xl md:text-3xl ">
-            Đơn hàng thanh toán thành công !{" "}
-          </p>
-          <div>
-            <div className=" flex flex-col items-center  py-8">
-              <Circles width={64}></Circles>
-              <div className=" animate-pulse font-poppins text-lg py-3 px-8 rounded-lg ">
-                Đợi chúng tôi trong giây lát .....
-              </div>
+      ) : ( */}
+      <>
+        <img
+          src={success}
+          alt=""
+          className=" w-24 h-24 animate-bounce"
+        />
+        <p className=" font-poppins text-2xl md:text-3xl ">
+          Đơn hàng thanh toán thành công !{" "}
+        </p>
+        <div>
+          <div className=" flex flex-col items-center  py-8">
+            <Circles width={64}></Circles>
+            <div className=" animate-pulse font-poppins text-lg py-3 px-8 rounded-lg ">
+              Đợi chúng tôi trong giây lát .....
             </div>
           </div>
-        </>
-      )}
+        </div>
+      </>
+      {/* )} */}
     </div>
   );
 }

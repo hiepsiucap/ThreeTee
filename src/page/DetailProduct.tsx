@@ -8,6 +8,7 @@ import { formatPrice } from "../utilz/Price";
 import { redirect, useParams } from "react-router-dom";
 import { GetRequest } from "../utilz/Request/getRequest";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useStateCartContext } from "../contexts/CartContext";
 import Swal from "sweetalert2";
 interface Product {
@@ -98,6 +99,7 @@ export default function DetailProduct() {
   const { AddCart } = useStateCartContext();
   const [data, changedata] = useState<Product>(initialData);
   const [review, changeReview] = useState<Review[]>();
+  const navigate = useNavigate();
   const [loading, changeLoading] = useState<boolean>(true);
   const { id } = useParams();
   useEffect(() => {
@@ -235,7 +237,27 @@ export default function DetailProduct() {
                   })}
               </div>
               <div className=" flex flex-col space-y-2 items-center  py-4">
-                <button className=" w-full flex space-x-4 justify-center  font-light text-xl border border-gray-800 rounded-md py-2 px-6">
+                <button
+                  onClick={() => {
+                    AddCart({
+                      productId: data.id.toString(),
+                      category: data.category,
+                      image: data.images[0].image_link,
+                      amount: "1",
+                      productdetailId:
+                        data.product_details
+                          .find((dt) => dt.id == selectsize)
+                          ?.id.toString() || "",
+                      size:
+                        data.product_details.find((dt) => dt.id == selectsize)
+                          ?.size || "2XL",
+                      name: data.name,
+                      price: data.product_details[0].price.toString(),
+                    });
+                    navigate("/cart");
+                  }}
+                  className=" w-full flex space-x-4 justify-center  font-light text-xl border border-gray-800 rounded-md py-2 px-6"
+                >
                   <div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

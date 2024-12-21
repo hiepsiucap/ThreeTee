@@ -73,7 +73,7 @@ export default function OrderShipping() {
   };
 
   return (
-    <div className="pl-72">
+    <div className="px-6 md:px-0 md:pl-72">
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}

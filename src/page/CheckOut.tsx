@@ -9,6 +9,7 @@ import { useStateUserContext } from "../contexts/UserContextProvider";
 import { useStateCartContext } from "../contexts/CartContext";
 import { GetPostRequestWithCre } from "../utilz/Request/postRequest";
 import Swal from "sweetalert2";
+
 export default function CheckOut() {
   const [data, setData] = useState({
     name: "",
@@ -17,9 +18,41 @@ export default function CheckOut() {
     method: "qr",
   });
   const [loading, changeloading] = useState(false);
+  const [showPromoInput, setShowPromoInput] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplied, setPromoApplied] = useState(false);
+
   const { cart, DeleteCart, AddCart, MinusCart, getTotal } =
     useStateCartContext();
   const { token } = useStateUserContext();
+
+  const handlePromoCode = () => {
+    if (promoCode === "KM10") {
+      setPromoApplied(true);
+      setShowPromoInput(false);
+      Swal.fire({
+        title: "Thành công",
+        text: "Đã áp dụng mã giảm giá KM10",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } else if (promoCode) {
+      Swal.fire({
+        title: "Lỗi",
+        text: "Mã khuyến mãi không hợp lệ",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
+  const getFinalTotal = () => {
+    const subtotal = getTotal();
+    const tax = subtotal * 0.1;
+    const discount = promoApplied ? subtotal * 0.1 : 0;
+    return subtotal + tax - discount;
+  };
+
   const onSubmitHandler = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     changeloading(true);
@@ -30,7 +63,7 @@ export default function CheckOut() {
         body: {
           phonenumber: data.phonenumber,
           address: data.address,
-          totalprice: getTotal(),
+          totalprice: getFinalTotal(), // Đã cập nhật để sử dụng tổng tiền sau giảm giá
         },
         token,
       });
@@ -73,18 +106,19 @@ export default function CheckOut() {
     }
     changeloading(false);
   };
+
   return (
-    <section className=" md:container mx-auto">
+    <section className="md:container mx-auto">
       <form
         onSubmit={onSubmitHandler}
-        className="   "
+        className=""
       >
         <Loading modalIsOpen={loading}></Loading>
         <div className="flex flex-col md:flex-row items-center md:space-x-10">
-          <div className=" flex flex-col w-full px-6 md:px-0 md:w-1/2 ">
-            <p className=" text-2xl md:py-6 py-3">Thông tin đặt hàng</p>
-            <div className=" bg-slate-50 p-12  flex flex-col space-y-6">
-              <h2 className="text-xl font-light  py-2">Thông tin cá nhân</h2>
+          <div className="flex flex-col w-full px-6 md:px-0 md:w-1/2">
+            <p className="text-2xl md:py-6 py-3">Thông tin đặt hàng</p>
+            <div className="bg-slate-50 p-12 flex flex-col space-y-6">
+              <h2 className="text-xl font-light py-2">Thông tin cá nhân</h2>
               <div className="flex flex-col space-y-1">
                 <p className="text-sm">Tên khách hàng:</p>
                 <input
@@ -120,15 +154,14 @@ export default function CheckOut() {
                 Chọn Phương Thức Thanh Toán
               </h2>
               <div className="space-y-3">
-                {/* Phương thức QR Code */}
                 <label
                   className={`flex items-center space-x-3 p-3 border rounded-md cursor-pointer 
-          transition-all duration-300 ease-in-out
-          ${
-            data.method === "qr"
-              ? "border-blue-500 bg-blue-50"
-              : "border-gray-200 hover:bg-gray-50"
-          }`}
+                    transition-all duration-300 ease-in-out
+                    ${
+                      data.method === "qr"
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200 hover:bg-gray-50"
+                    }`}
                 >
                   <input
                     type="radio"
@@ -136,9 +169,7 @@ export default function CheckOut() {
                     value="qr"
                     checked={data.method === "qr"}
                     onChange={() =>
-                      setData((prev) => {
-                        return { ...prev, method: "qr" };
-                      })
+                      setData((prev) => ({ ...prev, method: "qr" }))
                     }
                     className="form-radio h-5 w-5 text-blue-600"
                   />
@@ -173,15 +204,14 @@ export default function CheckOut() {
                   </span>
                 </label>
 
-                {/* Phương thức Thanh toán khi nhận hàng */}
                 <label
                   className={`flex items-center space-x-3 p-3 border rounded-md cursor-pointer 
-          transition-all duration-300 ease-in-out
-          ${
-            data.method === "cod"
-              ? "border-green-500 bg-green-50"
-              : "border-gray-200 hover:bg-gray-50"
-          }`}
+                    transition-all duration-300 ease-in-out
+                    ${
+                      data.method === "cod"
+                        ? "border-green-500 bg-green-50"
+                        : "border-gray-200 hover:bg-gray-50"
+                    }`}
                 >
                   <input
                     type="radio"
@@ -189,9 +219,7 @@ export default function CheckOut() {
                     value="cod"
                     checked={data.method === "cod"}
                     onChange={() =>
-                      setData((prev) => {
-                        return { ...prev, method: "cod" };
-                      })
+                      setData((prev) => ({ ...prev, method: "cod" }))
                     }
                     className="form-radio h-5 w-5 text-green-600"
                   />
@@ -228,138 +256,169 @@ export default function CheckOut() {
               </div>
             </div>
           </div>
-          <div className=" md:w-1/2 flex flex-col space-y-4">
-            <div className=" flex justify-between">
-              <p className=" text-xl md:text-2xl py-4">Danh sách sản phẩm</p>
-              <p className=" text-lg py-4 px-3">Đơn giá</p>
+          <div className="md:w-1/2 flex flex-col space-y-4">
+            <div className="flex justify-between">
+              <p className="text-xl md:text-2xl py-4">Danh sách sản phẩm</p>
+              <p className="text-lg py-4 px-3">Đơn giá</p>
             </div>
 
-            <div className=" flex flex-col space-y-6 py-6">
+            <div className="flex flex-col space-y-6 py-6">
               {cart && cart?.length > 0 ? (
-                cart?.map((c) => {
-                  return (
-                    <div
-                      key={c.productdetailId}
-                      className=" flex justify-between space-x-2 items-center"
-                    >
-                      <div className=" flex space-x-5 items-center">
-                        <div className=" w-36 h-36">
-                          <img
-                            src={c.image}
-                            alt=""
-                            className=" w-40 h-40"
-                          />
-                        </div>
-                        <div className=" flex flex-col space-y-1 items-start">
-                          <p className=" text-lg  font-light">{c.name}</p>
-
-                          <p className="text-lg py-1">
-                            {formatPrice(Number(c.price))}
-                          </p>
-                          <p className="font-light">
-                            size:{" "}
-                            <span className=" font-semibold">{c.size}</span>
-                          </p>
-                          <p className=" text-gray-600 text-sm py-1">
-                            Số lượng: {c.amount}
-                          </p>
-                          <div className=" flex space-x-2 items-end">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                AddCart(c);
-                              }}
-                              className=" border-black p-1 border"
-                            >
-                              <img
-                                src={plus}
-                                alt=""
-                                className=" w-5 h-5"
-                              />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                MinusCart(c.productdetailId);
-                              }}
-                              className=" border-black p-1 border"
-                            >
-                              <img
-                                src={minus}
-                                alt=""
-                                className=" w-5 h-5"
-                              />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                DeleteCart(c.productdetailId);
-                              }}
-                              className=" text-sm underline  "
-                            >
-                              Xoá sản phẩm
-                            </button>
-                          </div>
-                        </div>
+                cart?.map((c) => (
+                  <div
+                    key={c.productdetailId}
+                    className="flex justify-between space-x-2 items-center"
+                  >
+                    <div className="flex space-x-5 items-center">
+                      <div className="w-36 h-36">
+                        <img
+                          src={c.image}
+                          alt=""
+                          className="w-40 h-40"
+                        />
                       </div>
-                      <div className=" flex flex-col items-center">
-                        <p className=" text-xl font-light pb-2">
-                          {formatPrice(Number(c.price) * Number(c.amount))}
+                      <div className="flex flex-col space-y-1 items-start">
+                        <p className="text-lg font-light">{c.name}</p>
+                        <p className="text-lg py-1">
+                          {formatPrice(Number(c.price))}
                         </p>
+                        <p className="font-light">
+                          size: <span className="font-semibold">{c.size}</span>
+                        </p>
+                        <p className="text-gray-600 text-sm py-1">
+                          Số lượng: {c.amount}
+                        </p>
+                        <div className="flex space-x-2 items-end">
+                          <button
+                            type="button"
+                            onClick={() => AddCart(c)}
+                            className="border-black p-1 border"
+                          >
+                            <img
+                              src={plus}
+                              alt=""
+                              className="w-5 h-5"
+                            />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => MinusCart(c.productdetailId)}
+                            className="border-black p-1 border"
+                          >
+                            <img
+                              src={minus}
+                              alt=""
+                              className="w-5 h-5"
+                            />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => DeleteCart(c.productdetailId)}
+                            className="text-sm underline"
+                          >
+                            Xoá sản phẩm
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  );
-                })
+                    <div className="flex flex-col items-center">
+                      <p className="text-xl font-light pb-2">
+                        {formatPrice(Number(c.price) * Number(c.amount))}
+                      </p>
+                    </div>
+                  </div>
+                ))
               ) : (
-                <p className=" text-2xl font-light">Không có sản phẩm nào</p>
+                <p className="text-2xl font-light">Không có sản phẩm nào</p>
               )}
             </div>
-            <div className=" flex justify-between">
-              <p className=" font-light">Mã khuyến mãi</p>
-              <div>
-                <img
-                  src={plus}
-                  alt={``}
-                  className=" w-6 h-6"
-                />
+
+            {/* Phần mã khuyến mãi */}
+            <div className="flex flex-col space-y-2">
+              <div className="flex justify-between items-center">
+                <p className="font-light">Mã khuyến mãi</p>
+                <button
+                  type="button"
+                  onClick={() => setShowPromoInput(!showPromoInput)}
+                >
+                  <img
+                    src={plus}
+                    alt=""
+                    className="w-6 h-6"
+                  />
+                </button>
               </div>
+              {showPromoInput && (
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    placeholder="Nhập mã khuyến mãi"
+                    className="border border-gray-300 rounded px-3 py-2 flex-1"
+                  />
+                  <button
+                    type="button"
+                    onClick={handlePromoCode}
+                    className="bg-gray-800 text-white px-4 py-2 rounded"
+                  >
+                    Áp dụng
+                  </button>
+                </div>
+              )}
+              {promoApplied && (
+                <p className="text-green-600">Đã áp dụng giảm giá 10%</p>
+              )}
             </div>
-            <div className=" flex justify-between flex-end">
+
+            <div className="flex justify-between flex-end">
               <p className="font-light">Đơn giá:</p>
               <div>
-                <p className=" text-gray-800 font-light">
+                <p className="text-gray-800 font-light">
                   {getTotal().toLocaleString() + " VNĐ"}
                 </p>
               </div>
             </div>
-            <div className=" flex justify-between items-end">
+
+            <div className="flex justify-between items-end">
               <p className="font-light">Phí shipping:</p>
               <div>
-                <p className=" text-gray-800 font-light">Miễn phí</p>
+                <p className="text-gray-800 font-light">Miễn phí</p>
               </div>
             </div>
-            <div className=" flex justify-between">
+
+            <div className="flex justify-between">
               <p className="font-light">Thuế (10%):</p>
               <div>
-                <p className=" text-gray-800 font-light">
-                  {" "}
+                <p className="text-gray-800 font-light">
                   {(getTotal() * 0.1).toLocaleString() + " VNĐ"}
                 </p>
               </div>
             </div>
-            <div className=" flex justify-between items-end">
+
+            {promoApplied && (
+              <div className="flex justify-between">
+                <p className="font-light">Giảm giá (10%):</p>
+                <div>
+                  <p className="text-green-600 font-light">
+                    -{(getTotal() * 0.1).toLocaleString() + " VNĐ"}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-between items-end">
               <p className="font-light">Tổng tiền:</p>
               <div>
-                <p className=" text-gray-800 font-light text-xl">
-                  {" "}
-                  {(getTotal() * 1.1).toLocaleString() + " VNĐ"}
+                <p className="text-gray-800 font-light text-xl">
+                  {getFinalTotal().toLocaleString() + " VNĐ"}
                 </p>
               </div>
             </div>
           </div>
         </div>
-        <div className=" flex items-center justify-center mt-12">
-          <button className=" font-light text-lg border-2 mb-1  border-gray-800 rounded-md py-3 px-16">
+        <div className="flex items-center justify-center mt-12">
+          <button className="font-light text-lg border-2 mb-1 border-gray-800 rounded-md py-3 px-16">
             Thanh toán ngay
           </button>
         </div>

@@ -4,21 +4,22 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { GetRequestWithCre } from "../utilz/Request/getRequest";
 import { useStateUserContext } from "../contexts/UserContextProvider";
-import Loading from "./Loading";
 import UserInfo from "./UserInfo";
 import UserOrder from "./UserOrder";
 import UserNotification from "./UserNotification";
 import UserSecurity from "./UserSecurity";
-
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 export default function UserLayout() {
   const [profile, setProfile] = useState("info");
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
+  const navigate = useNavigate();
   const [, setData] = useState({
     name: "",
     avatar: "",
     email: "",
   });
-  const { token } = useStateUserContext();
+  const { token, LogOut } = useStateUserContext();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -26,14 +27,14 @@ export default function UserLayout() {
       if (response.success) {
         setData(response.data);
         setLoading(false);
-      }
+      } else Swal.fire("Lỗi rồi", response.msg, "error");
     };
     fetchProfile();
   }, [token]);
 
-  if (loading) {
-    return <Loading modalIsOpen={loading} />;
-  }
+  // if (loading) {
+  //   return <Loading modalIsOpen={loading} />;
+  // }
 
   return (
     <motion.div
@@ -41,15 +42,8 @@ export default function UserLayout() {
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.2, duration: 0.5 }}
     >
-      <div className="w-full h-full">
+      <div className="w-full py-16 h-full">
         {/* Header */}
-        <div className="pl-6 py-4">
-          <img
-            src="https://res.cloudinary.com/dhhuv7n0h/image/upload/v1728564771/header_setting_ddmmoz.png"
-            alt="Header"
-            className="w-full"
-          />
-        </div>
 
         {/* Content */}
         <div className="flex flex-col lg:flex-row h-full w-full">
@@ -94,6 +88,32 @@ export default function UserLayout() {
               }`}
             >
               Bảo mật & mật khẩu
+            </button>
+            <button
+              onClick={() => {
+                Swal.fire({
+                  title: "Bạn có chắc chắn muốn đăng xuất?",
+                  text: "Thao tác này không thể hoàn tác!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Xác nhận",
+                  cancelButtonText: "Hủy",
+                }).then(async (result) => {
+                  if (result.isConfirmed) {
+                    LogOut();
+                    setTimeout(() => {
+                      navigate("/product");
+                    }, 1000);
+                  }
+                });
+              }}
+              className={`w-4/5 px-4 py-2 rounded-lg text-center ${
+                profile === "pass"
+                  ? "bg-green-400 bg-opacity-25 text-green-600 font-medium"
+                  : "hover:bg-gray-100"
+              }`}
+            >
+              Đăng xuất tài khoản
             </button>
           </div>
 

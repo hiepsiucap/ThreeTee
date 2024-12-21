@@ -56,7 +56,7 @@ export default function AllProductAdmin() {
   return (
     <section>
       {isLoading === true ? (
-        <div className=" pt-36 pl-72 flex w-full justify-center items-center">
+        <div className=" pt-36 px-6 md:px-0 md:pl-72 flex w-full justify-center items-center">
           <InfinitySpin
             width="200"
             color="#000000"

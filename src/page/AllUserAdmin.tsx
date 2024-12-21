@@ -38,12 +38,11 @@ const UserTable = () => {
   useEffect(() => {
     const getData = async () => {
       const response = await GetRequestWithCre({
-        route: "api/admin/users/all",
+        route: "api/admin/users/all?sort=-created_at",
         token,
       });
 
       if (response.success) {
-        console.log(response);
         changeIsLoading(false);
         changeUser(response?.data?.users?.data);
       }
@@ -76,7 +75,7 @@ const UserTable = () => {
   };
 
   return (
-    <section className=" pl-72 pr-12">
+    <section className=" px-6 md:px-6 md:pl-72 pr-12">
       <p className=" text-2xl font-light py-12">
         Danh sách user đăng kí gần đây
       </p>
@@ -89,7 +88,7 @@ const UserTable = () => {
         </div>
       ) : (
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
-          <TableContainer sx={{ maxHeight: 440 }}>
+          <TableContainer sx={{ maxHeight: 600 }}>
             <Table
               stickyHeader
               aria-label="sticky table"

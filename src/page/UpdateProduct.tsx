@@ -255,7 +255,7 @@ export default function UpdateProduct() {
   };
   if (Number(id) === -1)
     return (
-      <section className=" pl-72  flex items-center justify-center flex-col py-16 ">
+      <section className=" md:pl-72  flex items-center justify-center flex-col py-16 ">
         <p className=" text-2xl font-light py-12">
           Vui lòng chọn đơn hàng muốn update
         </p>
@@ -270,14 +270,14 @@ export default function UpdateProduct() {
   return (
     <section>
       {isLoading === true ? (
-        <div className=" pt-36 pl-72 flex w-full justify-center items-center">
+        <div className=" pt-36 md:pl-72 flex w-full justify-center items-center">
           <InfinitySpin
             width="200"
             color="#000000"
           />
         </div>
       ) : (
-        <div className="pl-72">
+        <div className="md:pl-72">
           <Loading modalIsOpen={loading}></Loading>
           <motion.div
             initial={{ opacity: 0, x: -50 }}

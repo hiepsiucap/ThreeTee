@@ -6,6 +6,7 @@ interface Filter {
   category: string;
   price: string;
   pageCount: number;
+  name: string;
 }
 
 export default function CategoryFilter({
@@ -19,6 +20,7 @@ export default function CategoryFilter({
     { label: "Nam", data: "nam" },
     { label: "Nữ", data: "nu" },
     { label: "Phụ kiện", data: "phukien" },
+    { label: "Custom", data: "custom" },
   ];
 
   return (

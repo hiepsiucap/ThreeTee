@@ -81,7 +81,7 @@ export default function OrdersAdmin() {
   );
 
   return (
-    <div className="pl-72">
+    <div className="md:pl-72 px-6 md:px-0">
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
@@ -98,12 +98,12 @@ export default function OrdersAdmin() {
           />
         </div>
       ) : (
-        <div className="flex space-x-6 h-full">
+        <div className="md:flex space-x-6 h-full">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="overflow-hidden rounded-2xl shadow-lg w-2/3"
+            className="overflow-hidden rounded-2xl shadow-lg md:w-2/3"
           >
             <Paper sx={{ width: "100%", overflow: "hidden" }}>
               <TableContainer sx={{ maxHeight: 700 }}>
@@ -167,7 +167,7 @@ export default function OrdersAdmin() {
             </Paper>
           </motion.div>
 
-          <div className="flex flex-col space-y-6 w-1/3">
+          <div className="flex flex-col space-y-6 pt-12 md:pt-0 md:w-1/3">
             <div className="w-full bg-gray-50 p-6 rounded-3xl shadow-md">
               <BasicLine
                 categories={categoriess}

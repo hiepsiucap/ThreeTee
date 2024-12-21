@@ -56,14 +56,14 @@ export default function AllProductAdmin() {
   return (
     <section>
       {isLoading === true ? (
-        <div className=" pt-36 pl-72 flex w-full justify-center items-center">
+        <div className=" pt-36 md:pl-72 flex w-full justify-center items-center">
           <InfinitySpin
             width="200"
             color="#000000"
           />
         </div>
       ) : (
-        <section className=" pl-72 pr-12">
+        <section className="px-6 md:px-0 md:pl-72 pr-12">
           <p className=" font-light text-xl pt-9">Danh sách sản phẩm</p>
           <ProductTable products={product}></ProductTable>
         </section>

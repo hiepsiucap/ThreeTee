@@ -45,7 +45,7 @@ export default function AdminProfile() {
             />
           </div>
           <div className=" relative flex items-center h-full w-full">
-            <div className="w-1/3 border-r-2 border-green-400 py-6 flex font-light items-start flex-col pl-72 space-y-4 font-inter">
+            <div className="w-1/3 border-r-2 border-green-400 py-6 flex font-light items-start flex-col md:pl-72 space-y-4 font-inter">
               <button
                 onClick={() => {
                   setprofile("info");
