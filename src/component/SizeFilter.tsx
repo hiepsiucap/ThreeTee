@@ -6,6 +6,7 @@ interface Filter {
   pageCount: number;
   category: string;
   price: string;
+  name: string;
 }
 
 export default function SizeFilter({
